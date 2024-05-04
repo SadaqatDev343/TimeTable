@@ -13,23 +13,20 @@ import {
   Signup,
   VerifyOtp,
 } from '../screens/auth-screens';
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 export default function Routes() {
-  <NavigationContainer>
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
+  return (
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         initialRouteName={ScreenNames.LOGIN}
         screenOptions={{
           headerShown: false,
         }}>
         <Stack.Screen name={ScreenNames.LOGIN} component={Login} />
-
         <Stack.Screen name={ScreenNames.SIGNUP} component={Signup} />
         <Stack.Screen
           name={ScreenNames.FORGET_PASSWORD}
@@ -40,9 +37,8 @@ export default function Routes() {
           name={ScreenNames.CREATE_PASSWORD}
           component={CreatePassword}
         />
-
         <Stack.Screen name={ScreenNames.Admin_LOGIN} component={Admin_LOGIN} />
       </Stack.Navigator>
-    </Stack.Navigator>
-  </NavigationContainer>;
+    </NavigationContainer>
+  );
 }

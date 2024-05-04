@@ -51,7 +51,7 @@ const AppColors = {
   red80: '#FF0000',
   red60: '#C30833',
   underlay: 'lightgray',
-  gradientColor: ['#000000', '#484848', '#434343'],
+  gradientColor: ['#434343', '#434343', '#434343'],
   categoryColor: ['#484848', '#484848', 'rgba(240,240,240,0.2)'],
   gradient: ['#5EE7DF', '#B490CA'],
   // green: (128 , 100 ,70 , 80%)

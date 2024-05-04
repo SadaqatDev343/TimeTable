@@ -1,6 +1,5 @@
 import {Platform, StyleSheet} from 'react-native';
-import { height, width } from '../../../utills/Diamension';
-
+import {height, width} from '../../../utills/Diamension';
 
 const styles = StyleSheet.create({
   mainViewContainer: {
@@ -12,6 +11,7 @@ const styles = StyleSheet.create({
     width: width(60),
     marginLeft: -5,
     alignSelf: 'flex-start',
+    marginBottom: width(30),
   },
   LoginButtonTopMargin: {
     marginTop: height(1),
