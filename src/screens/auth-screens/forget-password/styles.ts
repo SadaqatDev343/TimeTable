@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: width(5),
     width: width(80),
-    height: height(100),
+    height: height(90),
     alignItems: 'center',
   },
   logo: {
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     position: 'absolute',
-    bottom: height(10),
+    bottom: height(0),
   },
 });
 export default styles;

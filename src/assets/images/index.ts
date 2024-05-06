@@ -1,3 +1,3 @@
 export const AppLogo = {
-  logo: require('./logo.jpg'),
+  logo: require('./logo.png'),
 };

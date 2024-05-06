@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useRef, useState} from 'react';
 
 import {
   Button,
@@ -18,12 +18,32 @@ import {FontFamily} from '../../../utills/FontFamily';
 import {HorizontalLine} from '../../../components/line';
 import showPassword from '../../../assets/svg/showPassword';
 import {width} from '../../../utills/Diamension';
-import {TextInput} from 'react-native-paper';
 import {Image, View} from 'react-native';
 import {AppLogo} from '../../../assets/images';
+
+import {loginSchema} from '../../../utills/YupSchemaEditProfile';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {TextInput} from 'react-native-paper';
+
 export default function Dashboard({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.LOGIN>) {
+  const {
+    control,
+    handleSubmit,
+    formState: {errors, isValid},
+  } = useForm({
+    mode: 'all',
+    defaultValues: {
+      email: __DEV__ ? 'msadaqatdev@gmail.com' : '',
+      password: __DEV__ ? '123qwe' : '',
+    },
+    resolver: yupResolver(loginSchema),
+  });
+  const passwordRef = useRef<any>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <Gradient>
       <ScreenWrapper
@@ -35,13 +55,6 @@ export default function Dashboard({
         statusBarColor={AppColors.transparent}
         barStyle="light-content">
         <View style={styles.mainViewContainer}>
-          <H1
-            textStyles={CommonStyles.marginVertical_2}
-            color={AppColors.white}
-            size={6}
-            fontFam={FontFamily.appFontMedium}>
-            Login
-          </H1>
           <View style={styles.logo}>
             <Image
               resizeMode="contain"
@@ -49,22 +62,36 @@ export default function Dashboard({
               style={styles.imageStyle}
             />
           </View>
+          <H1
+            textStyles={CommonStyles.marginVertical_2}
+            color={AppColors.white}
+            size={6}
+            fontFam={FontFamily.appFontMedium}>
+            LOGIN
+          </H1>
 
           <View>
             <TextInput style={styles.unusedInput} />
             <TextField
-              title="Password"
-              secureTextEntry={!showPassword}
-              name="password"
-              placeholder="Enter your password"
-              showPasswordIcon={true}
+              title="Email"
+              keyboardType="email-address"
+              control={control}
+              name="email"
+              autoCapitalize="none"
+              returnKeyType="next"
+              placeholder="Enter your email address"
+              onSubmitEditing={() => passwordRef?.current?.focus()}
             />
             <TextField
               title="Password"
               secureTextEntry={!showPassword}
+              control={control}
               name="password"
               placeholder="Enter your password"
+              ref={passwordRef}
               showPasswordIcon={true}
+              isPasswordVisible={showPassword}
+              onPressIcon={() => setShowPassword(!showPassword)}
             />
 
             <View style={styles.forgotContainer}>
@@ -81,8 +108,7 @@ export default function Dashboard({
             </View>
             <Button
               title="LOGIN"
-              onPress={() => console.log('log')}
-              // onPress={handleSubmit(loginMethod)}
+              onPress={() => navigation.navigate(ScreenNames.USERHOMESCREEN)}
               containerStyle={CommonStyles.marginTop_3}
             />
             <View style={styles.row}>

@@ -1,18 +1,25 @@
 import {Platform, StyleSheet} from 'react-native';
 import {height, width} from '../../../utills/Diamension';
+import AppColors from '../../../utills/Colors';
 const styles = StyleSheet.create({
   mainViewContainer: {
-    height: Platform?.OS === 'ios' ? height(100) + height(5) : height(100),
+    height: height(90),
     paddingTop: height(2),
     alignItems: 'center',
+  },
+  header: {
+    borderBottomColor: AppColors.white,
+    borderBottomWidth: width(0.2),
+    backgroundColor: 'transparent',
   },
   back: {
     alignSelf: 'flex-start',
     marginLeft: -6,
   },
   imageStyle: {
-    width: width(50),
-    height: width(50),
+    alignSelf: 'center',
+    width: width(25),
+    height: width(25),
   },
   logo: {
     width: width(60),
@@ -27,7 +34,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     position: 'absolute',
-    bottom: height(6),
+    bottom: height(0),
   },
 });
 export default styles;

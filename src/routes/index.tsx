@@ -13,9 +13,10 @@ import {
   Signup,
   VerifyOtp,
 } from '../screens/auth-screens';
-import ContactUS from '../screens/common-screens';
+
 import UserHomeScreen from '../screens/app-screens/user';
 import AdminHomeScreen from '../screens/app-screens/admin';
+import ContactUs from '../screens/common-screens';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -41,9 +42,15 @@ export default function Routes() {
           component={CreatePassword}
         />
         <Stack.Screen name={ScreenNames.Admin_LOGIN} component={Admin_LOGIN} />
-        <Stack.Screen name={ScreenNames.CONTACT_US} component={ContactUS} />
-        <Stack.Screen name={ScreenNames.USER} component={UserHomeScreen} />
-        <Stack.Screen name={ScreenNames.ADMIN} component={AdminHomeScreen} />
+        <Stack.Screen name={ScreenNames.CONTACT_US} component={ContactUs} />
+        <Stack.Screen
+          name={ScreenNames.USERHOMESCREEN}
+          component={UserHomeScreen}
+        />
+        <Stack.Screen
+          name={ScreenNames.ADMINHOMESCREEN}
+          component={AdminHomeScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

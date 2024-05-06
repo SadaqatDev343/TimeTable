@@ -16,10 +16,24 @@ import {CommonStyles} from '../../../utills/CommonStyle';
 import {FontFamily} from '../../../utills/FontFamily';
 import {ForgetPassword} from '../../../assets/svg';
 import {AppLogo} from '../../../assets/images';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {forgetPassSchema} from '../../../utills/YupSchemaEditProfile';
 
 export default function ForgotPassword({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.FORGET_PASSWORD>) {
+  const {
+    control,
+    handleSubmit,
+    formState: {errors, isValid},
+  } = useForm({
+    mode: 'all',
+    defaultValues: {
+      email: '',
+    },
+    resolver: yupResolver(forgetPassSchema),
+  });
   return (
     <Gradient>
       <ScreenWrapper
@@ -61,7 +75,7 @@ export default function ForgotPassword({
             title="Email"
             placeholder="Enter your email address"
             containerStyle={CommonStyles.marginTop_5}
-            //  control={control}
+            control={control}
             autoCapitalize="none"
             keyboardType="email-address"
             name="email"

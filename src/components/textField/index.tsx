@@ -10,6 +10,7 @@ import HidePassword from '../../assets/svg/hidePassword';
 import ShowPassword from '../../assets/svg/showPassword';
 import {CommonStyles} from '../../utills/CommonStyle';
 import {CustomText} from '../texts';
+import {Controller} from 'react-hook-form';
 
 type KeyboardVariation =
   | 'default'
@@ -103,7 +104,7 @@ const TextField = forwardRef<TextInput, Props>(
           textStyles={styles.title}>
           {title}
         </CustomText>
-        {/* <Controller
+        <Controller
           control={control}
           render={({field: {onChange, value}, fieldState: {error}}) => (
             <>
@@ -150,7 +151,7 @@ const TextField = forwardRef<TextInput, Props>(
             </>
           )}
           name={name}
-        /> */}
+        />
       </View>
     );
   },

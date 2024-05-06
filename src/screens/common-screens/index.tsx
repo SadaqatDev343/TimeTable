@@ -14,7 +14,7 @@ import {Contact, MicroPhone, Phone, VisitUs} from '../../assets/svg';
 import {FontFamily} from '../../utills/FontFamily';
 import {CommonStyles} from '../../utills/CommonStyle';
 
-const ContactUS = ({
+const ContactUs = ({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.CONTACT_US>) => {
   return (
@@ -78,4 +78,4 @@ const ContactUS = ({
     </Gradient>
   );
 };
-export default ContactUS;
+export default ContactUs;

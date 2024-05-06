@@ -15,19 +15,22 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: width(60),
-    alignSelf: 'flex-start',
+
+    alignSelf: 'center',
     marginLeft: -5,
   },
   heading: {
     marginVertical: height(1),
-    width: width(80),
+    alignSelf: 'center',
+    width: width(20),
   },
   avatarContainer: {
     alignSelf: 'center',
   },
   imageStyle: {
-    width: width(50),
-    height: width(50),
+    alignSelf: 'center',
+    width: width(25),
+    height: width(25),
   },
   checkBoxView: {
     flexDirection: 'row',

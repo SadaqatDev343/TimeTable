@@ -14,37 +14,40 @@ import {FontFamily} from '../../../utills/FontFamily';
 import {CommonStyles} from '../../../utills/CommonStyle';
 import ScreenNames, {RootStackParamList} from '../../../routes/routes';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {AppLogo} from '../../../assets/images';
 import Header from '../../../components/header';
-
-// const schema = yup.object().shape({
-//   email: yup
-//     .string()
-//     .required('Email is required')
-//     .email('Email format is invalid'),
-//   password: yup
-//     .string()
-//     .required('Password is required')
-//     .min(6, 'Password should be atleast 6 characters long'),
-// });
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .required('Email is required')
+    .email('Email format is invalid'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(6, 'Password should be atleast 6 characters long'),
+});
 export default function Admin_LOGIN({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.Admin_LOGIN>) {
   const [showPassword, setShowPassword] = useState(false);
 
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   formState: {errors, isValid},
-  // } = useForm({
-  //   mode: 'all',
-  //   defaultValues: {
-  //     email: __DEV__ ? 'admin@gmail.com' : '',
-  //     password: __DEV__ ? '123qwe' : '',
-  //   },
-  //   resolver: yupResolver(schema),
-  // });
+  const {
+    control,
+    handleSubmit,
+    formState: {errors, isValid},
+  } = useForm({
+    mode: 'all',
+    defaultValues: {
+      email: __DEV__ ? 'admin@gmail.com' : '',
+      password: __DEV__ ? '123qwe' : '',
+    },
+    resolver: yupResolver(schema),
+  });
+  const passwordRef = useRef<any>(null);
 
   return (
     <Gradient>
@@ -74,30 +77,23 @@ export default function Admin_LOGIN({
             />
           </View>
 
-          <H1
-            textStyles={styles.heading}
-            color={AppColors.white}
-            size={5}
-            fontFam={FontFamily.appFontMedium}>
-            Organization Login
-          </H1>
           <TextField
             title="Email"
             keyboardType="email-address"
-            //  control={control}
+            control={control}
             name="email"
             returnKeyType="next"
             autoCapitalize="none"
             placeholder="Enter your email address"
-            // onSubmitEditing={() => passwordRef?.current?.focus()}
+            onSubmitEditing={() => passwordRef?.current?.focus()}
           />
           <View>
             <TextField
               title="Password"
-              // control={control}
+              control={control}
               name="password"
               secureTextEntry={!showPassword}
-              // ref={passwordRef}
+              ref={passwordRef}
               placeholder="Enter your password"
               showPasswordIcon={true}
               isPasswordVisible={showPassword}
@@ -107,7 +103,7 @@ export default function Admin_LOGIN({
 
           <Button
             title="LOGIN"
-            // onPress={}
+            onPress={() => navigation.navigate(ScreenNames.ADMINHOMESCREEN)}
             containerStyle={CommonStyles.marginTop_3}
           />
           <View style={styles.contact}>
