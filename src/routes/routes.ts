@@ -6,6 +6,9 @@ const enum ScreenNames {
   Admin_LOGIN = 'AdminLogin',
   SIGNUP = 'Signup',
   VERIFY_OTP = 'VerifyOtp',
+  CONTACT_US = 'contactUs',
+  USER = 'user',
+  ADMIN = 'admin',
 }
 
 export default ScreenNames;
@@ -17,4 +20,7 @@ export type RootStackParamList = {
   [ScreenNames.Admin_LOGIN]: undefined;
   [ScreenNames.SIGNUP]: undefined;
   [ScreenNames.VERIFY_OTP]: undefined;
+  [ScreenNames.CONTACT_US]: undefined;
+  [ScreenNames.USER]: undefined;
+  [ScreenNames.ADMIN]: undefined;
 };

@@ -1,11 +1,17 @@
 import {StyleSheet} from 'react-native';
-import { height, width } from '../../../utills/Diamension';
+import {height, width} from '../../../utills/Diamension';
 import AppColors from '../../../utills/Colors';
 
 const styles = StyleSheet.create({
   mainViewContainer: {
     paddingTop: height(2),
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  header: {
+    borderBottomColor: AppColors.white,
+    borderBottomWidth: width(0.2),
+    backgroundColor: 'transparent',
   },
   logo: {
     width: width(60),
@@ -18,6 +24,10 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     alignSelf: 'center',
+  },
+  imageStyle: {
+    width: width(50),
+    height: width(50),
   },
   checkBoxView: {
     flexDirection: 'row',

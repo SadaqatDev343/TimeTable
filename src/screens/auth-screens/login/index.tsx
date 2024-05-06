@@ -19,6 +19,8 @@ import {HorizontalLine} from '../../../components/line';
 import showPassword from '../../../assets/svg/showPassword';
 import {width} from '../../../utills/Diamension';
 import {TextInput} from 'react-native-paper';
+import {Image, View} from 'react-native';
+import {AppLogo} from '../../../assets/images';
 export default function Dashboard({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.LOGIN>) {
@@ -40,14 +42,23 @@ export default function Dashboard({
             fontFam={FontFamily.appFontMedium}>
             Login
           </H1>
-          <View style={styles.logo}></View>
-          <View>
-            <TextInput
-              label="Password"
-              secureTextEntry
-              right={<TextInput.Icon icon="eye" />}
+          <View style={styles.logo}>
+            <Image
+              resizeMode="contain"
+              source={AppLogo.logo}
+              style={styles.imageStyle}
             />
+          </View>
+
+          <View>
             <TextInput style={styles.unusedInput} />
+            <TextField
+              title="Password"
+              secureTextEntry={!showPassword}
+              name="password"
+              placeholder="Enter your password"
+              showPasswordIcon={true}
+            />
             <TextField
               title="Password"
               secureTextEntry={!showPassword}
@@ -113,15 +124,14 @@ export default function Dashboard({
             color={AppColors.white}
             center
             textStyles={CommonStyles.marginTop_5}
-            //onPress={() => navigation.navigate(ScreenNames.ORGANIZATION_LOGIN)}
-            onPress={() => console.log('log')}>
-            Continue as Organization
+            onPress={() => navigation.navigate(ScreenNames.Admin_LOGIN)}>
+            Continue as Admin
           </CustomText>
           <View style={styles.contact}>
             <CustomText
               font={FontFamily.appFontMedium}
               color={AppColors.white}
-              onPress={() => console.log('log')}>
+              onPress={() => navigation.navigate(ScreenNames.CONTACT_US)}>
               Contact Support
             </CustomText>
           </View>

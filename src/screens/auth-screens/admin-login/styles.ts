@@ -1,5 +1,5 @@
-import { Platform, StyleSheet } from 'react-native';
-import { height, width } from '../../../utills/Diamension';
+import {Platform, StyleSheet} from 'react-native';
+import {height, width} from '../../../utills/Diamension';
 const styles = StyleSheet.create({
   mainViewContainer: {
     height: Platform?.OS === 'ios' ? height(100) + height(5) : height(100),
@@ -10,11 +10,14 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginLeft: -6,
   },
+  imageStyle: {
+    width: width(50),
+    height: width(50),
+  },
   logo: {
     width: width(60),
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     marginTop: width(5),
-    marginLeft: -8,
   },
   heading: {
     marginVertical: height(3),

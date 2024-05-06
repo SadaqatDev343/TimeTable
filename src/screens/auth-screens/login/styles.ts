@@ -9,9 +9,6 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: width(60),
-    marginLeft: -5,
-    alignSelf: 'flex-start',
-    marginBottom: width(30),
   },
   LoginButtonTopMargin: {
     marginTop: height(1),
@@ -20,7 +17,10 @@ const styles = StyleSheet.create({
     width: 1,
     height: 1,
   },
-
+  imageStyle: {
+    width: width(50),
+    height: width(50),
+  },
   row: {
     flexDirection: 'row',
     alignSelf: 'center',

@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import { height, width } from '../../../utills/Diamension';
+import {height, width} from '../../../utills/Diamension';
 import AppColors from '../../../utills/Colors';
 
 const styles = StyleSheet.create({
@@ -8,6 +8,13 @@ const styles = StyleSheet.create({
     width: width(80),
     height: height(100),
     alignItems: 'center',
+  },
+  logo: {
+    width: width(60),
+  },
+  imageStyle: {
+    width: width(50),
+    height: width(50),
   },
   headerView: {
     paddingVertical: height(3),
@@ -23,6 +30,12 @@ const styles = StyleSheet.create({
     marginTop: height(5),
     marginVertical: height(1),
     width: width(80),
+  },
+  contact: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: height(10),
   },
 });
 export default styles;

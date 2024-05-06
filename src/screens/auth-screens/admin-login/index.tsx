@@ -1,4 +1,4 @@
-import {Pressable, View} from 'react-native';
+import {Image, Pressable, View} from 'react-native';
 import {
   Button,
   CustomText,
@@ -15,6 +15,8 @@ import {CommonStyles} from '../../../utills/CommonStyle';
 import ScreenNames, {RootStackParamList} from '../../../routes/routes';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useState} from 'react';
+import {AppLogo} from '../../../assets/images';
+import Header from '../../../components/header';
 
 // const schema = yup.object().shape({
 //   email: yup
@@ -53,14 +55,25 @@ export default function Admin_LOGIN({
         paddinTop={0}
         paddingBottom={0}
         statusBarColor={AppColors.transparent}
-        barStyle="light-content">
+        barStyle="light-content"
+        headerUnScrollable={() => (
+          <Header
+            containerStyle={styles.header}
+            textColor={AppColors.white}
+            iconColor={AppColors.white}
+            title="ADMIN LOGIN"
+            onPress={() => navigation.goBack()}
+          />
+        )}>
         <View style={styles.mainViewContainer}>
-          <Pressable onPress={() => navigation.goBack()} style={styles.back}>
-            <Back color={AppColors.white} />
-          </Pressable>
-          {/* <View style={styles.logo}>
-            <Logo />
-          </View> */}
+          <View style={styles.logo}>
+            <Image
+              resizeMode="contain"
+              source={AppLogo.logo}
+              style={styles.imageStyle}
+            />
+          </View>
+
           <H1
             textStyles={styles.heading}
             color={AppColors.white}
