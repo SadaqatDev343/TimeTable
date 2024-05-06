@@ -11,16 +11,16 @@ const styles = StyleSheet.create({
     width: width(60),
     alignItems: 'center',
   },
+  imageStyle: {
+    width: width(25),
+    height: width(25),
+  },
   LoginButtonTopMargin: {
     marginTop: height(1),
   },
   unusedInput: {
     width: 1,
     height: 1,
-  },
-  imageStyle: {
-    width: width(25),
-    height: width(25),
   },
   row: {
     flexDirection: 'row',

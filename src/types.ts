@@ -1,3 +1,5 @@
+import {ViewStyle} from 'react-native';
+
 export interface ISVGComponentProps {
   color?: string;
   height?: number;
@@ -7,3 +9,10 @@ type IData = string;
 type IState = {name: string};
 
 export type IApbDropDownModal = IData | IState;
+
+export interface ICardProps {
+  title: string;
+  onPress?: () => void;
+  Icon?: React.ReactElement;
+  containerStyle?: ViewStyle | ViewStyle[];
+}

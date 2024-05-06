@@ -12,3 +12,4 @@ export {default as Gradient} from './gradient';
 export {CustomText, H1} from './texts';
 export {default as ScreenWrapper} from './screen-wrapper';
 export {default as ContactCard} from './contact-card';
+export {default as Card} from './card';

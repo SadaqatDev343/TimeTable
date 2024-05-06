@@ -117,9 +117,9 @@ export default function Signup({
             />
           </View>
           <DropDownButton
-            placeHolder="Category"
+            placeHolder="Role"
             Icon
-            title="Category"
+            title="Role"
             placeholderColor={AppColors.grey10}
             containerStyle={styles.dropdown}
             onPress={toggleCategory}

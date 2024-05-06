@@ -1,6 +1,10 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import axios from 'axios';
 import React, {useRef, useState} from 'react';
-
+import {useForm} from 'react-hook-form';
+import {Image, View} from 'react-native';
+import {AppLogo} from '../../../assets/images';
 import {
   Button,
   CustomText,
@@ -9,22 +13,15 @@ import {
   ScreenWrapper,
   TextField,
 } from '../../../components';
+import {HorizontalLine} from '../../../components/line';
 import ScreenNames, {RootStackParamList} from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
-
-import styles from './styles';
 import {CommonStyles} from '../../../utills/CommonStyle';
-import {FontFamily} from '../../../utills/FontFamily';
-import {HorizontalLine} from '../../../components/line';
-import showPassword from '../../../assets/svg/showPassword';
 import {width} from '../../../utills/Diamension';
-import {Image, View} from 'react-native';
-import {AppLogo} from '../../../assets/images';
-
+import {FontFamily} from '../../../utills/FontFamily';
 import {loginSchema} from '../../../utills/YupSchemaEditProfile';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
-import {TextInput} from 'react-native-paper';
+import styles from './styles';
+import Header from '../../../components/header';
 
 export default function Dashboard({
   navigation,
@@ -32,17 +29,34 @@ export default function Dashboard({
   const {
     control,
     handleSubmit,
-    formState: {errors, isValid},
+    formState: {errors},
+    getValues,
   } = useForm({
     mode: 'all',
     defaultValues: {
-      email: __DEV__ ? 'msadaqatdev@gmail.com' : '',
+      email: __DEV__ ? 'mdanyalchaudhary@gmail.com' : '',
       password: __DEV__ ? '123qwe' : '',
     },
     resolver: yupResolver(loginSchema),
   });
   const passwordRef = useRef<any>(null);
   const [showPassword, setShowPassword] = useState(false);
+
+  const onSubmit = async () => {
+    const {email, password} = getValues();
+    try {
+      // const response = await axios.post('http://localhost:3000/auth/login', {
+      //   email,
+      //   password,
+      // });
+      // // Handle successful login (e.g., store tokens, navigate to another screen)
+      // console.log('Login success:', response.data);
+      navigation.navigate(ScreenNames.USERHOMESCREEN);
+    } catch (error) {
+      // Handle login error (e.g., show error message)
+      // console.error('Login error:', error);
+    }
+  };
 
   return (
     <Gradient>
@@ -71,7 +85,6 @@ export default function Dashboard({
           </H1>
 
           <View>
-            <TextInput style={styles.unusedInput} />
             <TextField
               title="Email"
               keyboardType="email-address"
@@ -82,6 +95,9 @@ export default function Dashboard({
               placeholder="Enter your email address"
               onSubmitEditing={() => passwordRef?.current?.focus()}
             />
+            {errors.email && (
+              <CustomText color="red">{errors.email.message}</CustomText>
+            )}
             <TextField
               title="Password"
               secureTextEntry={!showPassword}
@@ -93,6 +109,9 @@ export default function Dashboard({
               isPasswordVisible={showPassword}
               onPressIcon={() => setShowPassword(!showPassword)}
             />
+            {errors.password && (
+              <CustomText color="red">{errors.password.message}</CustomText>
+            )}
 
             <View style={styles.forgotContainer}>
               <CustomText
@@ -108,7 +127,7 @@ export default function Dashboard({
             </View>
             <Button
               title="LOGIN"
-              onPress={() => navigation.navigate(ScreenNames.USERHOMESCREEN)}
+              onPress={handleSubmit(onSubmit)}
               containerStyle={CommonStyles.marginTop_3}
             />
             <View style={styles.row}>
