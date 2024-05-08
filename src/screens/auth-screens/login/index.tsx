@@ -1,6 +1,5 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import axios from 'axios';
 import React, {useRef, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Image, View} from 'react-native';
@@ -21,7 +20,6 @@ import {width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import {loginSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './styles';
-import Header from '../../../components/header';
 
 export default function Dashboard({
   navigation,
