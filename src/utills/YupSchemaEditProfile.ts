@@ -2,7 +2,9 @@ import * as yup from 'yup';
 
 export const authSchema = yup.object().shape({
   name: yup.string().required('Full name is required'),
-  contact: yup.number().required('Enter Contact Number'),
+  contact: yup.string()
+    .required('Enter Contact Number')
+    .matches(/^\d{11}$/, 'Contact number must be exactly 11 digits'),
   email: yup
     .string()
     .required('Email is required')
@@ -10,8 +12,8 @@ export const authSchema = yup.object().shape({
   password: yup
     .string()
     .required('Password is required')
-    .min(6, 'Password should be atleast 6 characters long'),
-});
+    .min(6, 'Password should be at least 6 characters long'),
+}); 
 export const loginSchema = yup.object().shape({
   email: yup
     .string()

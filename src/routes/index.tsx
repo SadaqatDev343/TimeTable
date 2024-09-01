@@ -24,6 +24,7 @@ export const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 export default function Routes() {
   return (
+    
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         initialRouteName={ScreenNames.LOGIN}

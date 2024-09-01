@@ -1,6 +1,6 @@
 export const UserType = [
-  {name: 'Student'},
-  {name: 'Teacher'},
-  {name: 'Staff'},
-  {name: 'Other'},
+  {name: 'student'},
+  {name: 'teacher'},
+  {name: 'staff'},
+  {name: 'admin'},
 ];

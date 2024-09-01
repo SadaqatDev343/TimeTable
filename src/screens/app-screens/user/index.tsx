@@ -8,7 +8,7 @@ export default function UserHomeScreen({
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.USERHOMESCREEN>) {
   return (
     <View>
-      <Text>AdminHomeScreen</Text>
+      <Text>UserHomeScreen</Text>
     </View>
   );
 }

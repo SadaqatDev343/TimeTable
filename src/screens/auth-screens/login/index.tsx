@@ -1,6 +1,6 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useRef, useState} from 'react';
-
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useRef, useState } from 'react';
+import { Image, View, Alert } from 'react-native';
 import {
   Button,
   CustomText,
@@ -8,23 +8,21 @@ import {
   H1,
   ScreenWrapper,
   TextField,
+  
 } from '../../../components';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import ScreenNames, { RootStackParamList } from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
-
 import styles from './styles';
-import {CommonStyles} from '../../../utills/CommonStyle';
-import {FontFamily} from '../../../utills/FontFamily';
-import {HorizontalLine} from '../../../components/line';
+import { CommonStyles } from '../../../utills/CommonStyle';
+import { FontFamily } from '../../../utills/FontFamily';
 import showPassword from '../../../assets/svg/showPassword';
-import {width} from '../../../utills/Diamension';
-import {Image, View} from 'react-native';
-import {AppLogo} from '../../../assets/images';
-
-import {loginSchema} from '../../../utills/YupSchemaEditProfile';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
-import {TextInput} from 'react-native-paper';
+import { width } from '../../../utills/Diamension';
+import { AppLogo } from '../../../assets/images';
+import { loginSchema } from '../../../utills/YupSchemaEditProfile';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { TextInput } from 'react-native-paper';
+import { HorizontalLine } from '../../../components/line';
 
 export default function Dashboard({
   navigation,
@@ -32,7 +30,7 @@ export default function Dashboard({
   const {
     control,
     handleSubmit,
-    formState: {errors, isValid},
+    formState: { errors, isValid },
   } = useForm({
     mode: 'all',
     defaultValues: {
@@ -43,6 +41,32 @@ export default function Dashboard({
   });
   const passwordRef = useRef<any>(null);
   const [showPassword, setShowPassword] = useState(false);
+
+  const onLogin = async (data: any) => {
+    try {
+      const response = await fetch('http://192.168.100.28:3000/user/login', { // Replace with your actual API endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Handle successful login
+        console.log('Login successful:', result);
+        navigation.navigate(ScreenNames.USERHOMESCREEN);
+      } else {
+        // Handle errors
+        throw new Error(result.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      Alert.alert('Login Failed');
+    }
+  };
 
   return (
     <Gradient>
@@ -108,7 +132,7 @@ export default function Dashboard({
             </View>
             <Button
               title="LOGIN"
-              onPress={() => navigation.navigate(ScreenNames.USERHOMESCREEN)}
+              onPress={handleSubmit(onLogin)}
               containerStyle={CommonStyles.marginTop_3}
             />
             <View style={styles.row}>

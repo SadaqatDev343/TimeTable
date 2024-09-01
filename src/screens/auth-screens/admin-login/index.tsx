@@ -1,4 +1,4 @@
-import {Image, Pressable, View} from 'react-native';
+import { Image, View, Alert } from 'react-native';
 import {
   Button,
   CustomText,
@@ -9,17 +9,19 @@ import {
 } from '../../../components';
 import AppColors from '../../../utills/Colors';
 import styles from './styles';
-import {Back} from '../../../assets/svg';
-import {FontFamily} from '../../../utills/FontFamily';
-import {CommonStyles} from '../../../utills/CommonStyle';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useRef, useState} from 'react';
-import {AppLogo} from '../../../assets/images';
+import { Back } from '../../../assets/svg';
+import { FontFamily } from '../../../utills/FontFamily';
+import { CommonStyles } from '../../../utills/CommonStyle';
+import ScreenNames, { RootStackParamList } from '../../../routes/routes';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useRef, useState } from 'react';
+import { AppLogo } from '../../../assets/images';
 import Header from '../../../components/header';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+
+// Validation schema
 const schema = yup.object().shape({
   email: yup
     .string()
@@ -28,8 +30,9 @@ const schema = yup.object().shape({
   password: yup
     .string()
     .required('Password is required')
-    .min(6, 'Password should be atleast 6 characters long'),
+    .min(6, 'Password should be at least 6 characters long'),
 });
+
 export default function Admin_LOGIN({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.Admin_LOGIN>) {
@@ -38,7 +41,7 @@ export default function Admin_LOGIN({
   const {
     control,
     handleSubmit,
-    formState: {errors, isValid},
+    formState: { errors, isValid },
   } = useForm({
     mode: 'all',
     defaultValues: {
@@ -48,6 +51,32 @@ export default function Admin_LOGIN({
     resolver: yupResolver(schema),
   });
   const passwordRef = useRef<any>(null);
+
+  const onLogin = async (data: any) => {
+    try {
+      const response = await fetch('http://192.168.100.28:3000/user/adminLogin', { // Replace with your actual API endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Handle successful login
+        console.log('Login successful:', result);
+        navigation.navigate(ScreenNames.ADMINHOMESCREEN);
+      } else {
+        // Handle errors
+        throw new Error(result.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      Alert.alert('Login Failed');
+    }
+  };
 
   return (
     <Gradient>
@@ -103,13 +132,14 @@ export default function Admin_LOGIN({
 
           <Button
             title="LOGIN"
-            onPress={() => navigation.navigate(ScreenNames.ADMINHOMESCREEN)}
+            onPress={handleSubmit(onLogin)} // Use handleSubmit to trigger onLogin
             containerStyle={CommonStyles.marginTop_3}
           />
           <View style={styles.contact}>
             <CustomText
               font={FontFamily.appFontMedium}
               color={AppColors.white}
+              // Uncomment the following line if you want to add Contact Support functionality
               // onPress={() => navigation.navigate(ScreenNames.CONTACT_US)}
             >
               Contact Support

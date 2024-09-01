@@ -19,7 +19,7 @@ export type RootStackParamList = {
   [ScreenNames.FORGET_PASSWORD]: undefined;
   [ScreenNames.Admin_LOGIN]: undefined;
   [ScreenNames.SIGNUP]: undefined;
-  [ScreenNames.VERIFY_OTP]: undefined;
+  [ScreenNames.VERIFY_OTP]: { email: string };
   [ScreenNames.CONTACT_US]: undefined;
   [ScreenNames.USERHOMESCREEN]: undefined;
   [ScreenNames.ADMINHOMESCREEN]: undefined;

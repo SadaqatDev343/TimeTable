@@ -1,4 +1,9 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useRef, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Image, TouchableOpacity, View } from 'react-native';
+import { AppLogo } from '../../../assets/images';
+import { CheckBox, UnCheckBox } from '../../../assets/svg';
 import {
   Button,
   CustomText,
@@ -8,46 +13,69 @@ import {
   ScreenWrapper,
   TextField,
 } from '../../../components';
-import AppColors from '../../../utills/Colors';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
-import {Image, TouchableOpacity, View} from 'react-native';
-import styles from './styles';
-import {AppLogo} from '../../../assets/images';
-import {FontFamily} from '../../../utills/FontFamily';
-import {CommonStyles} from '../../../utills/CommonStyle';
-import {useRef, useState} from 'react';
-import {CheckBox, UnCheckBox} from '../../../assets/svg';
-import {UserType} from '../../../utills/userType';
-import {Header} from 'react-native/Libraries/NewAppScreen';
 import DropDownModal from '../../../components/drop-down-modal';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
-import {authSchema} from '../../../utills/YupSchemaEditProfile';
+import ScreenNames, { RootStackParamList } from '../../../routes/routes';
+import AppColors from '../../../utills/Colors';
+import { CommonStyles } from '../../../utills/CommonStyle';
+import { FontFamily } from '../../../utills/FontFamily';
+import { UserType } from '../../../utills/userType';
+import styles from './styles';
+import { authSchema } from '../../../utills/YupSchemaEditProfile';
+import { ISignUpFormValues } from '../../../types';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 export default function Signup({
   navigation,
-  route,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.SIGNUP>) {
   const [isDirectlyInvolve, setDirectlyInvolve] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+  
   const toggleCategory = () => setCategoryModalVisible(!categoryModalVisible);
+  
   const emailRef = useRef<any>(null);
   const passwordRef = useRef<any>(null);
-  const {
-    control,
-    handleSubmit,
-    formState: {errors, isValid},
-  } = useForm({
+
+  const onSubmit: SubmitHandler<ISignUpFormValues> = async (data) => {
+    console.log('onSubmit triggered', data);
+
+    try {
+      const response = await fetch('http://192.168.100.28:3000/user/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          role: selectedCategory, // Add role to the request body
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log('User registered successfully:', result);
+        navigation.navigate(ScreenNames.LOGIN);
+      } else {
+        throw new Error(result.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Registration failed:', error);
+    }
+  };
+
+  const { control, handleSubmit, formState: { errors } } = useForm<any>({
     mode: 'all',
     defaultValues: {
+      name: '',
+      contact: '',
       email: '',
       password: '',
-      name: '',
     },
     resolver: yupResolver(authSchema),
   });
+
   return (
     <Gradient>
       <ScreenWrapper
@@ -97,9 +125,9 @@ export default function Signup({
           <TextField
             title="Contact Number"
             control={control}
-            name="Contact"
+            name="contact"
             returnKeyType="next"
-            placeholder="Enter your Contact Number"
+            placeholder="Enter your contact number"
             containerStyle={CommonStyles.marginTop_3}
             onSubmitEditing={() => emailRef?.current?.focus()}
           />
@@ -125,6 +153,7 @@ export default function Signup({
             onPress={toggleCategory}
             value={selectedCategory}
           />
+       
           <View style={styles.checkBoxView}>
             <TouchableOpacity
               onPress={() => setDirectlyInvolve(!isDirectlyInvolve)}
@@ -149,9 +178,13 @@ export default function Signup({
           <Button
             title="SIGN UP"
             containerStyle={CommonStyles.marginTop_2}
-            onPress={() => console.log('--')}
-            // onPress={handleSubmit(registerUser)}
+            onPress={handleSubmit(onSubmit)}
           />
+          {/* {isError && (
+            <CustomText color={AppColors.red} center>
+              An error occurred during registration: {error.message}
+            </CustomText>
+          )} */}
           <View style={styles.row}>
             <CustomText color={AppColors.white}>
               Already have an account?{' '}
