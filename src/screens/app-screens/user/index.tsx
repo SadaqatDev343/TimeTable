@@ -4,7 +4,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import ScreenNames, {RootStackParamList} from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
 import {
-  Card,
   CustomText,
   Gradient,
   H1,
@@ -17,6 +16,7 @@ import {height, width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 
 import {CommonStyles} from '../../../utills/CommonStyle';
+import { Card } from '../../../components/card';
 
 export default function UserHomeScreen({
   navigation,
@@ -73,37 +73,32 @@ export default function UserHomeScreen({
               Department
             </CustomText>
             <ScrollView horizontal style={{height: height(11)}}>
-              <Card title="BS SE " onPress={() => console.log('BS SE ')} />
+              <Card title="BS SE " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
 
-              <Card title="CS " onPress={() => console.log('CS ')} />
-              <Card title="IT  " onPress={() => console.log('IT  ')} />
-              <Card title="IR " onPress={() => console.log('IR ')} />
-              <Card title="LAW " onPress={() => console.log('LAW ')} />
+              <Card title="CS " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card title="IT  " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card title="IR " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card title="LAW " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
               <Card
                 title="ECONOMICS "
-                onPress={() => console.log('ECONOMICS ')}
-              />
-              <Card title="ENGLISH " onPress={() => console.log('ENGLISH  ')} />
-              <Card title="URDU" onPress={() => console.log('URDU ')} />
-              <Card title="ISLAMYAT" onPress={() => console.log('ISLAMYAT')} />
-              <Card title="PHYSICS" onPress={() => console.log('PHYSICS ')} />
+                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card title="ENGLISH " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card title="URDU" onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card title="ISLAMYAT" onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card title="PHYSICS" onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
               <Card
                 title="CHEMISTRY"
-                onPress={() => console.log('CHEMISTRY ')}
-              />
+                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
               <Card
                 title="ACCOUNTING "
-                onPress={() => console.log('ACCOUNTING ')}
-              />
-              <Card title="BOTANY " onPress={() => console.log('BOTANY  ')} />
+                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card title="BOTANY " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
               <Card
                 title="MANAGEMENT"
-                onPress={() => console.log('MANAGEMENT')}
-              />
+                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
               <Card
                 title="ARCHITECTURE"
-                onPress={() => console.log('ARCHITECTURE')}
-              />
+                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
             </ScrollView>
             <CustomText
               size={5}

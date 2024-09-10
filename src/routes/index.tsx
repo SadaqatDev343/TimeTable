@@ -17,6 +17,9 @@ import {
 import UserHomeScreen from '../screens/app-screens/user';
 import AdminHomeScreen from '../screens/app-screens/admin';
 import ContactUs from '../screens/common-screens';
+import DesciplineScreen from '../screens/app-screens/discipline';
+import SemesterScreen from '../screens/app-screens/semester';
+import SectionScreen from '../screens/app-screens/section';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -50,6 +53,18 @@ export default function Routes() {
         <Stack.Screen
           name={ScreenNames.ADMINHOMESCREEN}
           component={AdminHomeScreen}
+        />
+        <Stack.Screen
+          name={ScreenNames.DESCIPLINESCREEN}
+          component={DesciplineScreen}
+        />
+         <Stack.Screen
+          name={ScreenNames.SEMESTERSCREEN}
+          component={SemesterScreen}
+        />
+        <Stack.Screen
+          name={ScreenNames.SECTIONSCREEN}
+          component={SectionScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

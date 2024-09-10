@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   imageStyle1: {
-    marginLeft: width(2),
+   
     width: width(10),
     height: width(10),
   },
