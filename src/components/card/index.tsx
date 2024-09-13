@@ -4,7 +4,7 @@ import {CommonStyles} from '../../utills/CommonStyle';
 import {FontFamily} from '../../utills/FontFamily';
 import {CustomText} from '../texts';
 import styles from './style';
-export const Card = ({title, onPress, Icon, containerStyle}: ICardProps) => {
+const Card = ({title, onPress, Icon, containerStyle}: ICardProps) => {
   return (
     <TouchableOpacity
       style={[containerStyle, styles.crowdBtn]}
@@ -20,4 +20,5 @@ export const Card = ({title, onPress, Icon, containerStyle}: ICardProps) => {
     </TouchableOpacity>
   );
 };
-;
+
+export default Card;

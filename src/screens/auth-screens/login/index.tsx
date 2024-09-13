@@ -49,7 +49,7 @@ export default function Dashboard({
       // });
       // // Handle successful login (e.g., store tokens, navigate to another screen)
       // console.log('Login success:', response.data);
-      navigation.navigate(ScreenNames.USERHOMESCREEN);
+      navigation.navigate(ScreenNames.DRAWER);
     } catch (error) {
       // Handle login error (e.g., show error message)
       // console.error('Login error:', error);

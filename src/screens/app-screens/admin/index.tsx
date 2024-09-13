@@ -1,22 +1,21 @@
-import {View, Text, Image, ScrollView} from 'react-native';
-import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import React from 'react';
+import {Image, ScrollView, View} from 'react-native';
 import {
+  Card,
   CustomText,
   Gradient,
   H1,
   ScreenWrapper,
 } from '../../../components';
+import ScreenNames, {RootStackParamList} from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
-import Header from '../../../components/header';
 
 import {AppLogo} from '../../../assets/images';
 import {CommonStyles} from '../../../utills/CommonStyle';
-import {FontFamily} from '../../../utills/FontFamily';
 import {height, width} from '../../../utills/Diamension';
-import { styles } from './style';
-import { Card } from '../../../components/card';
+import {FontFamily} from '../../../utills/FontFamily';
+import {styles} from './style';
 
 export default function AdminHomeScreen({
   navigation,
@@ -73,32 +72,97 @@ export default function AdminHomeScreen({
               Department
             </CustomText>
             <ScrollView horizontal style={{height: height(11)}}>
-              <Card title="BS SE " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
 
-              <Card title="CS " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="IT  " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="IR " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="LAW " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card
+                title="CS "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="IT  "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="IR "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="LAW "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               <Card
                 title="ECONOMICS "
-                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="ENGLISH " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="URDU" onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="ISLAMYAT" onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="PHYSICS" onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="ENGLISH "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="URDU"
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="ISLAMYAT"
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="PHYSICS"
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               <Card
                 title="CHEMISTRY"
-                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               <Card
                 title="ACCOUNTING "
-                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="BOTANY " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="BOTANY "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               <Card
                 title="MANAGEMENT"
-                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               <Card
                 title="ARCHITECTURE"
-                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
             </ScrollView>
             <CustomText
               size={5}

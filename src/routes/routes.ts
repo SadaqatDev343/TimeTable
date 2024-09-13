@@ -11,7 +11,8 @@ const enum ScreenNames {
   ADMINHOMESCREEN = 'Admin',
   DESCIPLINESCREEN = 'Descipline',
   SEMESTERSCREEN = 'semester',
-  SECTIONSCREEN='section'
+  SECTIONSCREEN = 'section',
+  DRAWER = 'Drawer',
 }
 
 export default ScreenNames;
@@ -29,4 +30,5 @@ export type RootStackParamList = {
   [ScreenNames.DESCIPLINESCREEN]: undefined;
   [ScreenNames.SEMESTERSCREEN]: undefined;
   [ScreenNames.SECTIONSCREEN]: undefined;
+  [ScreenNames.DRAWER]: undefined;
 };

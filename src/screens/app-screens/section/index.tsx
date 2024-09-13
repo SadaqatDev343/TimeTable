@@ -1,22 +1,22 @@
-import {View, Text, Image, ScrollView, Pressable} from 'react-native';
-import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import React from 'react';
+import {Image, Pressable, ScrollView, View} from 'react-native';
+import {AppLogo} from '../../../assets/images';
 import {
+  Card,
   CustomText,
   Gradient,
   H1,
   ScreenWrapper,
 } from '../../../components';
+import ScreenNames, {RootStackParamList} from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
-import {AppLogo} from '../../../assets/images';
 import {CommonStyles} from '../../../utills/CommonStyle';
-import {FontFamily} from '../../../utills/FontFamily';
 import {height, width} from '../../../utills/Diamension';
+import {FontFamily} from '../../../utills/FontFamily';
 
-import { Card } from '../../../components/card';
-import { styles } from './style';
-import { Back } from '../../../assets/svg';
+import {Back} from '../../../assets/svg';
+import {styles} from './style';
 
 export default function SectionScreen({
   navigation,
@@ -40,11 +40,10 @@ export default function SectionScreen({
               width: width(100),
               alignItems: 'center',
             }}>
-                  <Pressable onPress={() => navigation.goBack()} >
-              <Back width={24} height={24}  color={AppColors.white} />
+            <Pressable onPress={() => navigation.goBack()}>
+              <Back width={24} height={24} color={AppColors.white} />
             </Pressable>
             <View style={styles.leftlogo}>
-                
               <Image
                 resizeMode="contain"
                 source={AppLogo.logo}
@@ -69,7 +68,6 @@ export default function SectionScreen({
             </View>
           </View>
           <ScrollView style={{height: height(90)}}>
-            
             <CustomText
               size={5}
               textStyles={[CommonStyles.marginTop_2, CommonStyles.marginLeft_3]}
@@ -83,34 +81,21 @@ export default function SectionScreen({
                 alignSelf: 'center',
                 flexDirection: 'column',
               }}>
-             
-                <Card
-                  title=" section A"
-                  onPress={() => console.log('BS SE ')}
-                  containerStyle={{
-                
-                  }}
-                />
-                <Card
-                  title="section B"
-                  onPress={() => console.log('CS ')}
-                  
-                />
-                <Card
-                  title="section C "
-                  onPress={() => console.log('BS SE ')}
-                  containerStyle={{
-                    marginRight: width(5),
-                  }}
-                />
-                <Card
-                  title="section D"
-                  onPress={() => console.log('CS ')}
-                />
-                
-            
+              <Card
+                title=" section A"
+                onPress={() => console.log('BS SE ')}
+                containerStyle={{}}
+              />
+              <Card title="section B" onPress={() => console.log('CS ')} />
+              <Card
+                title="section C "
+                onPress={() => console.log('BS SE ')}
+                containerStyle={{
+                  marginRight: width(5),
+                }}
+              />
+              <Card title="section D" onPress={() => console.log('CS ')} />
             </View>
-           
           </ScrollView>
         </View>
       </ScreenWrapper>

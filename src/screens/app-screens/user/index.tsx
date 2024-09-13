@@ -1,22 +1,22 @@
-import {View, Text, Image, ScrollView} from 'react-native';
-import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
-import AppColors from '../../../utills/Colors';
+import React from 'react';
+import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
+import {AppLogo} from '../../../assets/images';
 import {
+  Card,
   CustomText,
   Gradient,
   H1,
   ScreenWrapper,
 } from '../../../components';
-import Header from '../../../components/header';
-import styles from './style';
-import {AppLogo} from '../../../assets/images';
+import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import AppColors from '../../../utills/Colors';
 import {height, width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
+import styles from './style';
 
 import {CommonStyles} from '../../../utills/CommonStyle';
-import { Card } from '../../../components/card';
+import {Text} from 'react-native-paper';
 
 export default function UserHomeScreen({
   navigation,
@@ -40,13 +40,13 @@ export default function UserHomeScreen({
               width: width(100),
               alignItems: 'center',
             }}>
-            <View style={styles.leftlogo}>
-              <Image
-                resizeMode="contain"
-                source={AppLogo.logo}
-                style={styles.imageStyle1}
-              />
-            </View>
+            <TouchableOpacity
+              onPress={() => navigation.openDrawer()}
+              style={styles.leftlogo}>
+              <Text variant="bodyLarge" style={{color: 'white'}}>
+                Drawer
+              </Text>
+            </TouchableOpacity>
             <View style={{marginLeft: -24}}>
               <H1
                 color={AppColors.white}
@@ -57,11 +57,11 @@ export default function UserHomeScreen({
             </View>
 
             <View style={styles.rightlogo}>
-              {/* <Image
+              <Image
                 resizeMode="contain"
                 source={AppLogo.logo}
                 style={styles.imageStyle2}
-              /> */}
+              />
             </View>
           </View>
           <ScrollView style={{height: height(90)}}>
@@ -73,32 +73,97 @@ export default function UserHomeScreen({
               Department
             </CustomText>
             <ScrollView horizontal style={{height: height(11)}}>
-              <Card title="BS SE " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
 
-              <Card title="CS " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="IT  " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="IR " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="LAW " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+              <Card
+                title="CS "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="IT  "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="IR "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="LAW "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               <Card
                 title="ECONOMICS "
-                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="ENGLISH " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="URDU" onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="ISLAMYAT" onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="PHYSICS" onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="ENGLISH "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="URDU"
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="ISLAMYAT"
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="PHYSICS"
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               <Card
                 title="CHEMISTRY"
-                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               <Card
                 title="ACCOUNTING "
-                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
-              <Card title="BOTANY " onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="BOTANY "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               <Card
                 title="MANAGEMENT"
-                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               <Card
                 title="ARCHITECTURE"
-                onPress={() => navigation.navigate(ScreenNames.DESCIPLINESCREEN)} />
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
             </ScrollView>
             <CustomText
               size={5}
