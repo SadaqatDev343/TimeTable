@@ -54,3 +54,31 @@ export const changePasswordSchema = yup.object().shape({
     //@ts-ignore
     .oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
+export const departmentSchema = yup.object().shape({
+  name: yup.string().required('Department name is required'),
+  headOfDepartment: yup.string().required('Head of Department is required'),
+  description: yup.string(),
+  email: yup.string().email('Please enter a valid email'),
+  phoneNumber: yup.string().matches(/^[0-9]+$/, 'Phone number must be numeric'),
+});
+import * as Yup from 'yup';
+
+// Discipline schema validation
+export const disciplineSchema = Yup.object().shape({
+  name: Yup.string()
+    .required('Discipline name is required')
+    .min(3, 'Discipline name must be at least 3 characters long'),
+
+  code: Yup.string()
+    .required('Discipline code is required')
+    .matches(/^[A-Z0-9]+$/, 'Code must be alphanumeric and uppercase'),
+
+  teacher: Yup.string()
+    .required('Teacher name is required')
+    .min(3, 'Teacher name must be at least 3 characters long'),
+
+  description: Yup.string().optional(), // Description is optional
+
+  department: Yup.string()
+    .required('Department selection is required'),
+});

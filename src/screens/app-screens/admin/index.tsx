@@ -17,9 +17,14 @@ import {height, width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import {styles} from './style';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { Add } from '../../../assets/svg';
 export default function AdminHomeScreen({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.ADMINHOMESCREEN>) {
+  const handleAddDepartment = () => {
+    navigation.navigate(ScreenNames.ADD_DEPARTMENT); // Replace 'ADD_DEPARTMENT' with your actual route name
+  };
+  
   return (
     <Gradient>
     <ScreenWrapper
@@ -63,14 +68,19 @@ export default function AdminHomeScreen({
           </View>
         </View>
         <ScrollView style={{height: height(90)}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',padding:10}}>
           <CustomText
             size={5}
-            textStyles={[CommonStyles.marginVertical_3, CommonStyles.alignSelfCenter]}
             font={FontFamily.appFontSemiBold}
             color={AppColors.white}>
-            Department
+          Department
           </CustomText>
-         
+        <TouchableOpacity onPress={handleAddDepartment}>
+        <Add width={20} height={20} color={AppColors.white} />
+      </TouchableOpacity>
+    </View>
+
+
         
           <View
             style={{

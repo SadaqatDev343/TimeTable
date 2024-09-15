@@ -1,0 +1,22 @@
+import React from 'react';
+import Svg, {Path} from 'react-native-svg';
+import { ISVGComponentProps } from '../../types';
+
+const Add: React.FC<ISVGComponentProps> = ({
+  color = '#fff',
+  height = 30,
+  width = 30,
+}) => {
+  return (
+    <Svg width={width} height={height} viewBox="0 0 30 30">
+      <Path
+        id="Path_6232"
+        data-name="Path 6232"
+        d="M35,22.143H22.143V35H17.857V22.143H5V17.857H17.857V5h4.286V17.857H35Z"
+        transform="translate(-5 -5)"
+        fill={color}
+      />
+    </Svg>
+  );
+};
+export default Add;
