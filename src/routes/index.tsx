@@ -13,14 +13,13 @@ import {
   Signup,
   VerifyOtp,
 } from '../screens/auth-screens';
-
-import UserHomeScreen from '../screens/app-screens/user';
 import AdminHomeScreen from '../screens/app-screens/admin';
 import ContactUs from '../screens/common-screens';
+
+import DrawerNavigator from './drawer-navigator';
 import DesciplineScreen from '../screens/app-screens/discipline';
 import SemesterScreen from '../screens/app-screens/semester';
 import SectionScreen from '../screens/app-screens/section';
-import DrawerNavigator from './drawer-navigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -47,6 +46,9 @@ export default function Routes() {
         />
         <Stack.Screen name={ScreenNames.Admin_LOGIN} component={Admin_LOGIN} />
         <Stack.Screen name={ScreenNames.CONTACT_US} component={ContactUs} />
+        <Stack.Screen name={ScreenNames.DESCIPLINESCREEN} component={DesciplineScreen} />
+        <Stack.Screen name={ScreenNames.SEMESTERSCREEN} component={SemesterScreen} />
+        <Stack.Screen name={ScreenNames.SECTIONSCREEN} component={SectionScreen} />
         <Stack.Screen
           name={ScreenNames.ADMINHOMESCREEN}
           component={AdminHomeScreen}

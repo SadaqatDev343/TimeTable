@@ -170,14 +170,7 @@ export default function Dashboard({
             onPress={() => navigation.navigate(ScreenNames.Admin_LOGIN)}>
             Continue as Admin
           </CustomText>
-          <View style={styles.contact}>
-            <CustomText
-              font={FontFamily.appFontMedium}
-              color={AppColors.white}
-              onPress={() => navigation.navigate(ScreenNames.CONTACT_US)}>
-              Contact Support
-            </CustomText>
-          </View>
+         
         </View>
       </ScreenWrapper>
     </Gradient>
