@@ -1,4 +1,4 @@
-import {showMessage} from 'yarn add react-native-flash-message';
+import {showMessage} from 'react-native-flash-message';
 
 export const errorMessage = (title: string, msg?: string, right?: boolean) => {
   showMessage({

@@ -18,6 +18,8 @@ import styles from './style';
 import {CommonStyles} from '../../../utills/CommonStyle';
 import {Text} from 'react-native-paper';
 
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
 export default function UserHomeScreen({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.USERHOMESCREEN>) {
@@ -43,9 +45,8 @@ export default function UserHomeScreen({
             <TouchableOpacity
               onPress={() => navigation.openDrawer()}
               style={styles.leftlogo}>
-              <Text variant="bodyLarge" style={{color: 'white'}}>
-                Drawer
-              </Text>
+              {/* Replacing text with Drawer Icon */}
+              <FontAwesome name="navicon" size={24} color="white" />
             </TouchableOpacity>
             <View style={{marginLeft: -24}}>
               <H1
@@ -67,137 +68,77 @@ export default function UserHomeScreen({
           <ScrollView style={{height: height(90)}}>
             <CustomText
               size={5}
-              textStyles={[CommonStyles.marginTop_2, CommonStyles.marginLeft_3]}
+              textStyles={[CommonStyles.marginVertical_3, CommonStyles.alignSelfCenter]}
               font={FontFamily.appFontSemiBold}
               color={AppColors.white}>
               Department
             </CustomText>
-            <ScrollView horizontal style={{height: height(11)}}>
+           
+          
+            <View
+              style={{
+                marginHorizontal: 2,
+                alignSelf: 'center',
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  marginHorizontal: 2,
+
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+               <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+               <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+                <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              </View>
+            </View>
+            <View
+              style={{
+                marginHorizontal: 2,
+                alignSelf: 'center',
+                flexDirection: 'row',
+              }}>
+              <View
+                style={{
+                  marginHorizontal: 2,
+
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+             <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+               <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               <Card
                 title="BS SE "
                 onPress={() =>
                   navigation.navigate(ScreenNames.DESCIPLINESCREEN)
                 }
               />
-
-              <Card
-                title="CS "
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="IT  "
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="IR "
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="LAW "
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="ECONOMICS "
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="ENGLISH "
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="URDU"
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="ISLAMYAT"
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="PHYSICS"
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="CHEMISTRY"
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="ACCOUNTING "
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="BOTANY "
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="MANAGEMENT"
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-              <Card
-                title="ARCHITECTURE"
-                onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
-                }
-              />
-            </ScrollView>
-            <CustomText
-              size={5}
-              textStyles={[CommonStyles.marginTop_2, CommonStyles.marginLeft_3]}
-              font={FontFamily.appFontSemiBold}
-              color={AppColors.white}>
-              Discipline
-            </CustomText>
-            <View
-              style={{
-                marginHorizontal: 2,
-                alignSelf: 'center',
-                flexDirection: 'row',
-              }}>
-              <View
-                style={{
-                  marginHorizontal: 2,
-
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Card
-                  title="BS SE  A "
-                  onPress={() => console.log('BS SE ')}
-                  containerStyle={{
-                    marginRight: width(5),
-                  }}
-                />
-                <Card
-                  title="CS  A"
-                  onPress={() => console.log('CS ')}
-                  containerStyle={{alignSelf: 'flex-end'}}
-                />
-                <Card title="IT  A " onPress={() => console.log('IT  ')} />
               </View>
             </View>
             <View
@@ -213,22 +154,24 @@ export default function UserHomeScreen({
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                 }}>
-                <Card
-                  title="IR  A "
-                  onPress={() => console.log('BS SE ')}
-                  containerStyle={{
-                    marginRight: width(5),
-                  }}
-                />
-                <Card
-                  title="LAW  A"
-                  onPress={() => console.log('CS ')}
-                  containerStyle={{alignSelf: 'flex-end'}}
-                />
-                <Card
-                  title="ECONOMICS  A "
-                  onPress={() => console.log('IT  ')}
-                />
+             <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+               <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               </View>
             </View>
             <View
@@ -244,22 +187,24 @@ export default function UserHomeScreen({
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                 }}>
-                <Card
-                  title="ENGLISH  A "
-                  onPress={() => console.log('BS SE ')}
-                  containerStyle={{
-                    marginRight: width(5),
-                  }}
-                />
-                <Card
-                  title="URDU  A"
-                  onPress={() => console.log('CS ')}
-                  containerStyle={{alignSelf: 'flex-end'}}
-                />
-                <Card
-                  title="ISLAMYAT  A "
-                  onPress={() => console.log('IT  ')}
-                />
+             <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+               <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               </View>
             </View>
             <View
@@ -275,50 +220,24 @@ export default function UserHomeScreen({
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                 }}>
-                <Card
-                  title="PHYSICS  A "
-                  onPress={() => console.log('BS SE ')}
-                  containerStyle={{
-                    marginRight: width(5),
-                  }}
-                />
-                <Card
-                  title="CHEMISTRY  A"
-                  onPress={() => console.log('CS ')}
-                  containerStyle={{alignSelf: 'flex-end'}}
-                />
-                <Card title="BBA A " onPress={() => console.log('IT  ')} />
-              </View>
-            </View>
-            <View
-              style={{
-                marginHorizontal: 2,
-                alignSelf: 'center',
-                flexDirection: 'row',
-              }}>
-              <View
-                style={{
-                  marginHorizontal: 2,
-
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Card
-                  title="ACCOUNTING A "
-                  onPress={() => console.log('BS SE ')}
-                  containerStyle={{
-                    marginRight: width(5),
-                  }}
-                />
-                <Card
-                  title="BOTANY A"
-                  onPress={() => console.log('CS ')}
-                  containerStyle={{alignSelf: 'flex-end'}}
-                />
-                <Card
-                  title="MANAGEMENT A "
-                  onPress={() => console.log('IT  ')}
-                />
+             <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+               <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+              <Card
+                title="BS SE "
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
               </View>
             </View>
           </ScrollView>

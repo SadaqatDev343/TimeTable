@@ -82,7 +82,7 @@ export default function ForgotPassword({
           />
           <Button
             title="RESET PASSWORD"
-            onPress={() => console.log('----')}
+            onPress={() => navigation.navigate(ScreenNames.VERIFY_OTP)}
             containerStyle={CommonStyles.marginTop_3}
           />
         </View>

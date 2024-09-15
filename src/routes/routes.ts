@@ -13,6 +13,7 @@ const enum ScreenNames {
   SEMESTERSCREEN = 'semester',
   SECTIONSCREEN = 'section',
   DRAWER = 'Drawer',
+  PROFILE='user_profile'
 }
 
 export default ScreenNames;
@@ -31,4 +32,6 @@ export type RootStackParamList = {
   [ScreenNames.SEMESTERSCREEN]: undefined;
   [ScreenNames.SECTIONSCREEN]: undefined;
   [ScreenNames.DRAWER]: undefined;
+  [ScreenNames.PROFILE]: undefined;
+  
 };

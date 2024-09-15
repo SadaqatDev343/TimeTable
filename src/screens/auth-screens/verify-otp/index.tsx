@@ -10,7 +10,7 @@ import {CommonStyles} from '../../../utills/CommonStyle';
 import {height, width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import {HorizontalLine} from '../../../components/line';
-
+import {OtpInput} from 'react-native-otp-entry';
 export default function VerifyOtp({
   navigation,
   route,
@@ -49,16 +49,21 @@ export default function VerifyOtp({
             Enter 6 digit code sent to your email address here
           </CustomText>
           <View style={styles.otpContainer}>
-            {/* <OTPInputView
-              style={styles.otpView}
-              pinCount={6}
-              code={code}
-              onCodeChanged={value => {
-                setCode(value);
+          <OtpInput
+              numberOfDigits={4}
+              focusColor={AppColors.white}
+              secureTextEntry={true}
+              focusStickBlinkingDuration={500}
+              onTextChange={console.log()
+              }
+              textInputProps={{
+                accessibilityLabel: 'One-Time Password',
               }}
-              autoFocusOnLoad={false}
-              codeInputFieldStyle={styles.underlineStyleBase}
-            /> */}
+              theme={{
+                containerStyle: {paddingHorizontal: width(15)},
+                pinCodeTextStyle: {color: AppColors.white},
+              }}
+            />
           </View>
           <Button
             title="Continue"
