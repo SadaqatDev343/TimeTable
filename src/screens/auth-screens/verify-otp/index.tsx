@@ -68,7 +68,7 @@ export default function VerifyOtp({
           <Button
             title="Continue"
             containerStyle={CommonStyles.marginTop_5}
-            // onPress={verifyCode}
+            onPress={() => navigation.navigate(ScreenNames.CREATE_PASSWORD)}
             // disabled={!isCode}
           />
           <View style={styles.footerContainer}>

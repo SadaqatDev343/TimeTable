@@ -12,3 +12,4 @@ export {default as Phone} from './phone';
 export {default as VisitUs} from './visitUs';
 export {default as MicroPhone} from './microphone';
 export {default as VerifyOTP} from './verifyOtp';
+export {default as CreatePasswordSVG} from './createPassword';
