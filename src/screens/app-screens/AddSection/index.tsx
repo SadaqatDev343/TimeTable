@@ -16,9 +16,9 @@ import {CommonStyles} from '../../../utills/CommonStyle';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import styles from './style';
-import { disciplineSchema } from '../../../utills/YupSchemaEditProfile';
-import { Back } from '../../../assets/svg';
-import React, { useState } from 'react';
+import {disciplineSchema} from '../../../utills/YupSchemaEditProfile';
+import {Back} from '../../../assets/svg';
+import React, {useState} from 'react';
 import DropDownModal from '../../../components/drop-down-modal';
 
 // Dummy data for dropdowns
@@ -50,12 +50,18 @@ export default function AddSectionScreen({
   const [disciplineModalVisible, setDisciplineModalVisible] = useState(false);
   const [semesterModalVisible, setSemesterModalVisible] = useState(false);
 
-  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
-  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
+    null,
+  );
+  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(
+    null,
+  );
   const [selectedSemester, setSelectedSemester] = useState<string | null>(null);
 
-  const toggleDepartment = () => setDepartmentModalVisible(!departmentModalVisible);
-  const toggleDiscipline = () => setDisciplineModalVisible(!disciplineModalVisible);
+  const toggleDepartment = () =>
+    setDepartmentModalVisible(!departmentModalVisible);
+  const toggleDiscipline = () =>
+    setDisciplineModalVisible(!disciplineModalVisible);
   const toggleSemester = () => setSemesterModalVisible(!semesterModalVisible);
 
   const {
@@ -91,15 +97,14 @@ export default function AddSectionScreen({
         transclucent
         statusBarColor={AppColors.transparent}
         barStyle="light-content">
-        
         {/* Back button */}
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()} 
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
           style={styles.backButton} // Add your styling here
         >
           <Back width={24} height={24} color={AppColors.white} />
         </TouchableOpacity>
-        
+
         <View style={styles.mainViewContainer}>
           <View style={styles.logo}>
             <Image
@@ -125,7 +130,6 @@ export default function AddSectionScreen({
             returnKeyType="next"
             placeholder="Enter section name"
             containerStyle={CommonStyles.marginTop_3}
-            error={errors.name?.message}
           />
 
           {/* Section Code */}
@@ -136,7 +140,6 @@ export default function AddSectionScreen({
             returnKeyType="next"
             placeholder="Enter section code"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.code?.message}
           />
 
           {/* Teacher */}
@@ -147,7 +150,6 @@ export default function AddSectionScreen({
             returnKeyType="next"
             placeholder="Enter teacher name"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.teacher?.message}
           />
 
           {/* Description */}
@@ -158,7 +160,6 @@ export default function AddSectionScreen({
             returnKeyType="next"
             placeholder="Enter section description (optional)"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.description?.message}
           />
 
           {/* Department Dropdown */}
@@ -200,7 +201,7 @@ export default function AddSectionScreen({
             Data={departments}
             onClose={toggleDepartment}
             onPress={val => {
-              setSelectedDepartment(val?.label); 
+              setSelectedDepartment(val?.label);
               toggleDepartment();
             }}
           />
@@ -210,7 +211,7 @@ export default function AddSectionScreen({
             Data={disciplines}
             onClose={toggleDiscipline}
             onPress={val => {
-              setSelectedDiscipline(val?.label); 
+              setSelectedDiscipline(val?.label);
               toggleDiscipline();
             }}
           />
@@ -220,7 +221,7 @@ export default function AddSectionScreen({
             Data={semesters}
             onClose={toggleSemester}
             onPress={val => {
-              setSelectedSemester(val?.label); 
+              setSelectedSemester(val?.label);
               toggleSemester();
             }}
           />
@@ -234,7 +235,6 @@ export default function AddSectionScreen({
             placeholder="Enter section capacity"
             containerStyle={CommonStyles.marginTop_2}
             keyboardType="numeric"
-            error={errors.capacity?.message}
           />
 
           {/* Submit Button */}

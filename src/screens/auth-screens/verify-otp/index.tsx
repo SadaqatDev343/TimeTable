@@ -49,13 +49,11 @@ export default function VerifyOtp({
             Enter 6 digit code sent to your email address here
           </CustomText>
           <View style={styles.otpContainer}>
-          <OtpInput
+            <OtpInput
               numberOfDigits={4}
               focusColor={AppColors.white}
               secureTextEntry={true}
               focusStickBlinkingDuration={500}
-              onTextChange={console.log()
-              }
               textInputProps={{
                 accessibilityLabel: 'One-Time Password',
               }}

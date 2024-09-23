@@ -1,27 +1,29 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {Alert, Image, TouchableOpacity, View} from 'react-native';
-import ScreenNames, { RootStackParamList } from '../../../routes/routes';
-import { Button, CustomText, DropDownButton, Gradient, H1, ScreenWrapper, TextField } from '../../../components';
-import AppColors from '../../../utills/Colors';
-import { Header } from 'react-native/Libraries/NewAppScreen';
-import styles from './style';
-import { CommonStyles } from '../../../utills/CommonStyle';
-import DropDownModal from '../../../components/drop-down-modal';
-import { UserType } from '../../../utills/userType';
-import { authSchema } from '../../../utills/YupSchemaEditProfile';
-import { AppLogo } from '../../../assets/images';
-import { FontFamily } from '../../../utills/FontFamily';
-import { CheckBox, UnCheckBox } from '../../../assets/svg';
-import { width } from '../../../utills/Diamension';
+import {Image, TouchableOpacity, View} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {AppLogo} from '../../../assets/images';
+import {
+  Button,
+  DropDownButton,
+  Gradient,
+  H1,
+  ScreenWrapper,
+  TextField,
+} from '../../../components';
+import DropDownModal from '../../../components/drop-down-modal';
+import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import AppColors from '../../../utills/Colors';
+import {CommonStyles} from '../../../utills/CommonStyle';
+import {width} from '../../../utills/Diamension';
+import {FontFamily} from '../../../utills/FontFamily';
+import {UserType} from '../../../utills/userType';
+import {authSchema} from '../../../utills/YupSchemaEditProfile';
+import styles from './style';
 
-export default function Profile({
-  navigation,
-  route,
-}: NativeStackScreenProps<RootStackParamList, ScreenNames.PROFILE>) {
+export default function Profile({navigation, route}: any) {
   const [isDirectlyInvolve, setDirectlyInvolve] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -52,7 +54,7 @@ export default function Profile({
         statusBarColor={AppColors.transparent}
         barStyle="light-content">
         <View style={styles.mainViewContainer}>
-        <View
+          <View
             style={{
               flexDirection: 'row',
               borderBottomColor: AppColors.white,
@@ -135,18 +137,13 @@ export default function Profile({
             value={selectedCategory}
           />
           <View style={styles.checkBoxView}>
-           
-           
-           
-      
-          <Button
-            title="Update profile"
-            containerStyle={CommonStyles.marginTop_2}
-            onPress={() => console.log('--')}
-            // onPress={handleSubmit(registerUser)}
-          />
-           </View>
-        
+            <Button
+              title="Update profile"
+              containerStyle={CommonStyles.marginTop_2}
+              onPress={() => console.log('--')}
+              // onPress={handleSubmit(registerUser)}
+            />
+          </View>
         </View>
         <DropDownModal
           isVisible={categoryModalVisible}

@@ -79,6 +79,8 @@ export const disciplineSchema = Yup.object().shape({
 
   description: Yup.string().optional(), // Description is optional
 
-  department: Yup.string()
-    .required('Department selection is required'),
+  department: Yup.string().required('Department selection is required'),
+
+  // Add discipline field validation
+  discipline: Yup.string().required('Discipline selection is required'), // Adjust validation as necessary
 });

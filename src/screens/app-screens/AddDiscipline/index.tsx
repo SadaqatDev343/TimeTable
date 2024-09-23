@@ -16,9 +16,9 @@ import {CommonStyles} from '../../../utills/CommonStyle';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import styles from './style';
-import { disciplineSchema } from '../../../utills/YupSchemaEditProfile';
-import { Back } from '../../../assets/svg';
-import React, { useState } from 'react';
+import {disciplineSchema} from '../../../utills/YupSchemaEditProfile';
+import {Back} from '../../../assets/svg';
+import React, {useState} from 'react';
 import DropDownModal from '../../../components/drop-down-modal';
 
 export default function AddDisciplineScreen({
@@ -33,10 +33,13 @@ export default function AddDisciplineScreen({
     {label: 'Chemistry', value: 'chemistry'},
   ];
 
-  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
+    null,
+  );
   const [departmentModalVisible, setDepartmentModalVisible] = useState(false);
-  
-  const toggleDepartment = () => setDepartmentModalVisible(!departmentModalVisible);
+
+  const toggleDepartment = () =>
+    setDepartmentModalVisible(!departmentModalVisible);
 
   const {
     control,
@@ -68,15 +71,14 @@ export default function AddDisciplineScreen({
         transclucent
         statusBarColor={AppColors.transparent}
         barStyle="light-content">
-        
         {/* Back button */}
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()} 
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
           style={styles.backButton} // Add your styling here
         >
           <Back width={24} height={24} color={AppColors.white} />
         </TouchableOpacity>
-        
+
         <View style={styles.mainViewContainer}>
           <View style={styles.logo}>
             <Image
@@ -102,7 +104,6 @@ export default function AddDisciplineScreen({
             returnKeyType="next"
             placeholder="Enter discipline name"
             containerStyle={CommonStyles.marginTop_3}
-            error={errors.name?.message}
           />
 
           {/* Discipline Code */}
@@ -113,7 +114,6 @@ export default function AddDisciplineScreen({
             returnKeyType="next"
             placeholder="Enter discipline code"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.code?.message}
           />
 
           {/* Teacher */}
@@ -124,7 +124,6 @@ export default function AddDisciplineScreen({
             returnKeyType="next"
             placeholder="Enter teacher name"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.teacher?.message}
           />
 
           {/* Description */}
@@ -135,7 +134,6 @@ export default function AddDisciplineScreen({
             returnKeyType="next"
             placeholder="Enter discipline description (optional)"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.description?.message}
           />
 
           {/* Department Dropdown */}
@@ -148,7 +146,7 @@ export default function AddDisciplineScreen({
             onPress={toggleDepartment}
             value={selectedDepartment}
           />
-          
+
           {/* Dropdown modal */}
           <DropDownModal
             isVisible={departmentModalVisible}

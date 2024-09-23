@@ -1,6 +1,12 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
-import {Image, Pressable, ScrollView, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {AppLogo} from '../../../assets/images';
 import {
   Card,
@@ -18,10 +24,7 @@ import {FontFamily} from '../../../utills/FontFamily';
 import {Add, Back} from '../../../assets/svg';
 import {styles} from './style';
 
-export default function SemesterScreen({
-  navigation,
-}: NativeStackScreenProps<RootStackParamList, ScreenNames.SEMESTERSCREEN>) {
- 
+export default function SemesterScreen({navigation}: any) {
   const handleAddSemester = () => {
     navigation.navigate(ScreenNames.ADD_SEMESTER); // Replace 'ADD_DEPARTMENT' with your actual route name
   };
@@ -72,186 +75,161 @@ export default function SemesterScreen({
             </View>
           </View>
           <ScrollView style={{height: height(90)}}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',padding:10, paddingHorizontal:20}}>
-          <CustomText
-            size={5}
-            font={FontFamily.appFontSemiBold}
-            color={AppColors.white}>
-          semester
-          </CustomText>
-        <TouchableOpacity onPress={handleAddSemester}>
-        <Add width={20} height={20} color={AppColors.white} />
-      </TouchableOpacity>
-    </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: 10,
+                paddingHorizontal: 20,
+              }}>
+              <CustomText
+                size={5}
+                font={FontFamily.appFontSemiBold}
+                color={AppColors.white}>
+                semester
+              </CustomText>
+              <TouchableOpacity onPress={handleAddSemester}>
+                <Add width={20} height={20} color={AppColors.white} />
+              </TouchableOpacity>
+            </View>
 
-
-        
-          <View
-            style={{
-              marginHorizontal: 2,
-              alignSelf: 'center',
-              flexDirection: 'row',
-            }}>
             <View
               style={{
                 marginHorizontal: 2,
-
+                alignSelf: 'center',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
               }}>
-             <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
-             <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
-              <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
+              <View
+                style={{
+                  marginHorizontal: 2,
+
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+              </View>
             </View>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 2,
-              alignSelf: 'center',
-              flexDirection: 'row',
-            }}>
             <View
               style={{
                 marginHorizontal: 2,
-
+                alignSelf: 'center',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
               }}>
-           <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
-             <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
-            <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
+              <View
+                style={{
+                  marginHorizontal: 2,
+
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+              </View>
             </View>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 2,
-              alignSelf: 'center',
-              flexDirection: 'row',
-            }}>
             <View
               style={{
                 marginHorizontal: 2,
-
+                alignSelf: 'center',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
               }}>
-           <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
-             <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
-            <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
+              <View
+                style={{
+                  marginHorizontal: 2,
+
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+              </View>
             </View>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 2,
-              alignSelf: 'center',
-              flexDirection: 'row',
-            }}>
             <View
               style={{
                 marginHorizontal: 2,
-
+                alignSelf: 'center',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
               }}>
-           <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
-             <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
-            <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
+              <View
+                style={{
+                  marginHorizontal: 2,
+
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+              </View>
             </View>
-          </View>
-          <View
-            style={{
-              marginHorizontal: 2,
-              alignSelf: 'center',
-              flexDirection: 'row',
-            }}>
             <View
               style={{
                 marginHorizontal: 2,
-
+                alignSelf: 'center',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
               }}>
-           <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
-             <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
-            <Card
-              title="BS SE "
-              onPress={() =>
-                navigation.navigate(ScreenNames.SECTIONSCREEN)
-              }
-            />
+              <View
+                style={{
+                  marginHorizontal: 2,
+
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+                <Card
+                  title="BS SE "
+                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                />
+              </View>
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
         </View>
       </ScreenWrapper>
     </Gradient>

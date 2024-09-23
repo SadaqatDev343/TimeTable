@@ -9,18 +9,17 @@ import {
 } from '../../../components';
 import AppColors from '../../../utills/Colors';
 import ScreenNames, {RootStackParamList} from '../../../routes/routes';
-import {Image, View, TouchableOpacity} from 'react-native'; // Import TouchableOpacity
+import {Image, View, TouchableOpacity} from 'react-native';
 import {AppLogo} from '../../../assets/images';
 import {FontFamily} from '../../../utills/FontFamily';
 import {CommonStyles} from '../../../utills/CommonStyle';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import styles from './style';
-import { disciplineSchema } from '../../../utills/YupSchemaEditProfile';
-import { Back } from '../../../assets/svg';
-import React, { useState } from 'react';
+import {disciplineSchema} from '../../../utills/YupSchemaEditProfile';
+import {Back} from '../../../assets/svg';
+import React, {useState} from 'react';
 import DropDownModal from '../../../components/drop-down-modal';
-import { Types } from 'mongoose'; // Import Types from mongoose
 
 export default function AddSemesterScreen({
   navigation,
@@ -41,13 +40,19 @@ export default function AddSemesterScreen({
     {label: 'Data Structures', value: 'data_structures'},
   ];
 
-  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
-  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
+    null,
+  );
+  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(
+    null,
+  );
   const [departmentModalVisible, setDepartmentModalVisible] = useState(false);
   const [disciplineModalVisible, setDisciplineModalVisible] = useState(false);
 
-  const toggleDepartment = () => setDepartmentModalVisible(!departmentModalVisible);
-  const toggleDiscipline = () => setDisciplineModalVisible(!disciplineModalVisible);
+  const toggleDepartment = () =>
+    setDepartmentModalVisible(!departmentModalVisible);
+  const toggleDiscipline = () =>
+    setDisciplineModalVisible(!disciplineModalVisible);
 
   const {
     control,
@@ -80,15 +85,13 @@ export default function AddSemesterScreen({
         transclucent
         statusBarColor={AppColors.transparent}
         barStyle="light-content">
-        
         {/* Back button */}
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()} 
-          style={styles.backButton}
-        >
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
           <Back width={24} height={24} color={AppColors.white} />
         </TouchableOpacity>
-        
+
         <View style={styles.mainViewContainer}>
           <View style={styles.logo}>
             <Image
@@ -114,7 +117,6 @@ export default function AddSemesterScreen({
             returnKeyType="next"
             placeholder="Enter discipline name"
             containerStyle={CommonStyles.marginTop_3}
-            error={errors.name?.message}
           />
 
           {/* Discipline Code */}
@@ -125,7 +127,6 @@ export default function AddSemesterScreen({
             returnKeyType="next"
             placeholder="Enter discipline code"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.code?.message}
           />
 
           {/* Teacher */}
@@ -136,7 +137,6 @@ export default function AddSemesterScreen({
             returnKeyType="next"
             placeholder="Enter teacher name"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.teacher?.message}
           />
 
           {/* Description */}
@@ -147,7 +147,6 @@ export default function AddSemesterScreen({
             returnKeyType="next"
             placeholder="Enter discipline description (optional)"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.description?.message}
           />
 
           {/* Department Dropdown */}
@@ -158,9 +157,9 @@ export default function AddSemesterScreen({
             placeholderColor={AppColors.grey10}
             containerStyle={styles.dropdown}
             onPress={toggleDepartment}
-            value={selectedDepartment || "Select Department"}
+            value={selectedDepartment || 'Select Department'}
           />
-          
+
           {/* Department Dropdown Modal */}
           <DropDownModal
             isVisible={departmentModalVisible}
@@ -180,9 +179,9 @@ export default function AddSemesterScreen({
             placeholderColor={AppColors.grey10}
             containerStyle={styles.dropdown}
             onPress={toggleDiscipline}
-            value={selectedDiscipline || "Select Discipline"}
+            value={selectedDiscipline || 'Select Discipline'}
           />
-          
+
           {/* Discipline Dropdown Modal */}
           <DropDownModal
             isVisible={disciplineModalVisible}

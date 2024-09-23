@@ -16,13 +16,9 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {departmentSchema} from '../../../utills/YupSchemaEditProfile'; // Updated schema import
 import styles from './style';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import Icon for back button
-import { Back } from '../../../assets/svg';
+import {Back} from '../../../assets/svg';
 
-export default function AddDepartmentScreen({
-  navigation,
-  route,
-}: NativeStackScreenProps<RootStackParamList, ScreenNames.ADD_DEPARTMENT>) {
+export default function AddDepartmentScreen({navigation, route}: any) {
   const {
     control,
     handleSubmit,
@@ -53,15 +49,14 @@ export default function AddDepartmentScreen({
         transclucent
         statusBarColor={AppColors.transparent}
         barStyle="light-content">
-        
         {/* Back button */}
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()} 
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
           style={styles.backButton} // Add your styling here
         >
           <Back width={24} height={24} color={AppColors.white} />
         </TouchableOpacity>
-        
+
         <View style={styles.mainViewContainer}>
           <View style={styles.logo}>
             <Image
@@ -87,7 +82,6 @@ export default function AddDepartmentScreen({
             returnKeyType="next"
             placeholder="Enter department name"
             containerStyle={CommonStyles.marginTop_3}
-            error={errors.name?.message}
           />
 
           {/* Head of Department */}
@@ -98,7 +92,6 @@ export default function AddDepartmentScreen({
             returnKeyType="next"
             placeholder="Enter head of department"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.headOfDepartment?.message}
           />
 
           {/* Description */}
@@ -109,7 +102,6 @@ export default function AddDepartmentScreen({
             returnKeyType="next"
             placeholder="Enter department description (optional)"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.description?.message}
           />
 
           {/* Email */}
@@ -120,7 +112,6 @@ export default function AddDepartmentScreen({
             returnKeyType="next"
             placeholder="Enter email (optional)"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.email?.message}
           />
 
           {/* Phone Number */}
@@ -131,7 +122,6 @@ export default function AddDepartmentScreen({
             returnKeyType="next"
             placeholder="Enter phone number (optional)"
             containerStyle={CommonStyles.marginTop_2}
-            error={errors.phoneNumber?.message}
           />
 
           {/* Submit Button */}
