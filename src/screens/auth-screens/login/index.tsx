@@ -20,10 +20,14 @@ import {width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import {loginSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './styles';
+import {useUserLogin} from '../../../api/auth';
+import {errorMessage, successMessage} from '../../../utills/method';
 
 export default function Dashboard({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.LOGIN>) {
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     control,
     handleSubmit,
@@ -32,28 +36,35 @@ export default function Dashboard({
   } = useForm({
     mode: 'all',
     defaultValues: {
-      email: __DEV__ ? 'mdanyalchaudhary@gmail.com' : '',
-      password: __DEV__ ? '123qwe' : '',
+      email: __DEV__ ? 'itsbk1022@gmail.com' : '',
+      password: __DEV__ ? '123456' : '',
     },
     resolver: yupResolver(loginSchema),
   });
+
   const passwordRef = useRef<any>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = async () => {
-    const {email, password} = getValues();
-    try {
-      // const response = await axios.post('http://localhost:3000/auth/login', {
-      //   email,
-      //   password,
-      // });
-      // // Handle successful login (e.g., store tokens, navigate to another screen)
-      // console.log('Login success:', response.data);
-      navigation.navigate(ScreenNames.DRAWER);
-    } catch (error) {
-      // Handle login error (e.g., show error message)
-      // console.error('Login error:', error);
-    }
+  const {mutate: loginUser} = useUserLogin();
+
+  const onSubmit = async (data: any) => {
+    setIsLoading(true);
+    const {email, password} = data;
+    loginUser(
+      {email, password},
+      {
+        onSuccess: response => {
+          if (response.ok) {
+            setIsLoading(false);
+            console.log('Login success:', response);
+            successMessage('Login success');
+          } else {
+            setIsLoading(false);
+            errorMessage('Login failed');
+          }
+        },
+      },
+    );
   };
 
   return (
@@ -93,9 +104,6 @@ export default function Dashboard({
               placeholder="Enter your email address"
               onSubmitEditing={() => passwordRef?.current?.focus()}
             />
-            {errors.email && (
-              <CustomText color="red">{errors.email.message}</CustomText>
-            )}
             <TextField
               title="Password"
               secureTextEntry={!showPassword}
@@ -107,10 +115,6 @@ export default function Dashboard({
               isPasswordVisible={showPassword}
               onPressIcon={() => setShowPassword(!showPassword)}
             />
-            {errors.password && (
-              <CustomText color="red">{errors.password.message}</CustomText>
-            )}
-
             <View style={styles.forgotContainer}>
               <CustomText
                 textStyles={CommonStyles.marginTop_2}
@@ -127,6 +131,7 @@ export default function Dashboard({
               title="LOGIN"
               onPress={handleSubmit(onSubmit)}
               containerStyle={CommonStyles.marginTop_3}
+              isLoading={isLoading}
             />
             <View style={styles.row}>
               <CustomText color={AppColors.white}>
@@ -170,7 +175,6 @@ export default function Dashboard({
             onPress={() => navigation.navigate(ScreenNames.Admin_LOGIN)}>
             Continue as Admin
           </CustomText>
-         
         </View>
       </ScreenWrapper>
     </Gradient>

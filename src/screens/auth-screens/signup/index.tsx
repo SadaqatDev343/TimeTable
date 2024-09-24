@@ -1,4 +1,10 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useRef, useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {Alert, Image, TouchableOpacity, View} from 'react-native';
+import {AppLogo} from '../../../assets/images';
+import {CheckBox, UnCheckBox} from '../../../assets/svg';
 import {
   Button,
   CustomText,
@@ -8,21 +14,16 @@ import {
   ScreenWrapper,
   TextField,
 } from '../../../components';
-import AppColors from '../../../utills/Colors';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
-import {Image, TouchableOpacity, View} from 'react-native';
-import styles from './styles';
-import {AppLogo} from '../../../assets/images';
-import {FontFamily} from '../../../utills/FontFamily';
-import {CommonStyles} from '../../../utills/CommonStyle';
-import {useRef, useState} from 'react';
-import {CheckBox, UnCheckBox} from '../../../assets/svg';
-import {UserType} from '../../../utills/userType';
-import {Header} from 'react-native/Libraries/NewAppScreen';
 import DropDownModal from '../../../components/drop-down-modal';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
+import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import AppColors from '../../../utills/Colors';
+import {CommonStyles} from '../../../utills/CommonStyle';
+import {FontFamily} from '../../../utills/FontFamily';
+import {UserType} from '../../../utills/userType';
 import {authSchema} from '../../../utills/YupSchemaEditProfile';
+import styles from './styles';
+import {useUserRegister} from '../../../api/auth';
+import {errorMessage, successMessage} from '../../../utills/method';
 
 export default function Signup({
   navigation,
@@ -31,10 +32,13 @@ export default function Signup({
   const [isDirectlyInvolve, setDirectlyInvolve] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+
   const toggleCategory = () => setCategoryModalVisible(!categoryModalVisible);
   const emailRef = useRef<any>(null);
   const passwordRef = useRef<any>(null);
+
   const {
     control,
     handleSubmit,
@@ -42,12 +46,42 @@ export default function Signup({
   } = useForm({
     mode: 'all',
     defaultValues: {
-      email: '',
-      password: '',
-      name: '',
+      email: __DEV__ ? 'test@example.com' : '',
+      password: __DEV__ ? 'testPassword123' : '',
+      name: __DEV__ ? 'John Doe' : '',
+      contact: __DEV__ ? '123-456-7890' : '',
     },
     resolver: yupResolver(authSchema),
   });
+
+  const {mutate} = useUserRegister();
+
+  const onSubmit = (data: any) => {
+    setIsLoading(true);
+    if (selectedCategory) {
+      const formData = {
+        ...data,
+        role: selectedCategory,
+      };
+
+      mutate(formData, {
+        onSuccess: response => {
+          if (response.ok) {
+            console.log('User Registered Successfully:', response);
+            setIsLoading(false);
+            successMessage('User regiserted successfully');
+          } else {
+            setIsLoading(false);
+            errorMessage('Failed to register user');
+          }
+        },
+      });
+    } else {
+      setIsLoading(false);
+      errorMessage('Please select a role');
+    }
+  };
+
   return (
     <Gradient>
       <ScreenWrapper
@@ -97,11 +131,10 @@ export default function Signup({
           <TextField
             title="Contact Number"
             control={control}
-            name="Contact"
+            name="contact"
             returnKeyType="next"
             placeholder="Enter your Contact Number"
             containerStyle={CommonStyles.marginTop_3}
-            onSubmitEditing={() => emailRef?.current?.focus()}
           />
           <View>
             <TextField
@@ -149,8 +182,9 @@ export default function Signup({
           <Button
             title="SIGN UP"
             containerStyle={CommonStyles.marginTop_2}
-            onPress={() => console.log('--')}
-            // onPress={handleSubmit(registerUser)}
+            disabled={!isDirectlyInvolve}
+            onPress={handleSubmit(onSubmit)}
+            isLoading={isLoading}
           />
           <View style={styles.row}>
             <CustomText color={AppColors.white}>

@@ -2,16 +2,26 @@ import * as yup from 'yup';
 
 export const authSchema = yup.object().shape({
   name: yup.string().required('Full name is required'),
-  contact: yup.number().required('Enter Contact Number'),
+
+  contact: yup
+    .string()
+    .required('Enter Contact Number')
+    .matches(
+      /^[0-9+()-\s]*$/,
+      'Contact number must be valid and can include digits, spaces, and symbols like +, -, ()',
+    ),
+
   email: yup
     .string()
     .required('Email is required')
     .email('Email format is invalid'),
+
   password: yup
     .string()
     .required('Password is required')
-    .min(6, 'Password should be atleast 6 characters long'),
+    .min(6, 'Password should be at least 6 characters long'),
 });
+
 export const loginSchema = yup.object().shape({
   email: yup
     .string()

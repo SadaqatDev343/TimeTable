@@ -1,25 +1,27 @@
-import {Image, Pressable, View} from 'react-native';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useRef, useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {Alert, Image, View} from 'react-native';
+import * as yup from 'yup';
+import {useAdminLogin} from '../../../api/auth';
+import {AppLogo} from '../../../assets/images';
 import {
   Button,
   CustomText,
   Gradient,
-  H1,
   ScreenWrapper,
   TextField,
 } from '../../../components';
-import AppColors from '../../../utills/Colors';
-import styles from './styles';
-import {Back} from '../../../assets/svg';
-import {FontFamily} from '../../../utills/FontFamily';
-import {CommonStyles} from '../../../utills/CommonStyle';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useRef, useState} from 'react';
-import {AppLogo} from '../../../assets/images';
 import Header from '../../../components/header';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import AppColors from '../../../utills/Colors';
+import {CommonStyles} from '../../../utills/CommonStyle';
+import {FontFamily} from '../../../utills/FontFamily';
+import styles from './styles';
+import {errorMessage, successMessage} from '../../../utills/method';
+
+// Validation schema for the form
 const schema = yup.object().shape({
   email: yup
     .string()
@@ -28,12 +30,17 @@ const schema = yup.object().shape({
   password: yup
     .string()
     .required('Password is required')
-    .min(6, 'Password should be atleast 6 characters long'),
+    .min(6, 'Password should be at least 6 characters long'),
 });
+
 export default function Admin_LOGIN({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.Admin_LOGIN>) {
   const [showPassword, setShowPassword] = useState(false);
+  const passwordRef = useRef<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {mutate} = useAdminLogin();
 
   const {
     control,
@@ -42,12 +49,26 @@ export default function Admin_LOGIN({
   } = useForm({
     mode: 'all',
     defaultValues: {
-      email: __DEV__ ? 'admin@gmail.com' : '',
-      password: __DEV__ ? '123qwe' : '',
+      email: __DEV__ ? 'johndoe@example.com' : '',
+      password: __DEV__ ? 'p@ssw0rd123' : '',
     },
     resolver: yupResolver(schema),
   });
-  const passwordRef = useRef<any>(null);
+
+  const onSubmit = (data: any) => {
+    setIsLoading(true);
+    mutate(data, {
+      onSuccess: response => {
+        if (response?.ok) {
+          setIsLoading(false);
+          successMessage('Login Successful');
+        } else {
+          setIsLoading(false);
+          errorMessage('Login Failed');
+        }
+      },
+    });
+  };
 
   return (
     <Gradient>
@@ -77,6 +98,7 @@ export default function Admin_LOGIN({
             />
           </View>
 
+          {/* Email Input Field */}
           <TextField
             title="Email"
             keyboardType="email-address"
@@ -87,6 +109,8 @@ export default function Admin_LOGIN({
             placeholder="Enter your email address"
             onSubmitEditing={() => passwordRef?.current?.focus()}
           />
+
+          {/* Password Input Field */}
           <View>
             <TextField
               title="Password"
@@ -101,17 +125,17 @@ export default function Admin_LOGIN({
             />
           </View>
 
+          {/* Login Button */}
           <Button
             title="LOGIN"
-            onPress={() => navigation.navigate(ScreenNames.ADMINHOMESCREEN)}
+            onPress={handleSubmit(onSubmit)}
+            isLoading={isLoading}
             containerStyle={CommonStyles.marginTop_3}
           />
+
+          {/* Contact Support */}
           <View style={styles.contact}>
-            <CustomText
-              font={FontFamily.appFontMedium}
-              color={AppColors.white}
-              // onPress={() => navigation.navigate(ScreenNames.CONTACT_US)}
-            >
+            <CustomText font={FontFamily.appFontMedium} color={AppColors.white}>
               Contact Support
             </CustomText>
           </View>
