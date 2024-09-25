@@ -12,13 +12,13 @@ import {TextInput, View} from 'react-native';
 import {CommonStyles} from '../../../utills/CommonStyle';
 import React, {useRef, useState} from 'react';
 import styles from './styles';
-import {Header} from 'react-native/Libraries/NewAppScreen';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {resetPasswordSchema} from '../../../utills/YupSchemaEditProfile';
 import {CreatePasswordSVG} from '../../../assets/svg';
 import {errorMessage, successMessage} from '../../../utills/method';
 import {useResetPassword} from '../../../api/auth';
+import Header from '../../../components/header';
 
 export default function CreatePassword({
   navigation,
