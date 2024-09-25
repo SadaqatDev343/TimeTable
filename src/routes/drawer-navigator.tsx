@@ -5,6 +5,8 @@ import {View} from 'react-native';
 import Profile from '../screens/app-screens/profile';
 import ScreenNames from './routes';
 import UserStack from './user-stack';
+import {errorMessage, successMessage} from '../utills/method';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Drawer = createDrawerNavigator();
 
@@ -15,9 +17,15 @@ const Logout = () => {
     <View style={{flex: 1}}>
       <DrawerItem
         label="Logout"
-        onPress={() => {
-          //@ts-ignore
-          navigation.navigate(ScreenNames.LOGIN);
+        onPress={async () => {
+          try {
+            await AsyncStorage.removeItem('token');
+            successMessage('Logout successful');
+            //@ts-ignore
+            navigation.replace(ScreenNames.LOGIN);
+          } catch (error) {
+            errorMessage('Error logging out');
+          }
         }}
       />
     </View>

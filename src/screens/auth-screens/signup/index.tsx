@@ -61,7 +61,7 @@ export default function Signup({
     if (selectedCategory) {
       const formData = {
         ...data,
-        role: selectedCategory,
+        role: String(selectedCategory).toLowerCase(),
       };
 
       mutate(formData, {
@@ -69,6 +69,7 @@ export default function Signup({
           if (response.ok) {
             console.log('User Registered Successfully:', response);
             setIsLoading(false);
+            navigation.navigate(ScreenNames.LOGIN);
             successMessage('User regiserted successfully');
           } else {
             setIsLoading(false);

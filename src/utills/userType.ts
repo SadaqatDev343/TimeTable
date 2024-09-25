@@ -1,6 +1,1 @@
-export const UserType = [
-  {name: 'Student'},
-  {name: 'Teacher'},
-  {name: 'Staff'},
-  {name: 'Other'},
-];
+export const UserType = [{name: 'Student'}, {name: 'Teacher'}, {name: 'Staff'}];

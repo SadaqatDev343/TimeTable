@@ -1,8 +1,8 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {Image, View} from 'react-native';
+import {ActivityIndicator, Image, View} from 'react-native';
 import {AppLogo} from '../../../assets/images';
 import {
   Button,
@@ -22,11 +22,46 @@ import {loginSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './styles';
 import {useUserLogin} from '../../../api/auth';
 import {errorMessage, successMessage} from '../../../utills/method';
+import {CommonActions} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Dashboard({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.LOGIN>) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingToken, setIsCheckingToken] = useState(true);
+
+  const checkToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const role = await AsyncStorage.getItem('role');
+      if (token) {
+        if (role === 'admin') {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: ScreenNames.ADMINHOMESCREEN}],
+            }),
+          );
+        } else {
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: ScreenNames.DRAWER}],
+            }),
+          );
+        }
+      }
+    } catch (error) {
+      errorMessage('Error checking token');
+    } finally {
+      setIsCheckingToken(false);
+    }
+  };
+
+  useEffect(() => {
+    checkToken();
+  }, []);
 
   const {
     control,
@@ -53,10 +88,22 @@ export default function Dashboard({
     loginUser(
       {email, password},
       {
-        onSuccess: response => {
+        onSuccess: async response => {
           if (response.ok) {
+            const token = response.response.data.data.access_Token;
+            try {
+              await AsyncStorage.setItem('token', token);
+              await AsyncStorage.setItem('role', 'notAdmin');
+            } catch (error) {
+              errorMessage('Unexpected error occurred');
+            }
             setIsLoading(false);
-            console.log('Login success:', response);
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: ScreenNames.DRAWER}],
+              }),
+            );
             successMessage('Login success');
           } else {
             setIsLoading(false);
@@ -66,6 +113,14 @@ export default function Dashboard({
       },
     );
   };
+
+  if (isCheckingToken) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color={AppColors.white} />
+      </View>
+    );
+  }
 
   return (
     <Gradient>

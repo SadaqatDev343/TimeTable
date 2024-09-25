@@ -20,6 +20,8 @@ import {CommonStyles} from '../../../utills/CommonStyle';
 import {FontFamily} from '../../../utills/FontFamily';
 import styles from './styles';
 import {errorMessage, successMessage} from '../../../utills/method';
+import {CommonActions} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Validation schema for the form
 const schema = yup.object().shape({
@@ -49,7 +51,7 @@ export default function Admin_LOGIN({
   } = useForm({
     mode: 'all',
     defaultValues: {
-      email: __DEV__ ? 'johndoe@example.com' : '',
+      email: __DEV__ ? 'johndoe@examplee.com' : '',
       password: __DEV__ ? 'p@ssw0rd123' : '',
     },
     resolver: yupResolver(schema),
@@ -58,9 +60,22 @@ export default function Admin_LOGIN({
   const onSubmit = (data: any) => {
     setIsLoading(true);
     mutate(data, {
-      onSuccess: response => {
+      onSuccess: async response => {
         if (response?.ok) {
+          const token = response.response.data.data.access_Token;
+          try {
+            await AsyncStorage.setItem('token', token);
+            await AsyncStorage.setItem('role', 'admin');
+          } catch (error) {
+            errorMessage('Unexpected error occurred');
+          }
           setIsLoading(false);
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: ScreenNames.ADMINHOMESCREEN}],
+            }),
+          );
           successMessage('Login Successful');
         } else {
           setIsLoading(false);

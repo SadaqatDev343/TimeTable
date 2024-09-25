@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Button, CustomText, Gradient, ScreenWrapper} from '../../../components';
 import AppColors from '../../../utills/Colors';
@@ -11,10 +12,40 @@ import {height, width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import {HorizontalLine} from '../../../components/line';
 import {OtpInput} from 'react-native-otp-entry';
+import {useVerifyOtp} from '../../../api/auth';
+import {errorMessage, successMessage} from '../../../utills/method';
+
 export default function VerifyOtp({
   navigation,
   route,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.VERIFY_OTP>) {
+  const [otpCode, setOtpCode] = useState('');
+  const {mutate} = useVerifyOtp();
+  const [isLoading, setIsLoading] = useState(false);
+  const {email} = route.params;
+
+  const handleContinue = () => {
+    setIsLoading(true);
+    const data = {
+      OTP: otpCode,
+      email: email,
+    };
+    mutate(data, {
+      onSuccess: async response => {
+        if (response?.ok) {
+          setIsLoading(false);
+          successMessage('Otp verified');
+          navigation.replace(ScreenNames.CREATE_PASSWORD, {
+            email: email,
+          });
+        } else {
+          setIsLoading(false);
+          errorMessage('Something went wrong');
+        }
+      },
+    });
+  };
+
   return (
     <Gradient>
       <ScreenWrapper
@@ -46,7 +77,7 @@ export default function VerifyOtp({
           <CustomText
             color={AppColors.white}
             textStyles={CommonStyles.marginTop_1}>
-            Enter 6 digit code sent to your email address here
+            Enter 4 digit code sent to your email address here
           </CustomText>
           <View style={styles.otpContainer}>
             <OtpInput
@@ -57,6 +88,7 @@ export default function VerifyOtp({
               textInputProps={{
                 accessibilityLabel: 'One-Time Password',
               }}
+              onTextChange={(code: string) => setOtpCode(code)}
               theme={{
                 containerStyle: {paddingHorizontal: width(15)},
                 pinCodeTextStyle: {color: AppColors.white},
@@ -66,21 +98,20 @@ export default function VerifyOtp({
           <Button
             title="Continue"
             containerStyle={CommonStyles.marginTop_5}
-            onPress={() => navigation.navigate(ScreenNames.CREATE_PASSWORD)}
-            // disabled={!isCode}
+            onPress={handleContinue}
+            disabled={otpCode.length < 4}
+            isLoading={isLoading}
           />
           <View style={styles.footerContainer}>
             <CustomText color={AppColors.white}>
-              Didn't received code?
+              Didn't receive the code?
             </CustomText>
             <CustomText
               color={AppColors.white}
               textStyles={CommonStyles.marginLeft_1}
               font={FontFamily.appFontSemiBold}
               onPress={() => {
-                console.log('--');
-
-                // resendCode();
+                console.log('Resend code');
               }}>
               Resend Code
             </CustomText>

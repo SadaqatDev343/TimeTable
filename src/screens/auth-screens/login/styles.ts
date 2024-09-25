@@ -1,5 +1,6 @@
 import {Platform, StyleSheet} from 'react-native';
 import {height, width} from '../../../utills/Diamension';
+import AppColors from '../../../utills/Colors';
 
 const styles = StyleSheet.create({
   mainViewContainer: {
@@ -39,5 +40,11 @@ const styles = StyleSheet.create({
     bottom: height(6),
   },
   forgotContainer: {width: width(40), alignSelf: 'flex-end'},
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: AppColors.black,
+  },
 });
 export default styles;

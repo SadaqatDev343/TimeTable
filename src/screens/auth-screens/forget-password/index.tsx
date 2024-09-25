@@ -1,5 +1,8 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import {useForm} from 'react-hook-form';
+import {View} from 'react-native';
+import {ForgetPassword} from '../../../assets/svg';
 import {
   Button,
   CustomText,
@@ -8,21 +11,23 @@ import {
   ScreenWrapper,
   TextField,
 } from '../../../components';
-import AppColors from '../../../utills/Colors';
 import Header from '../../../components/header';
-import styles from './styles';
-import {Image, View} from 'react-native';
+import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import AppColors from '../../../utills/Colors';
 import {CommonStyles} from '../../../utills/CommonStyle';
 import {FontFamily} from '../../../utills/FontFamily';
-import {ForgetPassword} from '../../../assets/svg';
-import {AppLogo} from '../../../assets/images';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
 import {forgetPassSchema} from '../../../utills/YupSchemaEditProfile';
+import styles from './styles';
+import {useForgetPassword} from '../../../api/auth';
+import {useState} from 'react';
+import {errorMessage, successMessage} from '../../../utills/method';
 
 export default function ForgotPassword({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.FORGET_PASSWORD>) {
+  const {mutate} = useForgetPassword();
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     control,
     handleSubmit,
@@ -34,6 +39,23 @@ export default function ForgotPassword({
     },
     resolver: yupResolver(forgetPassSchema),
   });
+
+  const onSubmit = (data: any) => {
+    setIsLoading(true);
+    mutate(data, {
+      onSuccess: async response => {
+        if (response?.ok) {
+          setIsLoading(false);
+          successMessage('Otp sent to mail');
+          navigation.replace(ScreenNames.VERIFY_OTP, {email: data.email});
+        } else {
+          setIsLoading(false);
+          errorMessage('Something went wrong');
+        }
+      },
+    });
+  };
+
   return (
     <Gradient>
       <ScreenWrapper
@@ -82,8 +104,9 @@ export default function ForgotPassword({
           />
           <Button
             title="RESET PASSWORD"
-            onPress={() => navigation.navigate(ScreenNames.VERIFY_OTP)}
+            onPress={handleSubmit(onSubmit)}
             containerStyle={CommonStyles.marginTop_3}
+            isLoading={isLoading}
           />
         </View>
         <View style={styles.contact}>

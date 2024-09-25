@@ -38,16 +38,13 @@ export const forgetPassSchema = yup.object().shape({
     .required('Email is required')
     .email('Email format is invalid'),
 });
-export const resetPasswordSchema = yup.object().shape({
-  password: yup
-    .string()
+export const resetPasswordSchema = Yup.object().shape({
+  password: Yup.string()
     .required('Password is required')
-    .min(6, 'Password should be atleast 6 characters long'),
-  confirmPassword: yup
-    .string()
-    .required('Confirm passwrod is required')
-    //@ts-ignore
-    .oneOf([yup.ref('password'), null], 'Passwords must match'),
+    .min(6, 'Password must be at least 6 characters'),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password')], 'Passwords must match')
+    .required('Confirm password is required'),
 });
 export const changePasswordSchema = yup.object().shape({
   currentpassword: yup
