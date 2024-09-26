@@ -63,9 +63,10 @@ export default function Admin_LOGIN({
       onSuccess: async response => {
         if (response?.ok) {
           const token = response.response.data.data.access_Token;
+          const role = 'admin';
           try {
             await AsyncStorage.setItem('token', token);
-            await AsyncStorage.setItem('role', 'admin');
+            await AsyncStorage.setItem('role', role);
           } catch (error) {
             errorMessage('Unexpected error occurred');
           }
@@ -73,7 +74,7 @@ export default function Admin_LOGIN({
           navigation.dispatch(
             CommonActions.reset({
               index: 0,
-              routes: [{name: ScreenNames.ADMINHOMESCREEN}],
+              routes: [{name: ScreenNames.DRAWER, params: {role}}],
             }),
           );
           successMessage('Login Successful');

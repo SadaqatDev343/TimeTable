@@ -35,7 +35,7 @@ export type RootStackParamList = {
   [ScreenNames.DESCIPLINESCREEN]: undefined;
   [ScreenNames.SEMESTERSCREEN]: undefined;
   [ScreenNames.SECTIONSCREEN]: undefined;
-  [ScreenNames.DRAWER]: undefined;
+  [ScreenNames.DRAWER]: {role: 'admin' | 'notAdmin'};
   [ScreenNames.PROFILE]: undefined;
   [ScreenNames.ADD_DEPARTMENT]: undefined;
   [ScreenNames.ADD_DISCIPLINE]: undefined;

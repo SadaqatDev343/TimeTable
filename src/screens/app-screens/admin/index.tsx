@@ -17,11 +17,9 @@ import {Add} from '../../../assets/svg';
 import {height, width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import {styles} from './style';
-export default function AdminHomeScreen({
-  navigation,
-}: NativeStackScreenProps<RootStackParamList, ScreenNames.ADMINHOMESCREEN>) {
+export default function AdminHomeScreen({navigation}: any) {
   const handleAddDepartment = () => {
-    navigation.navigate(ScreenNames.ADD_DEPARTMENT); // Replace 'ADD_DEPARTMENT' with your actual route name
+    navigation.navigate(ScreenNames.ADD_DEPARTMENT);
   };
 
   return (
@@ -44,10 +42,8 @@ export default function AdminHomeScreen({
               alignItems: 'center',
             }}>
             <TouchableOpacity
-              //@ts-ignore
               onPress={() => navigation.openDrawer()}
               style={styles.leftlogo}>
-              {/* Replacing text with Drawer Icon */}
               <FontAwesome name="navicon" size={24} color="white" />
             </TouchableOpacity>
             <View style={{marginLeft: -24}}>

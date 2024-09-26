@@ -41,7 +41,6 @@ export default function UserHomeScreen({navigation}: any) {
             <TouchableOpacity
               onPress={() => navigation.openDrawer()}
               style={styles.leftlogo}>
-              {/* Replacing text with Drawer Icon */}
               <FontAwesome name="navicon" size={24} color="white" />
             </TouchableOpacity>
             <View style={{marginLeft: -24}}>

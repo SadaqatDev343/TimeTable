@@ -40,14 +40,14 @@ export default function Dashboard({
           navigation.dispatch(
             CommonActions.reset({
               index: 0,
-              routes: [{name: ScreenNames.ADMINHOMESCREEN}],
+              routes: [{name: ScreenNames.DRAWER, params: {role}}],
             }),
           );
         } else {
           navigation.dispatch(
             CommonActions.reset({
               index: 0,
-              routes: [{name: ScreenNames.DRAWER}],
+              routes: [{name: ScreenNames.DRAWER, params: {role}}],
             }),
           );
         }
@@ -91,9 +91,10 @@ export default function Dashboard({
         onSuccess: async response => {
           if (response.ok) {
             const token = response.response.data.data.access_Token;
+            const role = 'notAdmin';
             try {
               await AsyncStorage.setItem('token', token);
-              await AsyncStorage.setItem('role', 'notAdmin');
+              await AsyncStorage.setItem('role', role);
             } catch (error) {
               errorMessage('Unexpected error occurred');
             }
@@ -101,7 +102,7 @@ export default function Dashboard({
             navigation.dispatch(
               CommonActions.reset({
                 index: 0,
-                routes: [{name: ScreenNames.DRAWER}],
+                routes: [{name: ScreenNames.DRAWER, params: {role}}],
               }),
             );
             successMessage('Login success');

@@ -49,18 +49,42 @@ export default function Routes() {
         />
         <Stack.Screen name={ScreenNames.Admin_LOGIN} component={Admin_LOGIN} />
         <Stack.Screen name={ScreenNames.CONTACT_US} component={ContactUs} />
-        <Stack.Screen name={ScreenNames.DESCIPLINESCREEN} component={DesciplineScreen} />
-        <Stack.Screen name={ScreenNames.SEMESTERSCREEN} component={SemesterScreen} />
-        <Stack.Screen name={ScreenNames.SECTIONSCREEN} component={SectionScreen} />
-        <Stack.Screen name={ScreenNames.ADD_DEPARTMENT} component={AddDepartmentScreen} />
-        <Stack.Screen name={ScreenNames.ADD_DISCIPLINE} component={AddDisciplineScreen} />
-        <Stack.Screen name={ScreenNames.ADD_SECTION} component={AddSectionScreen} />
-        <Stack.Screen name={ScreenNames.ADD_SEMESTER} component={AddSemesterScreen} />
+        <Stack.Screen
+          name={ScreenNames.DESCIPLINESCREEN}
+          component={DesciplineScreen}
+        />
+        <Stack.Screen
+          name={ScreenNames.SEMESTERSCREEN}
+          component={SemesterScreen}
+        />
+        <Stack.Screen
+          name={ScreenNames.SECTIONSCREEN}
+          component={SectionScreen}
+        />
+        <Stack.Screen
+          name={ScreenNames.ADD_DEPARTMENT}
+          component={AddDepartmentScreen}
+        />
+        <Stack.Screen
+          name={ScreenNames.ADD_DISCIPLINE}
+          component={AddDisciplineScreen}
+        />
+        <Stack.Screen
+          name={ScreenNames.ADD_SECTION}
+          component={AddSectionScreen}
+        />
+        <Stack.Screen
+          name={ScreenNames.ADD_SEMESTER}
+          component={AddSemesterScreen}
+        />
         <Stack.Screen
           name={ScreenNames.ADMINHOMESCREEN}
           component={AdminHomeScreen}
         />
-        <Stack.Screen name={ScreenNames.DRAWER} component={DrawerNavigator} />
+        <Stack.Screen
+          name={ScreenNames.DRAWER}
+          children={({route}) => <DrawerNavigator role={route.params?.role} />}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

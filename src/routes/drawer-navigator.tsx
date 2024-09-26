@@ -7,6 +7,7 @@ import ScreenNames from './routes';
 import UserStack from './user-stack';
 import {errorMessage, successMessage} from '../utills/method';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AdminHomeScreen from '../screens/app-screens/admin';
 
 const Drawer = createDrawerNavigator();
 
@@ -20,6 +21,7 @@ const Logout = () => {
         onPress={async () => {
           try {
             await AsyncStorage.removeItem('token');
+            await AsyncStorage.removeItem('role');
             successMessage('Logout successful');
             //@ts-ignore
             navigation.replace(ScreenNames.LOGIN);
@@ -32,16 +34,28 @@ const Logout = () => {
   );
 };
 
-const DrawerNavigator = () => {
+const DrawerNavigator = ({role}: {role: 'admin' | 'notAdmin'}) => {
   return (
     <Drawer.Navigator screenOptions={{headerShown: false}}>
-      <Drawer.Screen name="Department" component={UserStack} />
-      <Drawer.Screen name="Profile" component={Profile} />
-
-      {/* Refactor Logout screen */}
-      <Drawer.Screen name="Logout" options={{drawerLabel: 'Logout'}}>
-        {() => <Logout />}
-      </Drawer.Screen>
+      {role === 'admin' ? (
+        <>
+          <Drawer.Screen
+            name={ScreenNames.ADMINHOMESCREEN}
+            component={AdminHomeScreen}
+          />
+          <Drawer.Screen name="Logout" options={{drawerLabel: 'Logout'}}>
+            {() => <Logout />}
+          </Drawer.Screen>
+        </>
+      ) : (
+        <>
+          <Drawer.Screen name="Department" component={UserStack} />
+          <Drawer.Screen name="Profile" component={Profile} />
+          <Drawer.Screen name="Logout" options={{drawerLabel: 'Logout'}}>
+            {() => <Logout />}
+          </Drawer.Screen>
+        </>
+      )}
     </Drawer.Navigator>
   );
 };
