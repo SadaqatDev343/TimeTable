@@ -1,4 +1,8 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {useForm} from 'react-hook-form';
+import {Image, TouchableOpacity, View} from 'react-native';
+import {AppLogo} from '../../../assets/images';
+import {Back} from '../../../assets/svg';
 import {
   Button,
   Gradient,
@@ -7,16 +11,12 @@ import {
   TextField,
 } from '../../../components';
 import AppColors from '../../../utills/Colors';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
-import {Image, View, TouchableOpacity} from 'react-native'; // Import TouchableOpacity
-import {AppLogo} from '../../../assets/images';
-import {FontFamily} from '../../../utills/FontFamily';
 import {CommonStyles} from '../../../utills/CommonStyle';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
-import {departmentSchema} from '../../../utills/YupSchemaEditProfile'; // Updated schema import
+import {FontFamily} from '../../../utills/FontFamily';
+import {departmentSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './style';
-import {Back} from '../../../assets/svg';
+import {useCreateDepartment} from '../../../api/department';
+import {errorMessage, successMessage} from '../../../utills/method';
 
 export default function AddDepartmentScreen({navigation, route}: any) {
   const {
@@ -32,12 +32,22 @@ export default function AddDepartmentScreen({navigation, route}: any) {
       email: '',
       phoneNumber: '',
     },
-    resolver: yupResolver(departmentSchema), // Updated resolver
+    resolver: yupResolver(departmentSchema),
   });
 
+  const {mutate, isPending} = useCreateDepartment();
+
   const onSubmit = (data: any) => {
-    console.log('Form Data:', data);
-    // Handle your form submission here
+    mutate(data, {
+      onSuccess: response => {
+        if (response.ok) {
+          successMessage('Department created successfully');
+          navigation.goBack();
+        } else {
+          errorMessage('Something went wrong');
+        }
+      },
+    });
   };
 
   return (
@@ -52,8 +62,7 @@ export default function AddDepartmentScreen({navigation, route}: any) {
         {/* Back button */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={styles.backButton} // Add your styling here
-        >
+          style={styles.backButton}>
           <Back width={24} height={24} color={AppColors.white} />
         </TouchableOpacity>
 
@@ -126,9 +135,10 @@ export default function AddDepartmentScreen({navigation, route}: any) {
 
           {/* Submit Button */}
           <Button
-            title="Add Department"
+            title={isPending ? 'Adding...' : 'Add Department'}
             containerStyle={CommonStyles.marginTop_2}
             onPress={handleSubmit(onSubmit)}
+            disabled={isPending}
           />
         </View>
       </ScreenWrapper>

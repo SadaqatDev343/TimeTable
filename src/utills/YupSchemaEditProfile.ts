@@ -64,9 +64,13 @@ export const changePasswordSchema = yup.object().shape({
 export const departmentSchema = yup.object().shape({
   name: yup.string().required('Department name is required'),
   headOfDepartment: yup.string().required('Head of Department is required'),
-  description: yup.string(),
-  email: yup.string().email('Please enter a valid email'),
-  phoneNumber: yup.string().matches(/^[0-9]+$/, 'Phone number must be numeric'),
+  description: yup.string().optional(),
+  email: yup.string().email('Please enter a valid email').optional(),
+  phoneNumber: yup
+    .string()
+    .matches(/^[0-9]*$/, 'Phone number must be numeric')
+    .nullable()
+    .optional(),
 });
 import * as Yup from 'yup';
 
