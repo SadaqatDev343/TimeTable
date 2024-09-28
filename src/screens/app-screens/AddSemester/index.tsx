@@ -1,59 +1,27 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useState} from 'react';
+import React from 'react';
 import {useForm} from 'react-hook-form';
 import {Image, TouchableOpacity, View} from 'react-native';
+import {useCreateSemester} from '../../../api/semester';
 import {AppLogo} from '../../../assets/images';
 import {Back} from '../../../assets/svg';
 import {
   Button,
-  DropDownButton,
   Gradient,
   H1,
   ScreenWrapper,
   TextField,
 } from '../../../components';
-import DropDownModal from '../../../components/drop-down-modal';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
 import {CommonStyles} from '../../../utills/CommonStyle';
 import {FontFamily} from '../../../utills/FontFamily';
+import {errorMessage, successMessage} from '../../../utills/method';
 import {semesterSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './style';
-import {errorMessage, successMessage} from '../../../utills/method';
-import {useCreateSemester} from '../../../api/semester';
 
-export default function AddSemesterScreen({
-  navigation,
-  route,
-}: NativeStackScreenProps<RootStackParamList, ScreenNames.ADD_SEMESTER>) {
-  const departments = [
-    {name: 'Computer Science', value: 'cs'},
-    {name: 'Mathematics', value: 'math'},
-    {name: 'Physics', value: 'physics'},
-    {name: 'Chemistry', value: 'chemistry'},
-  ];
-
-  const disciplines = [
-    {name: 'Mathematical Analysis', value: 'math_analysis'},
-    {name: 'Quantum Mechanics', value: 'quantum_mechanics'},
-    {name: 'Organic Chemistry', value: 'organic_chemistry'},
-    {name: 'Data Structures', value: 'data_structures'},
-  ];
-
-  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
-    null,
-  );
-  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(
-    null,
-  );
-  const [departmentModalVisible, setDepartmentModalVisible] = useState(false);
-  const [disciplineModalVisible, setDisciplineModalVisible] = useState(false);
-
-  const toggleDepartment = () =>
-    setDepartmentModalVisible(!departmentModalVisible);
-  const toggleDiscipline = () =>
-    setDisciplineModalVisible(!disciplineModalVisible);
+export default function AddSemesterScreen({navigation, route}: any) {
+  const departmentId = route.params.departmentId;
+  const disciplineId = route.params.disciplineId;
 
   const {
     control,
@@ -72,22 +40,12 @@ export default function AddSemesterScreen({
   const {mutate, isPending} = useCreateSemester();
 
   const onSubmit = (data: any) => {
-    if (!selectedDepartment) {
-      errorMessage('Select department first');
-      return;
-    }
-
-    if (!selectedDiscipline) {
-      errorMessage('Select discipline first');
-      return;
-    }
-
     const payload = {
       name: data.name,
       code: data.code,
       description: data.description || undefined,
-      department: selectedDepartment,
-      discipline: selectedDiscipline,
+      department: departmentId,
+      discipline: disciplineId,
     };
 
     mutate(payload, {
@@ -161,50 +119,6 @@ export default function AddSemesterScreen({
             name="description"
             returnKeyType="next"
             placeholder="Enter discipline description (optional)"
-          />
-
-          {/* Department Dropdown */}
-          <DropDownButton
-            placeHolder="Select Department"
-            Icon
-            title="Department"
-            placeholderColor={AppColors.grey10}
-            containerStyle={styles.dropdown}
-            onPress={toggleDepartment}
-            value={selectedDepartment || 'Select Department'}
-          />
-
-          {/* Department Dropdown Modal */}
-          <DropDownModal
-            isVisible={departmentModalVisible}
-            Data={departments}
-            onClose={toggleDepartment}
-            onPress={val => {
-              setSelectedDepartment(val?.name);
-              toggleDepartment();
-            }}
-          />
-
-          {/* Discipline Dropdown */}
-          <DropDownButton
-            placeHolder="Select Discipline"
-            Icon
-            title="Discipline"
-            placeholderColor={AppColors.grey10}
-            containerStyle={styles.dropdown}
-            onPress={toggleDiscipline}
-            value={selectedDiscipline || 'Select Discipline'}
-          />
-
-          {/* Discipline Dropdown Modal */}
-          <DropDownModal
-            isVisible={disciplineModalVisible}
-            Data={disciplines}
-            onClose={toggleDiscipline}
-            onPress={val => {
-              setSelectedDiscipline(val?.name);
-              toggleDiscipline();
-            }}
           />
 
           {/* Submit Button */}

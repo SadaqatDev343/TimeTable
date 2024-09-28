@@ -19,19 +19,27 @@ import {width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import {styles} from './style';
 
-export default function SemesterScreen({navigation}: any) {
+export default function SemesterScreen({navigation, route}: any) {
+  const departmentId = route.params.departmentId;
+  const disciplineId = route.params.disciplineId;
+
   const handleAddDiscipline = () => {
-    navigation.navigate(ScreenNames.ADD_SEMESTER);
+    navigation.navigate(ScreenNames.ADD_SEMESTER, {
+      departmentId,
+      disciplineId,
+    });
   };
 
-  const {data: allSemesters, isLoading} = useGetAllSemesters();
+  const {data: allSemesters, isLoading} = useGetAllSemesters(disciplineId);
   const [semester, setSemesters] = useState<any[]>([]);
 
   useEffect(() => {
     if (allSemesters?.ok) {
-      const semesterNames = allSemesters.response.data.data.map(
-        (semester: any) => semester.name,
-      );
+      const semesterNames = allSemesters.response.data.map((semester: any) => ({
+        name: semester.name,
+        id: semester._id,
+      }));
+
       setSemesters(semesterNames);
     }
   }, [allSemesters]);
@@ -104,8 +112,14 @@ export default function SemesterScreen({navigation}: any) {
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (
               <Card
-                title={item}
-                onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
+                title={item.name}
+                onPress={() =>
+                  navigation.navigate(ScreenNames.SECTIONSCREEN, {
+                    departmentId,
+                    disciplineId,
+                    semesterId: item.id,
+                  })
+                }
               />
             )}
           />

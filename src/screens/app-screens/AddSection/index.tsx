@@ -1,6 +1,5 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useState} from 'react';
+import React from 'react';
 import {useForm} from 'react-hook-form';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {useCreateSection} from '../../../api/section';
@@ -8,14 +7,11 @@ import {AppLogo} from '../../../assets/images';
 import {Back} from '../../../assets/svg';
 import {
   Button,
-  DropDownButton,
   Gradient,
   H1,
   ScreenWrapper,
   TextField,
 } from '../../../components';
-import DropDownModal from '../../../components/drop-down-modal';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
 import {CommonStyles} from '../../../utills/CommonStyle';
 import {FontFamily} from '../../../utills/FontFamily';
@@ -23,49 +19,10 @@ import {errorMessage, successMessage} from '../../../utills/method';
 import {sectionSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './style';
 
-// Dummy data for dropdowns
-const departments = [
-  {name: 'Computer Science', value: 'cs'},
-  {name: 'Mathematics', value: 'math'},
-  {name: 'Physics', value: 'physics'},
-  {name: 'Chemistry', value: 'chemistry'},
-];
-
-const disciplines = [
-  {name: 'Mathematics', value: 'math'},
-  {name: 'Physics', value: 'physics'},
-  {name: 'Chemistry', value: 'chemistry'},
-];
-
-const semesters = [
-  {name: 'Semester 1', value: 'sem1'},
-  {name: 'Semester 2', value: 'sem2'},
-  {name: 'Semester 3', value: 'sem3'},
-];
-
-export default function AddSectionScreen({
-  navigation,
-  route,
-}: NativeStackScreenProps<RootStackParamList, ScreenNames.ADD_SECTION>) {
-  // State for dropdown modals
-  const [departmentModalVisible, setDepartmentModalVisible] = useState(false);
-  const [disciplineModalVisible, setDisciplineModalVisible] = useState(false);
-  const [semesterModalVisible, setSemesterModalVisible] = useState(false);
-
-  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
-    null,
-  );
-  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(
-    null,
-  );
-  const [selectedSemester, setSelectedSemester] = useState<string | null>(null);
-
-  const toggleDepartment = () =>
-    setDepartmentModalVisible(!departmentModalVisible);
-  const toggleDiscipline = () =>
-    setDisciplineModalVisible(!disciplineModalVisible);
-  const toggleSemester = () => setSemesterModalVisible(!semesterModalVisible);
-
+export default function AddSectionScreen({navigation, route}: any) {
+  const departmentId = route.params.departmentId;
+  const disciplineId = route.params.disciplineId;
+  const semesterId = route.params.semesterId;
   const {
     control,
     handleSubmit,
@@ -84,29 +41,14 @@ export default function AddSectionScreen({
   const {mutate, isPending} = useCreateSection();
 
   const onSubmit = (data: any) => {
-    if (!selectedDepartment) {
-      errorMessage('Select department first');
-      return;
-    }
-
-    if (!selectedDiscipline) {
-      errorMessage('Select discipline first');
-      return;
-    }
-
-    if (!selectedSemester) {
-      errorMessage('Select semester first');
-      return;
-    }
-
     const payload = {
       name: data.name,
       code: data.code,
       teacher: data.teacher,
       description: data.description || undefined,
-      department: selectedDepartment,
-      discipline: selectedDiscipline,
-      semester: selectedSemester,
+      department: departmentId,
+      discipline: disciplineId,
+      semester: semesterId,
       capacity: data.capacity,
     };
 
@@ -134,8 +76,7 @@ export default function AddSectionScreen({
         {/* Back button */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={styles.backButton} // Add your styling here
-        >
+          style={styles.backButton}>
           <Back width={24} height={24} color={AppColors.white} />
         </TouchableOpacity>
 
@@ -201,70 +142,6 @@ export default function AddSectionScreen({
             name="description"
             returnKeyType="next"
             placeholder="Enter section description (optional)"
-          />
-
-          {/* Department Dropdown */}
-          <DropDownButton
-            placeHolder="Select Department"
-            Icon
-            title="Department"
-            placeholderColor={AppColors.grey10}
-            containerStyle={styles.dropdown}
-            onPress={toggleDepartment}
-            value={selectedDepartment}
-          />
-
-          {/* Discipline Dropdown */}
-          <DropDownButton
-            placeHolder="Select Discipline"
-            Icon
-            title="Discipline"
-            placeholderColor={AppColors.grey10}
-            containerStyle={styles.dropdown}
-            onPress={toggleDiscipline}
-            value={selectedDiscipline}
-          />
-
-          {/* Semester Dropdown */}
-          <DropDownButton
-            placeHolder="Select Semester"
-            Icon
-            title="Semester"
-            placeholderColor={AppColors.grey10}
-            containerStyle={styles.dropdown}
-            onPress={toggleSemester}
-            value={selectedSemester}
-          />
-
-          {/* Dropdown modals */}
-          <DropDownModal
-            isVisible={departmentModalVisible}
-            Data={departments}
-            onClose={toggleDepartment}
-            onPress={val => {
-              setSelectedDepartment(val?.name);
-              toggleDepartment();
-            }}
-          />
-
-          <DropDownModal
-            isVisible={disciplineModalVisible}
-            Data={disciplines}
-            onClose={toggleDiscipline}
-            onPress={val => {
-              setSelectedDiscipline(val?.name);
-              toggleDiscipline();
-            }}
-          />
-
-          <DropDownModal
-            isVisible={semesterModalVisible}
-            Data={semesters}
-            onClose={toggleSemester}
-            onPress={val => {
-              setSelectedSemester(val?.name);
-              toggleSemester();
-            }}
           />
 
           {/* Submit Button */}

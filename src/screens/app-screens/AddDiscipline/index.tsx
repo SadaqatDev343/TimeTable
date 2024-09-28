@@ -1,5 +1,4 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Image, TouchableOpacity, View} from 'react-native';
@@ -8,14 +7,11 @@ import {AppLogo} from '../../../assets/images';
 import {Back} from '../../../assets/svg';
 import {
   Button,
-  DropDownButton,
   Gradient,
   H1,
   ScreenWrapper,
   TextField,
 } from '../../../components';
-import DropDownModal from '../../../components/drop-down-modal';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
 import {CommonStyles} from '../../../utills/CommonStyle';
 import {FontFamily} from '../../../utills/FontFamily';
@@ -23,24 +19,8 @@ import {errorMessage, successMessage} from '../../../utills/method';
 import {disciplineSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './style';
 
-export default function AddDisciplineScreen({
-  navigation,
-  route,
-}: NativeStackScreenProps<RootStackParamList, ScreenNames.ADD_DISCIPLINE>) {
-  const departments = [
-    {name: 'Computer Science', value: 'cs'},
-    {name: 'Mathematics', value: 'math'},
-    {name: 'Physics', value: 'physics'},
-    {name: 'Chemistry', value: 'chemistry'},
-  ];
-
-  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
-    null,
-  );
-  const [departmentModalVisible, setDepartmentModalVisible] = useState(false);
-
-  const toggleDepartment = () =>
-    setDepartmentModalVisible(!departmentModalVisible);
+export default function AddDisciplineScreen({navigation, route}: any) {
+  const departmentId = route.params.departmentId;
 
   const {
     control,
@@ -60,17 +40,12 @@ export default function AddDisciplineScreen({
   const {mutate, isPending} = useCreateDiscipline();
 
   const onSubmit = (data: any) => {
-    if (!selectedDepartment) {
-      errorMessage('Select department first');
-      return;
-    }
-
     const payload = {
       name: data.name,
       code: data.code,
       teacher: data.teacher,
       description: data.description || undefined,
-      department: selectedDepartment,
+      department: departmentId,
     };
 
     mutate(payload, {
@@ -154,28 +129,6 @@ export default function AddDisciplineScreen({
             name="description"
             returnKeyType="next"
             placeholder="Enter discipline description (optional)"
-          />
-
-          {/* Department Dropdown */}
-          <DropDownButton
-            placeHolder="Select Department"
-            Icon
-            title="Department"
-            placeholderColor={AppColors.grey10}
-            containerStyle={styles.dropdown}
-            onPress={toggleDepartment}
-            value={selectedDepartment}
-          />
-
-          {/* Dropdown modal */}
-          <DropDownModal
-            isVisible={departmentModalVisible}
-            Data={departments}
-            onClose={toggleDepartment}
-            onPress={val => {
-              setSelectedDepartment(val?.name);
-              toggleDepartment();
-            }}
           />
 
           {/* Submit Button */}

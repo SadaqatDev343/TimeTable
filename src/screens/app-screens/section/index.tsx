@@ -19,16 +19,28 @@ import {width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import {styles} from './style';
 
-export default function SectionScreen({navigation}: any) {
+export default function SectionScreen({navigation, route}: any) {
+  const departmentId = route.params.departmentId;
+  const disciplineId = route.params.disciplineId;
+  const semesterId = route.params.semesterId;
+
   const handleAddDiscipline = () => {
-    navigation.navigate(ScreenNames.ADD_SECTION);
+    navigation.navigate(ScreenNames.ADD_SECTION, {
+      departmentId,
+      semesterId,
+      disciplineId,
+    });
   };
 
-  const {data: allSections, isLoading} = useGetAllSections();
+  const {data: allSections, isLoading} = useGetAllSections(semesterId);
   const [section, setSections] = useState<any[]>([]);
 
   useEffect(() => {
+    console.log(allSections);
+
     if (allSections?.ok) {
+      console.log(allSections.response.data);
+
       const sectionNames = allSections.response.data.data.map(
         (section: any) => section.name,
       );

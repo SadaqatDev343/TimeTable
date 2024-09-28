@@ -12,7 +12,6 @@ import {Card, CustomText, H1, ScreenWrapper} from '../../../components';
 import ScreenNames from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useGetAllDisciplines} from '../../../api/discipline';
 import {AppLogo} from '../../../assets/images';
 import {Add, Back} from '../../../assets/svg';
@@ -20,18 +19,21 @@ import {width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import {styles} from './style';
 
-export default function DisciplineScreen({navigation}: any) {
+export default function DisciplineScreen({navigation, route}: any) {
   const handleAddDiscipline = () => {
-    navigation.navigate(ScreenNames.ADD_DISCIPLINE);
+    navigation.navigate(ScreenNames.ADD_DISCIPLINE, {departmentId});
   };
-
-  const {data: allDisciplines, isLoading} = useGetAllDisciplines();
+  const departmentId = route.params.departmentId;
+  const {data: allDisciplines, isLoading} = useGetAllDisciplines(departmentId);
   const [discipline, setDisciplines] = useState<any[]>([]);
 
   useEffect(() => {
     if (allDisciplines?.ok) {
       const disciplineNames = allDisciplines.response.data.data.map(
-        (discipline: any) => discipline.name,
+        (discipline: any) => ({
+          name: discipline.name,
+          id: discipline._id,
+        }),
       );
       setDisciplines(disciplineNames);
     }
@@ -105,8 +107,13 @@ export default function DisciplineScreen({navigation}: any) {
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (
               <Card
-                title={item}
-                onPress={() => navigation.navigate(ScreenNames.SEMESTERSCREEN)}
+                title={item.name}
+                onPress={() =>
+                  navigation.navigate(ScreenNames.SEMESTERSCREEN, {
+                    departmentId,
+                    disciplineId: item.id,
+                  })
+                }
               />
             )}
           />

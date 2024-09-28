@@ -29,10 +29,13 @@ export default function AdminHomeScreen({navigation}: any) {
 
   useEffect(() => {
     if (allDepartments?.ok) {
-      const departmentNames = allDepartments.response.data.map(
-        (department: any) => department.name,
+      const departmentData = allDepartments.response.data.map(
+        (department: any) => ({
+          name: department.name,
+          id: department._id,
+        }),
       );
-      setDepartments(departmentNames);
+      setDepartments(departmentData);
     }
   }, [allDepartments]);
 
@@ -106,9 +109,11 @@ export default function AdminHomeScreen({navigation}: any) {
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (
               <Card
-                title={item}
+                title={item.name}
                 onPress={() =>
-                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN, {
+                    departmentId: item.id,
+                  })
                 }
               />
             )}

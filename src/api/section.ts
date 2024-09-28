@@ -1,10 +1,11 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {ApiManager} from './api-manager';
 
-export const useGetAllSections = () => {
+export const useGetAllSections = (id: string) => {
   return useQuery({
     queryKey: ['allSections'],
-    queryFn: async () => await ApiManager.get<any>('sections'),
+    queryFn: async () =>
+      await ApiManager.get<any>(`sections/by-semester/${id}`),
   });
 };
 

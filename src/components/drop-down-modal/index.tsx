@@ -60,7 +60,7 @@ const DropDownModal: React.FC<Props> = ({
               <TouchableOpacity
                 style={styles.viewStyle}
                 onPress={() => onPress(item)}>
-                <CustomText>{item?.name}</CustomText>
+                <CustomText>{item?.name ?? item}</CustomText>
               </TouchableOpacity>
             );
           }}
