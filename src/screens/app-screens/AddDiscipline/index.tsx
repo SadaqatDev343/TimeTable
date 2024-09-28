@@ -1,4 +1,11 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {Image, TouchableOpacity, View} from 'react-native';
+import {useCreateDiscipline} from '../../../api/discipline';
+import {AppLogo} from '../../../assets/images';
+import {Back} from '../../../assets/svg';
 import {
   Button,
   DropDownButton,
@@ -7,30 +14,24 @@ import {
   ScreenWrapper,
   TextField,
 } from '../../../components';
-import AppColors from '../../../utills/Colors';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
-import {Image, View, TouchableOpacity} from 'react-native'; // Import TouchableOpacity
-import {AppLogo} from '../../../assets/images';
-import {FontFamily} from '../../../utills/FontFamily';
-import {CommonStyles} from '../../../utills/CommonStyle';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
-import styles from './style';
-import {disciplineSchema} from '../../../utills/YupSchemaEditProfile';
-import {Back} from '../../../assets/svg';
-import React, {useState} from 'react';
 import DropDownModal from '../../../components/drop-down-modal';
+import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import AppColors from '../../../utills/Colors';
+import {CommonStyles} from '../../../utills/CommonStyle';
+import {FontFamily} from '../../../utills/FontFamily';
+import {errorMessage, successMessage} from '../../../utills/method';
+import {disciplineSchema} from '../../../utills/YupSchemaEditProfile';
+import styles from './style';
 
 export default function AddDisciplineScreen({
   navigation,
   route,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.ADD_DISCIPLINE>) {
-  // Dummy data for department dropdown
   const departments = [
-    {label: 'Computer Science', value: 'cs'},
-    {label: 'Mathematics', value: 'math'},
-    {label: 'Physics', value: 'physics'},
-    {label: 'Chemistry', value: 'chemistry'},
+    {name: 'Computer Science', value: 'cs'},
+    {name: 'Mathematics', value: 'math'},
+    {name: 'Physics', value: 'physics'},
+    {name: 'Chemistry', value: 'chemistry'},
   ];
 
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
@@ -52,14 +53,36 @@ export default function AddDisciplineScreen({
       code: '',
       teacher: '',
       description: '',
-      department: '',
     },
     resolver: yupResolver(disciplineSchema),
   });
 
+  const {mutate, isPending} = useCreateDiscipline();
+
   const onSubmit = (data: any) => {
-    console.log('Form Data:', data);
-    // Handle your form submission here
+    if (!selectedDepartment) {
+      errorMessage('Select department first');
+      return;
+    }
+
+    const payload = {
+      name: data.name,
+      code: data.code,
+      teacher: data.teacher,
+      description: data.description || undefined,
+      department: selectedDepartment,
+    };
+
+    mutate(payload, {
+      onSuccess: response => {
+        if (response.ok) {
+          successMessage('Discipline created successfully');
+          navigation.goBack();
+        } else {
+          errorMessage('Something went wrong');
+        }
+      },
+    });
   };
 
   return (
@@ -113,7 +136,6 @@ export default function AddDisciplineScreen({
             name="code"
             returnKeyType="next"
             placeholder="Enter discipline code"
-            containerStyle={CommonStyles.marginTop_2}
           />
 
           {/* Teacher */}
@@ -123,7 +145,6 @@ export default function AddDisciplineScreen({
             name="teacher"
             returnKeyType="next"
             placeholder="Enter teacher name"
-            containerStyle={CommonStyles.marginTop_2}
           />
 
           {/* Description */}
@@ -133,7 +154,6 @@ export default function AddDisciplineScreen({
             name="description"
             returnKeyType="next"
             placeholder="Enter discipline description (optional)"
-            containerStyle={CommonStyles.marginTop_2}
           />
 
           {/* Department Dropdown */}
@@ -153,7 +173,7 @@ export default function AddDisciplineScreen({
             Data={departments}
             onClose={toggleDepartment}
             onPress={val => {
-              setSelectedDepartment(val?.label); // Update this line to reflect the label or other appropriate value
+              setSelectedDepartment(val?.name);
               toggleDepartment();
             }}
           />
@@ -161,8 +181,9 @@ export default function AddDisciplineScreen({
           {/* Submit Button */}
           <Button
             title="Add Discipline"
-            containerStyle={CommonStyles.marginTop_2}
+            containerStyle={CommonStyles.marginTop_4}
             onPress={handleSubmit(onSubmit)}
+            isLoading={isPending}
           />
         </View>
       </ScreenWrapper>

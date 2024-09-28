@@ -1,4 +1,10 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {Image, TouchableOpacity, View} from 'react-native';
+import {AppLogo} from '../../../assets/images';
+import {Back} from '../../../assets/svg';
 import {
   Button,
   DropDownButton,
@@ -7,37 +13,32 @@ import {
   ScreenWrapper,
   TextField,
 } from '../../../components';
-import AppColors from '../../../utills/Colors';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
-import {Image, View, TouchableOpacity} from 'react-native';
-import {AppLogo} from '../../../assets/images';
-import {FontFamily} from '../../../utills/FontFamily';
-import {CommonStyles} from '../../../utills/CommonStyle';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
-import styles from './style';
-import {disciplineSchema} from '../../../utills/YupSchemaEditProfile';
-import {Back} from '../../../assets/svg';
-import React, {useState} from 'react';
 import DropDownModal from '../../../components/drop-down-modal';
+import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import AppColors from '../../../utills/Colors';
+import {CommonStyles} from '../../../utills/CommonStyle';
+import {FontFamily} from '../../../utills/FontFamily';
+import {semesterSchema} from '../../../utills/YupSchemaEditProfile';
+import styles from './style';
+import {errorMessage, successMessage} from '../../../utills/method';
+import {useCreateSemester} from '../../../api/semester';
 
 export default function AddSemesterScreen({
   navigation,
   route,
 }: NativeStackScreenProps<RootStackParamList, ScreenNames.ADD_SEMESTER>) {
-  // Dummy data for department and discipline dropdowns
   const departments = [
-    {label: 'Computer Science', value: 'cs'},
-    {label: 'Mathematics', value: 'math'},
-    {label: 'Physics', value: 'physics'},
-    {label: 'Chemistry', value: 'chemistry'},
+    {name: 'Computer Science', value: 'cs'},
+    {name: 'Mathematics', value: 'math'},
+    {name: 'Physics', value: 'physics'},
+    {name: 'Chemistry', value: 'chemistry'},
   ];
 
   const disciplines = [
-    {label: 'Mathematical Analysis', value: 'math_analysis'},
-    {label: 'Quantum Mechanics', value: 'quantum_mechanics'},
-    {label: 'Organic Chemistry', value: 'organic_chemistry'},
-    {label: 'Data Structures', value: 'data_structures'},
+    {name: 'Mathematical Analysis', value: 'math_analysis'},
+    {name: 'Quantum Mechanics', value: 'quantum_mechanics'},
+    {name: 'Organic Chemistry', value: 'organic_chemistry'},
+    {name: 'Data Structures', value: 'data_structures'},
   ];
 
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
@@ -63,17 +64,42 @@ export default function AddSemesterScreen({
     defaultValues: {
       name: '',
       code: '',
-      teacher: '',
       description: '',
-      department: '',
-      discipline: '',
     },
-    resolver: yupResolver(disciplineSchema),
+    resolver: yupResolver(semesterSchema),
   });
 
+  const {mutate, isPending} = useCreateSemester();
+
   const onSubmit = (data: any) => {
-    console.log('Form Data:', data);
-    // Handle your form submission here
+    if (!selectedDepartment) {
+      errorMessage('Select department first');
+      return;
+    }
+
+    if (!selectedDiscipline) {
+      errorMessage('Select discipline first');
+      return;
+    }
+
+    const payload = {
+      name: data.name,
+      code: data.code,
+      description: data.description || undefined,
+      department: selectedDepartment,
+      discipline: selectedDiscipline,
+    };
+
+    mutate(payload, {
+      onSuccess: response => {
+        if (response.ok) {
+          successMessage('Semester created successfully');
+          navigation.goBack();
+        } else {
+          errorMessage('Something went wrong');
+        }
+      },
+    });
   };
 
   return (
@@ -111,7 +137,7 @@ export default function AddSemesterScreen({
 
           {/* Discipline Name */}
           <TextField
-            title="Discipline Name"
+            title="Semester Name"
             control={control}
             name="name"
             returnKeyType="next"
@@ -121,22 +147,11 @@ export default function AddSemesterScreen({
 
           {/* Discipline Code */}
           <TextField
-            title="Discipline Code"
+            title="Semester Code"
             control={control}
             name="code"
             returnKeyType="next"
             placeholder="Enter discipline code"
-            containerStyle={CommonStyles.marginTop_2}
-          />
-
-          {/* Teacher */}
-          <TextField
-            title="Teacher"
-            control={control}
-            name="teacher"
-            returnKeyType="next"
-            placeholder="Enter teacher name"
-            containerStyle={CommonStyles.marginTop_2}
           />
 
           {/* Description */}
@@ -146,7 +161,6 @@ export default function AddSemesterScreen({
             name="description"
             returnKeyType="next"
             placeholder="Enter discipline description (optional)"
-            containerStyle={CommonStyles.marginTop_2}
           />
 
           {/* Department Dropdown */}
@@ -166,7 +180,7 @@ export default function AddSemesterScreen({
             Data={departments}
             onClose={toggleDepartment}
             onPress={val => {
-              setSelectedDepartment(val?.label);
+              setSelectedDepartment(val?.name);
               toggleDepartment();
             }}
           />
@@ -188,7 +202,7 @@ export default function AddSemesterScreen({
             Data={disciplines}
             onClose={toggleDiscipline}
             onPress={val => {
-              setSelectedDiscipline(val?.label);
+              setSelectedDiscipline(val?.name);
               toggleDiscipline();
             }}
           />
@@ -198,6 +212,7 @@ export default function AddSemesterScreen({
             title="Add Semester"
             containerStyle={CommonStyles.marginTop_2}
             onPress={handleSubmit(onSubmit)}
+            isLoading={isPending}
           />
         </View>
       </ScreenWrapper>

@@ -1,237 +1,111 @@
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  ActivityIndicator,
+  FlatList,
   Image,
   Pressable,
-  ScrollView,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {AppLogo} from '../../../assets/images';
-import {
-  Card,
-  CustomText,
-  Gradient,
-  H1,
-  ScreenWrapper,
-} from '../../../components';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import {Card, CustomText, H1, ScreenWrapper} from '../../../components';
+import ScreenNames from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
-import {CommonStyles} from '../../../utills/CommonStyle';
-import {height, width} from '../../../utills/Diamension';
-import {FontFamily} from '../../../utills/FontFamily';
 
+import {useGetAllSections} from '../../../api/section';
+import {AppLogo} from '../../../assets/images';
 import {Add, Back} from '../../../assets/svg';
+import {width} from '../../../utills/Diamension';
+import {FontFamily} from '../../../utills/FontFamily';
 import {styles} from './style';
 
 export default function SectionScreen({navigation}: any) {
-  const handleAddSection = () => {
+  const handleAddDiscipline = () => {
     navigation.navigate(ScreenNames.ADD_SECTION);
   };
+
+  const {data: allSections, isLoading} = useGetAllSections();
+  const [section, setSections] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (allSections?.ok) {
+      const sectionNames = allSections.response.data.data.map(
+        (section: any) => section.name,
+      );
+      setSections(sectionNames);
+    }
+  }, [allSections]);
+
   return (
-    <Gradient>
-      <ScreenWrapper
-        backgroundColor={AppColors.black}
-        transclucent
-        scrollEnabled
-        paddinTop={0}
-        paddingBottom={0}
-        statusBarColor={AppColors.transparent}
-        barStyle="light-content">
-        <View style={styles.mainViewContainer}>
-          <View
-            style={{
-              flexDirection: 'row',
-              borderBottomColor: AppColors.white,
-              borderBottomWidth: 1,
-              width: width(100),
-              alignItems: 'center',
-            }}>
-            <Pressable onPress={() => navigation.goBack()}>
-              <Back width={24} height={24} color={AppColors.white} />
-            </Pressable>
-            <View style={styles.leftlogo}>
-              <Image
-                resizeMode="contain"
-                source={AppLogo.logo}
-                style={styles.imageStyle1}
-              />
-            </View>
-            <View style={{marginLeft: -24}}>
-              <H1
-                color={AppColors.white}
-                size={5}
-                fontFam={FontFamily.appFontBold}>
-                UNIVERSITY OF KOTLI AJ&K
-              </H1>
-            </View>
-
-            <View style={styles.rightlogo}>
-              {/* <Image
-                resizeMode="contain"
-                source={AppLogo.logo}
-                style={styles.imageStyle2}
-              /> */}
-            </View>
+    <ScreenWrapper
+      statusBarColor="#3333ff"
+      backgroundColor="#3333ff"
+      barStyle="light-content">
+      <View style={styles.mainViewContainer}>
+        <View
+          style={{
+            flexDirection: 'row',
+            borderBottomColor: AppColors.white,
+            borderBottomWidth: 1,
+            width: width(100),
+            alignItems: 'center',
+            paddingHorizontal: 10,
+          }}>
+          <Pressable onPress={() => navigation.goBack()}>
+            <Back width={24} height={24} color={AppColors.white} />
+          </Pressable>
+          <View style={{marginLeft: 35}}>
+            <H1
+              color={AppColors.white}
+              size={5}
+              fontFam={FontFamily.appFontBold}>
+              UNIVERSITY OF KOTLI AJ&K
+            </H1>
           </View>
-          <ScrollView style={{height: height(90)}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: 10,
-                paddingHorizontal: 20,
-              }}>
-              <CustomText
-                size={5}
-                font={FontFamily.appFontSemiBold}
-                color={AppColors.white}>
-                section
-              </CustomText>
-              <TouchableOpacity onPress={handleAddSection}>
-                <Add width={20} height={20} color={AppColors.white} />
-              </TouchableOpacity>
-            </View>
 
-            <View
-              style={{
-                marginHorizontal: 2,
-                alignSelf: 'center',
-                flexDirection: 'row',
-              }}>
-              <View
-                style={{
-                  marginHorizontal: 2,
-
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-              </View>
-            </View>
-            <View
-              style={{
-                marginHorizontal: 2,
-                alignSelf: 'center',
-                flexDirection: 'row',
-              }}>
-              <View
-                style={{
-                  marginHorizontal: 2,
-
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-              </View>
-            </View>
-            <View
-              style={{
-                marginHorizontal: 2,
-                alignSelf: 'center',
-                flexDirection: 'row',
-              }}>
-              <View
-                style={{
-                  marginHorizontal: 2,
-
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-              </View>
-            </View>
-            <View
-              style={{
-                marginHorizontal: 2,
-                alignSelf: 'center',
-                flexDirection: 'row',
-              }}>
-              <View
-                style={{
-                  marginHorizontal: 2,
-
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-              </View>
-            </View>
-            <View
-              style={{
-                marginHorizontal: 2,
-                alignSelf: 'center',
-                flexDirection: 'row',
-              }}>
-              <View
-                style={{
-                  marginHorizontal: 2,
-
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-                <Card
-                  title="BS SE "
-                  onPress={() => navigation.navigate(ScreenNames.SECTIONSCREEN)}
-                />
-              </View>
-            </View>
-          </ScrollView>
+          <View style={styles.rightlogo}>
+            <Image
+              resizeMode="contain"
+              source={AppLogo.logo}
+              style={styles.imageStyle2}
+            />
+          </View>
         </View>
-      </ScreenWrapper>
-    </Gradient>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: 10,
+            width: width(90),
+          }}>
+          <CustomText
+            size={5}
+            font={FontFamily.appFontSemiBold}
+            color={AppColors.white}>
+            Section
+          </CustomText>
+          <TouchableOpacity onPress={handleAddDiscipline}>
+            <Add width={20} height={20} color={AppColors.white} />
+          </TouchableOpacity>
+        </View>
+        {isLoading ? (
+          <ActivityIndicator size="large" color={AppColors.white} />
+        ) : section.length === 0 ? (
+          <View style={{alignItems: 'center', marginTop: 20}}>
+            <Text style={{color: AppColors.white, fontSize: 16}}>
+              No Data Available
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={section}
+            numColumns={3}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => <Card title={item} />}
+          />
+        )}
+      </View>
+    </ScreenWrapper>
   );
 }

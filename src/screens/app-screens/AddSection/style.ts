@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     marginVertical: height(1),
     alignSelf: 'center',
     width: width(50),
-    paddingLeft:25
+    paddingLeft: 25,
   },
   avatarContainer: {
     alignSelf: 'center',
@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.white,
     borderColor: AppColors.white,
     borderWidth: 1,
+    marginBottom: height(2),
   },
 });
 export default styles;

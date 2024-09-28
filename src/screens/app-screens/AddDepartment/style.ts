@@ -10,8 +10,8 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 40, // Adjust based on your design
-    left: -5,
+    top: height(5),
+    left: width(10),
     zIndex: 1,
   },
   header: {
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     marginVertical: height(1),
     alignSelf: 'center',
     width: width(50),
-    paddingLeft:20
+    paddingLeft: 20,
   },
   avatarContainer: {
     alignSelf: 'center',

@@ -1,12 +1,11 @@
-import {Platform, StyleSheet} from 'react-native';
-import {height, width} from '../../../utills/Diamension';
+import {StyleSheet} from 'react-native';
 import AppColors from '../../../utills/Colors';
+import {height, width} from '../../../utills/Diamension';
 
 export const styles = StyleSheet.create({
   mainViewContainer: {
-    height: height(100),
-    paddingTop: height(2),
     alignItems: 'center',
+    paddingTop: height(1.5),
   },
   leftlogo: {
     width: width(20),
@@ -36,4 +35,3 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
 });
-

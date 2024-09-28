@@ -104,7 +104,14 @@ export default function AdminHomeScreen({navigation}: any) {
             data={department}
             numColumns={3}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => <Card title={item} />}
+            renderItem={({item}) => (
+              <Card
+                title={item}
+                onPress={() =>
+                  navigation.navigate(ScreenNames.DESCIPLINESCREEN)
+                }
+              />
+            )}
           />
         )}
       </View>

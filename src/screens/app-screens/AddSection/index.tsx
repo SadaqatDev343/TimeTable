@@ -1,4 +1,11 @@
+import {yupResolver} from '@hookform/resolvers/yup';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {Image, TouchableOpacity, View} from 'react-native';
+import {useCreateSection} from '../../../api/section';
+import {AppLogo} from '../../../assets/images';
+import {Back} from '../../../assets/svg';
 import {
   Button,
   DropDownButton,
@@ -7,38 +14,33 @@ import {
   ScreenWrapper,
   TextField,
 } from '../../../components';
-import AppColors from '../../../utills/Colors';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
-import {Image, View, TouchableOpacity} from 'react-native';
-import {AppLogo} from '../../../assets/images';
-import {FontFamily} from '../../../utills/FontFamily';
-import {CommonStyles} from '../../../utills/CommonStyle';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
-import styles from './style';
-import {disciplineSchema} from '../../../utills/YupSchemaEditProfile';
-import {Back} from '../../../assets/svg';
-import React, {useState} from 'react';
 import DropDownModal from '../../../components/drop-down-modal';
+import ScreenNames, {RootStackParamList} from '../../../routes/routes';
+import AppColors from '../../../utills/Colors';
+import {CommonStyles} from '../../../utills/CommonStyle';
+import {FontFamily} from '../../../utills/FontFamily';
+import {errorMessage, successMessage} from '../../../utills/method';
+import {sectionSchema} from '../../../utills/YupSchemaEditProfile';
+import styles from './style';
 
 // Dummy data for dropdowns
 const departments = [
-  {label: 'Computer Science', value: 'cs'},
-  {label: 'Mathematics', value: 'math'},
-  {label: 'Physics', value: 'physics'},
-  {label: 'Chemistry', value: 'chemistry'},
+  {name: 'Computer Science', value: 'cs'},
+  {name: 'Mathematics', value: 'math'},
+  {name: 'Physics', value: 'physics'},
+  {name: 'Chemistry', value: 'chemistry'},
 ];
 
 const disciplines = [
-  {label: 'Mathematics', value: 'math'},
-  {label: 'Physics', value: 'physics'},
-  {label: 'Chemistry', value: 'chemistry'},
+  {name: 'Mathematics', value: 'math'},
+  {name: 'Physics', value: 'physics'},
+  {name: 'Chemistry', value: 'chemistry'},
 ];
 
 const semesters = [
-  {label: 'Semester 1', value: 'sem1'},
-  {label: 'Semester 2', value: 'sem2'},
-  {label: 'Semester 3', value: 'sem3'},
+  {name: 'Semester 1', value: 'sem1'},
+  {name: 'Semester 2', value: 'sem2'},
+  {name: 'Semester 3', value: 'sem3'},
 ];
 
 export default function AddSectionScreen({
@@ -75,17 +77,49 @@ export default function AddSectionScreen({
       code: '',
       teacher: '',
       description: '',
-      department: '',
-      discipline: '',
-      semester: '',
-      capacity: 1,
     },
-    resolver: yupResolver(disciplineSchema),
+    resolver: yupResolver(sectionSchema),
   });
 
+  const {mutate, isPending} = useCreateSection();
+
   const onSubmit = (data: any) => {
-    console.log('Form Data:', data);
-    // Handle your form submission here
+    if (!selectedDepartment) {
+      errorMessage('Select department first');
+      return;
+    }
+
+    if (!selectedDiscipline) {
+      errorMessage('Select discipline first');
+      return;
+    }
+
+    if (!selectedSemester) {
+      errorMessage('Select semester first');
+      return;
+    }
+
+    const payload = {
+      name: data.name,
+      code: data.code,
+      teacher: data.teacher,
+      description: data.description || undefined,
+      department: selectedDepartment,
+      discipline: selectedDiscipline,
+      semester: selectedSemester,
+      capacity: data.capacity,
+    };
+
+    mutate(payload, {
+      onSuccess: response => {
+        if (response.ok) {
+          successMessage('Semester created successfully');
+          navigation.goBack();
+        } else {
+          errorMessage('Something went wrong');
+        }
+      },
+    });
   };
 
   return (
@@ -139,7 +173,6 @@ export default function AddSectionScreen({
             name="code"
             returnKeyType="next"
             placeholder="Enter section code"
-            containerStyle={CommonStyles.marginTop_2}
           />
 
           {/* Teacher */}
@@ -149,7 +182,16 @@ export default function AddSectionScreen({
             name="teacher"
             returnKeyType="next"
             placeholder="Enter teacher name"
-            containerStyle={CommonStyles.marginTop_2}
+          />
+
+          {/* Capacity */}
+          <TextField
+            title="Capacity"
+            control={control}
+            name="capacity"
+            returnKeyType="next"
+            placeholder="Enter section capacity"
+            keyboardType="numeric"
           />
 
           {/* Description */}
@@ -159,7 +201,6 @@ export default function AddSectionScreen({
             name="description"
             returnKeyType="next"
             placeholder="Enter section description (optional)"
-            containerStyle={CommonStyles.marginTop_2}
           />
 
           {/* Department Dropdown */}
@@ -201,7 +242,7 @@ export default function AddSectionScreen({
             Data={departments}
             onClose={toggleDepartment}
             onPress={val => {
-              setSelectedDepartment(val?.label);
+              setSelectedDepartment(val?.name);
               toggleDepartment();
             }}
           />
@@ -211,7 +252,7 @@ export default function AddSectionScreen({
             Data={disciplines}
             onClose={toggleDiscipline}
             onPress={val => {
-              setSelectedDiscipline(val?.label);
+              setSelectedDiscipline(val?.name);
               toggleDiscipline();
             }}
           />
@@ -221,20 +262,9 @@ export default function AddSectionScreen({
             Data={semesters}
             onClose={toggleSemester}
             onPress={val => {
-              setSelectedSemester(val?.label);
+              setSelectedSemester(val?.name);
               toggleSemester();
             }}
-          />
-
-          {/* Capacity */}
-          <TextField
-            title="Capacity"
-            control={control}
-            name="capacity"
-            returnKeyType="next"
-            placeholder="Enter section capacity"
-            containerStyle={CommonStyles.marginTop_2}
-            keyboardType="numeric"
           />
 
           {/* Submit Button */}
@@ -242,6 +272,7 @@ export default function AddSectionScreen({
             title="Add Section"
             containerStyle={CommonStyles.marginTop_2}
             onPress={handleSubmit(onSubmit)}
+            isLoading={isPending}
           />
         </View>
       </ScreenWrapper>

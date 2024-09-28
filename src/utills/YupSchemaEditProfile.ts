@@ -88,10 +88,34 @@ export const disciplineSchema = Yup.object().shape({
     .required('Teacher name is required')
     .min(3, 'Teacher name must be at least 3 characters long'),
 
-  description: Yup.string().optional(), // Description is optional
+  description: Yup.string().optional(),
+});
 
-  department: Yup.string().required('Department selection is required'),
+export const sectionSchema = Yup.object().shape({
+  name: Yup.string()
+    .required('Section name is required')
+    .min(3, 'Section name must be at least 3 characters long'),
 
-  // Add discipline field validation
-  discipline: Yup.string().required('Discipline selection is required'), // Adjust validation as necessary
+  code: Yup.string()
+    .required('Section code is required')
+    .matches(/^[A-Z0-9]+$/, 'Code must be alphanumeric and uppercase'),
+
+  teacher: Yup.string()
+    .required('Teacher name is required')
+    .min(3, 'Teacher name must be at least 3 characters long'),
+
+  capacity: Yup.number().required('Capacity is required'),
+  description: Yup.string().optional(),
+});
+
+export const semesterSchema = Yup.object().shape({
+  name: Yup.string()
+    .required('Semester name is required')
+    .min(3, 'Semester name must be at least 3 characters long'),
+
+  code: Yup.string()
+    .required('Semester code is required')
+    .matches(/^[A-Z0-9]+$/, 'Code must be alphanumeric and uppercase'),
+
+  description: Yup.string().optional(),
 });
