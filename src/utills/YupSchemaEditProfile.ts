@@ -62,7 +62,6 @@ export const changePasswordSchema = yup.object().shape({
     .oneOf([yup.ref('password'), null], 'Passwords must match'),
 });
 export const departmentSchema = yup.object().shape({
-  name: yup.string().required('Department name is required'),
   headOfDepartment: yup.string().required('Head of Department is required'),
   description: yup.string().optional(),
   email: yup.string().email('Please enter a valid email').optional(),
@@ -118,4 +117,40 @@ export const semesterSchema = Yup.object().shape({
     .matches(/^[A-Z0-9]+$/, 'Code must be alphanumeric and uppercase'),
 
   description: Yup.string().optional(),
+});
+
+export const teacherSchema = Yup.object().shape({
+  name: Yup.string()
+    .required('Name is required')
+    .min(3, 'Name must be at least 3 characters')
+    .max(50, 'Name must be less than 50 characters'),
+
+  email: Yup.string()
+    .required('Email is required')
+    .email('Invalid email format'),
+
+  phoneNumber: Yup.string()
+    .required('Phone number is required')
+    .matches(/^[0-9]{10}$/, 'Phone number must be exactly 10 digits'), // Adjust the format if needed
+
+  subjectTaught: Yup.string()
+    .required('Subject taught is required')
+    .min(3, 'Subject must be at least 3 characters')
+    .max(100, 'Subject must be less than 100 characters'),
+
+  designation: Yup.string()
+    .required('Designation is required')
+    .min(3, 'Designation must be at least 3 characters')
+    .max(100, 'Designation must be less than 100 characters'),
+
+  password: Yup.string()
+    .optional() // Password is optional according to the DTO
+    .min(6, 'Password must be at least 6 characters') // Add this rule only if password is provided
+    .max(50, 'Password must be less than 50 characters'),
+});
+
+export const roomSchema = Yup.object().shape({
+  buildingName: Yup.string().required('Building Name is required'),
+  floorNumber: Yup.string().required('Floor Number is required'),
+  roomNumber: Yup.string().required('Room Number is required'),
 });

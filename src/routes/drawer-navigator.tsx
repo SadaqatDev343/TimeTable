@@ -1,4 +1,8 @@
-import {createDrawerNavigator, DrawerItem} from '@react-navigation/drawer';
+import {
+  createDrawerNavigator,
+  DrawerItem,
+  DrawerItemList,
+} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {View} from 'react-native';
@@ -8,6 +12,9 @@ import UserStack from './user-stack';
 import {errorMessage, successMessage} from '../utills/method';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdminHomeScreen from '../screens/app-screens/admin';
+import AddTeachers from '../screens/app-screens/AddTeacher';
+import AddRoom from '../screens/app-screens/AddRoom';
+import {ScreenWrapper} from '../components';
 
 const Drawer = createDrawerNavigator();
 
@@ -15,34 +22,50 @@ const Logout = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={{flex: 1}}>
-      <DrawerItem
-        label="Logout"
-        onPress={async () => {
-          try {
-            await AsyncStorage.removeItem('token');
-            await AsyncStorage.removeItem('role');
-            successMessage('Logout successful');
-            //@ts-ignore
-            navigation.replace(ScreenNames.LOGIN);
-          } catch (error) {
-            errorMessage('Error logging out');
-          }
-        }}
-      />
-    </View>
+    <ScreenWrapper
+      backgroundColor="#3333ff"
+      statusBarColor="#3333ff"
+      barStyle="light-content">
+      <View style={{flex: 1, justifyContent: 'center'}}>
+        <DrawerItem
+          label="Logout"
+          style={{backgroundColor: 'white', alignSelf: 'center', width: '80%'}}
+          onPress={async () => {
+            try {
+              await AsyncStorage.removeItem('token');
+              await AsyncStorage.removeItem('role');
+              successMessage('Logout successful');
+              //@ts-ignore
+              navigation.replace(ScreenNames.LOGIN);
+            } catch (error) {
+              errorMessage('Error logging out');
+            }
+          }}
+        />
+      </View>
+    </ScreenWrapper>
   );
 };
 
 const DrawerNavigator = ({role}: {role: 'admin' | 'notAdmin'}) => {
   return (
-    <Drawer.Navigator screenOptions={{headerShown: false}}>
+    <Drawer.Navigator
+      screenOptions={{
+        headerShown: false,
+        drawerStyle: {
+          backgroundColor: '#3333ff', // Set the background color to blue
+        },
+        drawerActiveTintColor: 'white', // Active item text color
+        drawerInactiveTintColor: 'lightgray', // Inactive item text color
+      }}>
       {role === 'admin' ? (
         <>
           <Drawer.Screen
             name={ScreenNames.ADMINHOMESCREEN}
             component={AdminHomeScreen}
           />
+          <Drawer.Screen name="Add Teacher" component={AddTeachers} />
+          <Drawer.Screen name="Add Room" component={AddRoom} />
           <Drawer.Screen name="Logout" options={{drawerLabel: 'Logout'}}>
             {() => <Logout />}
           </Drawer.Screen>
