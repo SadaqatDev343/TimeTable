@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     marginVertical: height(1),
     alignSelf: 'center',
     width: width(50),
-    paddingLeft: 20,
+    paddingLeft: width(10),
   },
   avatarContainer: {
     alignSelf: 'center',

@@ -1,12 +1,14 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Image, TouchableOpacity, View} from 'react-native';
 import {useCreateDiscipline} from '../../../api/discipline';
+import {useGetAllTeachers} from '../../../api/teacher'; // Import the teacher fetching API hook
 import {AppLogo} from '../../../assets/images';
 import {Back} from '../../../assets/svg';
 import {
   Button,
+  DropDownButton,
   Gradient,
   H1,
   ScreenWrapper,
@@ -18,9 +20,34 @@ import {FontFamily} from '../../../utills/FontFamily';
 import {errorMessage, successMessage} from '../../../utills/method';
 import {disciplineSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './style';
+import DropDownModal from '../../../components/drop-down-modal';
+
+// Define a type for the teacher data
+type Teacher = {
+  _id: string;
+  name: string;
+  designation: string;
+  email: string;
+  phoneNumber: string;
+  subjectTaught: string;
+};
 
 export default function AddDisciplineScreen({navigation, route}: any) {
   const departmentId = route.params.departmentId;
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null); // Updated state type
+  const [teacherModalVisible, setTeacherModalVisible] = useState(false);
+  const [teachers, setTeachers] = useState<Teacher[]>([]); // Array of Teacher objects
+
+  // Fetch all teachers
+  const {data: teachersData} = useGetAllTeachers();
+
+  useEffect(() => {
+    if (teachersData?.ok) {
+      setTeachers(teachersData.response.data.data); // Set teachers data from API
+    }
+  }, [teachersData]);
+
+  const toggleTeacherModal = () => setTeacherModalVisible(!teacherModalVisible);
 
   const {
     control,
@@ -31,7 +58,6 @@ export default function AddDisciplineScreen({navigation, route}: any) {
     defaultValues: {
       name: '',
       code: '',
-      teacher: '',
       description: '',
     },
     resolver: yupResolver(disciplineSchema),
@@ -40,10 +66,15 @@ export default function AddDisciplineScreen({navigation, route}: any) {
   const {mutate, isPending} = useCreateDiscipline();
 
   const onSubmit = (data: any) => {
+    if (!selectedTeacher) {
+      errorMessage('Select teacher first');
+      return;
+    }
+
     const payload = {
       name: data.name,
       code: data.code,
-      teacher: data.teacher,
+      teacher: selectedTeacher?.name,
       description: data.description || undefined,
       department: departmentId,
     };
@@ -113,13 +144,15 @@ export default function AddDisciplineScreen({navigation, route}: any) {
             placeholder="Enter discipline code"
           />
 
-          {/* Teacher */}
-          <TextField
+          {/* Teacher Dropdown */}
+          <DropDownButton
+            placeHolder="Select Teacher"
+            Icon
             title="Teacher"
-            control={control}
-            name="teacher"
-            returnKeyType="next"
-            placeholder="Enter teacher name"
+            placeholderColor={AppColors.grey10}
+            containerStyle={styles.dropdown}
+            onPress={toggleTeacherModal}
+            value={selectedTeacher?.name || 'Select Teacher'}
           />
 
           {/* Description */}
@@ -129,6 +162,7 @@ export default function AddDisciplineScreen({navigation, route}: any) {
             name="description"
             returnKeyType="next"
             placeholder="Enter discipline description (optional)"
+            containerStyle={CommonStyles.marginTop_2}
           />
 
           {/* Submit Button */}
@@ -139,6 +173,17 @@ export default function AddDisciplineScreen({navigation, route}: any) {
             isLoading={isPending}
           />
         </View>
+
+        {/* Teacher Dropdown Modal */}
+        <DropDownModal
+          isVisible={teacherModalVisible}
+          Data={teachers} // Pass teacher data to the dropdown modal
+          onClose={toggleTeacherModal}
+          onPress={teacher => {
+            setSelectedTeacher(teacher); // Set the selected teacher
+            toggleTeacherModal();
+          }}
+        />
       </ScreenWrapper>
     </Gradient>
   );

@@ -82,11 +82,6 @@ export const disciplineSchema = Yup.object().shape({
   code: Yup.string()
     .required('Discipline code is required')
     .matches(/^[A-Z0-9]+$/, 'Code must be alphanumeric and uppercase'),
-
-  teacher: Yup.string()
-    .required('Teacher name is required')
-    .min(3, 'Teacher name must be at least 3 characters long'),
-
   description: Yup.string().optional(),
 });
 
@@ -98,10 +93,6 @@ export const sectionSchema = Yup.object().shape({
   code: Yup.string()
     .required('Section code is required')
     .matches(/^[A-Z0-9]+$/, 'Code must be alphanumeric and uppercase'),
-
-  teacher: Yup.string()
-    .required('Teacher name is required')
-    .min(3, 'Teacher name must be at least 3 characters long'),
 
   capacity: Yup.number().required('Capacity is required'),
   description: Yup.string().optional(),
@@ -153,4 +144,19 @@ export const roomSchema = Yup.object().shape({
   buildingName: Yup.string().required('Building Name is required'),
   floorNumber: Yup.string().required('Floor Number is required'),
   roomNumber: Yup.string().required('Room Number is required'),
+});
+
+export const subjectSchema = Yup.object().shape({
+  courseCode: Yup.string()
+    .required('Course Code is required')
+    .min(4, 'Course Code must be at least 4 characters')
+    .max(10, 'Course Code must not exceed 10 characters'),
+  name: Yup.string()
+    .required('Subject Name is required')
+    .min(3, 'Subject Name must be at least 3 characters')
+    .max(50, 'Subject Name must not exceed 50 characters'),
+  credits: Yup.number()
+    .required('Credits are required')
+    .min(1, 'Credits must be at least 1')
+    .max(10, 'Credits must not exceed 10'),
 });

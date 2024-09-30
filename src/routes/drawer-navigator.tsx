@@ -15,6 +15,7 @@ import AdminHomeScreen from '../screens/app-screens/admin';
 import AddTeachers from '../screens/app-screens/AddTeacher';
 import AddRoom from '../screens/app-screens/AddRoom';
 import {ScreenWrapper} from '../components';
+import AddSubject from '../screens/app-screens/AddSubject';
 
 const Drawer = createDrawerNavigator();
 
@@ -66,6 +67,7 @@ const DrawerNavigator = ({role}: {role: 'admin' | 'notAdmin'}) => {
           />
           <Drawer.Screen name="Add Teacher" component={AddTeachers} />
           <Drawer.Screen name="Add Room" component={AddRoom} />
+          <Drawer.Screen name="Add Subject" component={AddSubject} />
           <Drawer.Screen name="Logout" options={{drawerLabel: 'Logout'}}>
             {() => <Logout />}
           </Drawer.Screen>
