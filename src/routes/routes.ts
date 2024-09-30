@@ -18,6 +18,8 @@ const enum ScreenNames {
   ADD_DISCIPLINE = 'Add_discipline',
   ADD_SECTION = 'Add_section',
   ADD_SEMESTER = 'Add_semester',
+  VIEWTABLE = 'View_table',
+  ADD_TABLE = 'Add_table',
 }
 
 export default ScreenNames;
@@ -41,4 +43,6 @@ export type RootStackParamList = {
   [ScreenNames.ADD_DISCIPLINE]: undefined;
   [ScreenNames.ADD_SECTION]: undefined;
   [ScreenNames.ADD_SEMESTER]: undefined;
+  [ScreenNames.VIEWTABLE]: undefined;
+  [ScreenNames.ADD_TABLE]: undefined;
 };

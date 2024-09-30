@@ -75,7 +75,7 @@ export default function AddSectionScreen({navigation, route}: any) {
     const payload = {
       name: data.name,
       code: data.code,
-      teacher: selectedTeacher?.name, // Pass the selected teacher ID
+      teacher: selectedTeacher?._id, // Pass the selected teacher ID
       description: data.description || undefined,
       department: departmentId,
       discipline: disciplineId,

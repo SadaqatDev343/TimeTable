@@ -39,10 +39,11 @@ export default function SectionScreen({navigation, route}: any) {
     console.log(allSections);
 
     if (allSections?.ok) {
-      console.log(allSections.response.data);
-
       const sectionNames = allSections.response.data.data.map(
-        (section: any) => section.name,
+        (section: any) => ({
+          name: section.name,
+          id: section._id,
+        }),
       );
       setSections(sectionNames);
     }
@@ -114,7 +115,19 @@ export default function SectionScreen({navigation, route}: any) {
             data={section}
             numColumns={3}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => <Card title={item} />}
+            renderItem={({item}) => (
+              <Card
+                title={item.name}
+                onPress={() =>
+                  navigation.navigate(ScreenNames.VIEWTABLE, {
+                    departmentId,
+                    disciplineId,
+                    semesterId,
+                    sectionId: item.id,
+                  })
+                }
+              />
+            )}
           />
         )}
       </View>

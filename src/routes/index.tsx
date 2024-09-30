@@ -23,6 +23,8 @@ import AddDisciplineScreen from '../screens/app-screens/AddDiscipline';
 import AddDepartmentScreen from '../screens/app-screens/AddDepartment';
 import AddSectionScreen from '../screens/app-screens/AddSection';
 import AddSemesterScreen from '../screens/app-screens/AddSemester';
+import ViewTable from '../screens/app-screens/ViewTable';
+import AddTableScreen from '../screens/app-screens/AddTable';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -81,6 +83,8 @@ export default function Routes() {
           name={ScreenNames.ADMINHOMESCREEN}
           component={AdminHomeScreen}
         />
+        <Stack.Screen name={ScreenNames.VIEWTABLE} component={ViewTable} />
+        <Stack.Screen name={ScreenNames.ADD_TABLE} component={AddTableScreen} />
         <Stack.Screen
           name={ScreenNames.DRAWER}
           children={({route}) => <DrawerNavigator role={route.params?.role} />}

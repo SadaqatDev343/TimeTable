@@ -74,7 +74,7 @@ export default function AddDisciplineScreen({navigation, route}: any) {
     const payload = {
       name: data.name,
       code: data.code,
-      teacher: selectedTeacher?.name,
+      teacher: selectedTeacher?._id,
       description: data.description || undefined,
       department: departmentId,
     };

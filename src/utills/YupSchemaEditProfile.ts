@@ -160,3 +160,22 @@ export const subjectSchema = Yup.object().shape({
     .min(1, 'Credits must be at least 1')
     .max(10, 'Credits must not exceed 10'),
 });
+
+export const tableSchema = Yup.object().shape({
+  day: Yup.string()
+    .required('Day is required')
+    .min(3, 'Day must be at least 3 characters')
+    .max(20, 'Day must not exceed 20 characters'),
+  startTime: Yup.string()
+    .required('Start time is required')
+    .matches(
+      /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/,
+      'Start time must be in format HH:MM AM/PM',
+    ),
+  endTime: Yup.string()
+    .required('End time is required')
+    .matches(
+      /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/,
+      'End time must be in format HH:MM AM/PM',
+    ),
+});
