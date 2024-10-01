@@ -16,6 +16,7 @@ export default function ViewTable({navigation, route}: any) {
   const disciplineId = route.params.disciplineId;
   const semesterId = route.params.semesterId;
   const sectionId = route.params.sectionId;
+
   const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,14 +34,6 @@ export default function ViewTable({navigation, route}: any) {
 
     fetchRole();
   }, []);
-
-  // Handle card press navigation
-  const handleCardPress = (
-    screenName: string,
-    p0: {departmentId: any; disciplineId: any; sectionId: any; semesterId: any},
-  ) => {
-    navigation.navigate(screenName);
-  };
 
   // Loading state
   if (loading) {
@@ -112,7 +105,7 @@ export default function ViewTable({navigation, route}: any) {
             <Card
               title="Create Table"
               onPress={() =>
-                handleCardPress(ScreenNames.ADD_TABLE, {
+                navigation.navigate(ScreenNames.ADD_TABLE, {
                   departmentId,
                   disciplineId,
                   sectionId,

@@ -66,15 +66,12 @@ export default function AddTableScreen({navigation, route}: any) {
 
   useEffect(() => {
     if (roomsData?.ok) {
-      console.log(roomsData.response.data.data);
       setRooms(roomsData.response.data.data);
     }
     if (teachersData?.ok) {
-      console.log(teachersData.response.data.data);
       setTeachers(teachersData.response.data.data);
     }
     if (subjectsData?.ok) {
-      console.log(subjectsData.response.data.data);
       setSubjects(subjectsData.response.data.data);
     }
   }, [teachersData, subjectsData, roomsData]);
@@ -190,7 +187,12 @@ export default function AddTableScreen({navigation, route}: any) {
             placeholderColor={AppColors.grey10}
             containerStyle={styles.dropdown}
             onPress={toggleRoomModal}
-            value={selectedRoom?.name || 'Select Room'}
+            value={
+              selectedRoom
+                ? //@ts-ignore
+                  `${selectedRoom?.buildingName} - Floor: ${selectedRoom?.floorNumber}, Room: ${selectedRoom?.roomNumber}`
+                : 'Select Room'
+            }
           />
 
           {/* Day Input */}

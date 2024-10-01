@@ -21,6 +21,7 @@ interface Props {
   modalStyling?: ViewStyle;
   maincontainer?: ViewStyle;
 }
+
 const DropDownModal: React.FC<Props> = ({
   modalContainer,
   modalStyling,
@@ -56,11 +57,18 @@ const DropDownModal: React.FC<Props> = ({
           style={Search ? styles.autoFlat : styles.flatStyle}
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => {
+            // Determine how to display the item
+            const displayValue =
+              item?.name ?? // For subjects and teachers that have a 'name' field
+              `${item?.buildingName ?? ''} - Floor: ${
+                item?.floorNumber ?? ''
+              }, Room: ${item?.roomNumber ?? ''}`; // For rooms
+
             return (
               <TouchableOpacity
                 style={styles.viewStyle}
                 onPress={() => onPress(item)}>
-                <CustomText>{item?.name ?? item}</CustomText>
+                <CustomText>{displayValue}</CustomText>
               </TouchableOpacity>
             );
           }}
@@ -73,4 +81,5 @@ const DropDownModal: React.FC<Props> = ({
     </ModalWrapper>
   );
 };
+
 export default DropDownModal;
