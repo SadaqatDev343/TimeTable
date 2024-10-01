@@ -25,6 +25,7 @@ import AddSectionScreen from '../screens/app-screens/AddSection';
 import AddSemesterScreen from '../screens/app-screens/AddSemester';
 import ViewTable from '../screens/app-screens/ViewTable';
 import AddTableScreen from '../screens/app-screens/AddTable';
+import TimeTable from '../screens/app-screens/TimeTable';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -85,6 +86,7 @@ export default function Routes() {
         />
         <Stack.Screen name={ScreenNames.VIEWTABLE} component={ViewTable} />
         <Stack.Screen name={ScreenNames.ADD_TABLE} component={AddTableScreen} />
+        <Stack.Screen name={ScreenNames.VIEW_TABLE} component={TimeTable} />
         <Stack.Screen
           name={ScreenNames.DRAWER}
           children={({route}) => <DrawerNavigator role={route.params?.role} />}

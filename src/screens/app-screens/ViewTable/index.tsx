@@ -97,13 +97,17 @@ export default function ViewTable({navigation, route}: any) {
 
         {/* Render cards based on role */}
         <Card
-          title="View Table"
-          //   onPress={() => handleCardPress(ScreenNames.VIEW_TABLE)}
+          title="View Timetable"
+          onPress={() =>
+            navigation.navigate(ScreenNames.VIEW_TABLE, {
+              sectionId,
+            })
+          }
         />
         {role === 'admin' && (
           <>
             <Card
-              title="Create Table"
+              title="Create Timetable"
               onPress={() =>
                 navigation.navigate(ScreenNames.ADD_TABLE, {
                   departmentId,

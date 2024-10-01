@@ -1,10 +1,11 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {ApiManager} from './api-manager';
 
-export const useGetAllTimeTable = () => {
+export const useGetAllTimeTable = (id: string) => {
   return useQuery({
     queryKey: ['allTimeTable'],
-    queryFn: async () => await ApiManager.get<any>('timetable'),
+    queryFn: async () =>
+      await ApiManager.get<any>(`timetable/by-section/${id}`),
   });
 };
 
