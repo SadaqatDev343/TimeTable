@@ -18,6 +18,7 @@ import {Add, Back} from '../../../assets/svg';
 import {width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import {styles} from './style';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SemesterScreen({navigation, route}: any) {
   const departmentId = route.params.departmentId;
@@ -32,6 +33,16 @@ export default function SemesterScreen({navigation, route}: any) {
 
   const {data: allSemesters, isLoading} = useGetAllSemesters(disciplineId);
   const [semester, setSemesters] = useState<any[]>([]);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const role = await AsyncStorage.getItem('role'); // Adjust this key according to how you stored the role
+      setUserRole(role);
+    };
+
+    fetchUserRole();
+  }, []);
 
   useEffect(() => {
     if (allSemesters?.ok) {
@@ -93,9 +104,11 @@ export default function SemesterScreen({navigation, route}: any) {
             color={AppColors.white}>
             Semester
           </CustomText>
-          <TouchableOpacity onPress={handleAddDiscipline}>
-            <Add width={20} height={20} color={AppColors.white} />
-          </TouchableOpacity>
+          {userRole === 'admin' && ( // Check if userRole is 'admin'
+            <TouchableOpacity onPress={handleAddDiscipline}>
+              <Add width={20} height={20} color={AppColors.white} />
+            </TouchableOpacity>
+          )}
         </View>
         {isLoading ? (
           <ActivityIndicator size="large" color={AppColors.white} />

@@ -11,7 +11,7 @@ import {
 import {Card, CustomText, H1, ScreenWrapper} from '../../../components';
 import ScreenNames from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
-
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import {useGetAllSections} from '../../../api/section';
 import {AppLogo} from '../../../assets/images';
 import {Add, Back} from '../../../assets/svg';
@@ -34,10 +34,18 @@ export default function SectionScreen({navigation, route}: any) {
 
   const {data: allSections, isLoading} = useGetAllSections(semesterId);
   const [section, setSections] = useState<any[]>([]);
+  const [userRole, setUserRole] = useState<string | null>(null); // State to hold user role
 
   useEffect(() => {
-    console.log(allSections);
+    const fetchUserRole = async () => {
+      const role = await AsyncStorage.getItem('role'); // Retrieve user role from AsyncStorage
+      setUserRole(role);
+    };
 
+    fetchUserRole();
+  }, []);
+
+  useEffect(() => {
     if (allSections?.ok) {
       const sectionNames = allSections.response.data.data.map(
         (section: any) => ({
@@ -98,9 +106,11 @@ export default function SectionScreen({navigation, route}: any) {
             color={AppColors.white}>
             Section
           </CustomText>
-          <TouchableOpacity onPress={handleAddDiscipline}>
-            <Add width={20} height={20} color={AppColors.white} />
-          </TouchableOpacity>
+          {userRole === 'admin' && ( // Render "+" icon only if user is admin
+            <TouchableOpacity onPress={handleAddDiscipline}>
+              <Add width={20} height={20} color={AppColors.white} />
+            </TouchableOpacity>
+          )}
         </View>
         {isLoading ? (
           <ActivityIndicator size="large" color={AppColors.white} />

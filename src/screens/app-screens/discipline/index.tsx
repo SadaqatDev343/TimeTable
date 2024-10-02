@@ -17,15 +17,30 @@ import {AppLogo} from '../../../assets/images';
 import {Add, Back} from '../../../assets/svg';
 import {width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import {styles} from './style';
 
 export default function DisciplineScreen({navigation, route}: any) {
+  const [role, setRole] = useState<string | null>(null); // State for user role
   const handleAddDiscipline = () => {
     navigation.navigate(ScreenNames.ADD_DISCIPLINE, {departmentId});
   };
   const departmentId = route.params.departmentId;
   const {data: allDisciplines, isLoading} = useGetAllDisciplines(departmentId);
   const [discipline, setDisciplines] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const storedRole = await AsyncStorage.getItem('role'); // Fetch role from local storage
+        setRole(storedRole); // Store the role in state
+      } catch (error) {
+        console.error('Failed to fetch role from local storage:', error);
+      }
+    };
+
+    fetchRole(); // Call the function to fetch the role
+  }, []);
 
   useEffect(() => {
     if (allDisciplines?.ok) {
@@ -88,9 +103,11 @@ export default function DisciplineScreen({navigation, route}: any) {
             color={AppColors.white}>
             Discipline
           </CustomText>
-          <TouchableOpacity onPress={handleAddDiscipline}>
-            <Add width={20} height={20} color={AppColors.white} />
-          </TouchableOpacity>
+          {role === 'admin' && ( // Conditionally render the "+" button
+            <TouchableOpacity onPress={handleAddDiscipline}>
+              <Add width={20} height={20} color={AppColors.white} />
+            </TouchableOpacity>
+          )}
         </View>
         {isLoading ? (
           <ActivityIndicator size="large" color={AppColors.white} />
