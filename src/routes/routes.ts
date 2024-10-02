@@ -21,6 +21,8 @@ const enum ScreenNames {
   VIEWTABLE = 'View_table',
   ADD_TABLE = 'Add_table',
   VIEW_TABLE = 'VIEW_TABLE',
+  CREATE_DATESHEET = 'CREATE_DATESHEET',
+  VIEW_DATESHEET = 'VIEW_DATESHEET',
 }
 
 export default ScreenNames;
@@ -47,4 +49,6 @@ export type RootStackParamList = {
   [ScreenNames.VIEWTABLE]: undefined;
   [ScreenNames.ADD_TABLE]: undefined;
   [ScreenNames.VIEW_TABLE]: undefined;
+  [ScreenNames.CREATE_DATESHEET]: undefined;
+  [ScreenNames.VIEW_DATESHEET]: undefined;
 };

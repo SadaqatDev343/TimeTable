@@ -119,13 +119,24 @@ export default function ViewTable({navigation, route}: any) {
             />
             <Card
               title="Create Datesheet"
-              //   onPress={() => handleCardPress(ScreenNames.CREATE_DATESHEET)}
+              onPress={() =>
+                navigation.navigate(ScreenNames.CREATE_DATESHEET, {
+                  departmentId,
+                  disciplineId,
+                  sectionId,
+                  semesterId,
+                })
+              }
             />
           </>
         )}
         <Card
           title="View Datesheet"
-          //   onPress={() => handleCardPress(ScreenNames.VIEW_DATESHEET)}
+          onPress={() =>
+            navigation.navigate(ScreenNames.VIEW_DATESHEET, {
+              sectionId,
+            })
+          }
         />
       </View>
     </ScreenWrapper>

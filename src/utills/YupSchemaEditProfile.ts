@@ -179,3 +179,24 @@ export const tableSchema = Yup.object().shape({
       'End time must be in format HH:MM AM/PM',
     ),
 });
+
+export const dateSheetSchema = Yup.object().shape({
+  examDate: Yup.string()
+    .required('Exam date is required')
+    .matches(
+      /^\d{4}-\d{2}-\d{2}$/,
+      'Exam date must be in the format YYYY-MM-DD',
+    ),
+  startTime: Yup.string()
+    .required('Start time is required')
+    .matches(
+      /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/,
+      'Start time must be in format HH:MM AM/PM',
+    ),
+  endTime: Yup.string()
+    .required('End time is required')
+    .matches(
+      /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/,
+      'End time must be in format HH:MM AM/PM',
+    ),
+});

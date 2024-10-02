@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, FlatList} from 'react-native';
+import {StyleSheet, Text, View, FlatList, TextInput} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useGetAllTimeTable} from '../../../api/timetable';
 import {ScreenWrapper} from '../../../components';
@@ -40,6 +40,7 @@ const TimeTable = ({route}: any) => {
   const sectionId = route.params.sectionId;
   const {data, isLoading, refetch} = useGetAllTimeTable(sectionId);
   const [groupedTimetable, setGroupedTimetable] = useState<any>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     refetch();
@@ -51,6 +52,25 @@ const TimeTable = ({route}: any) => {
       setGroupedTimetable(groupedData);
     }
   }, [data]);
+
+  // Function to filter the grouped timetable based on the search query
+  const filteredTimetable = () => {
+    if (!searchQuery) {
+      return groupedTimetable;
+    }
+
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    return groupedTimetable
+      .map((group: {day: string; items: any[]}) => ({
+        day: group.day,
+        items: group.items.filter(
+          (entry: {subject: {name: string}}) =>
+            entry.subject.name.toLowerCase().includes(lowerCaseQuery) ||
+            group.day.toLowerCase().includes(lowerCaseQuery),
+        ),
+      }))
+      .filter((group: {items: string | any[]}) => group.items.length > 0); // Remove empty groups
+  };
 
   const renderItem = ({item}: any) => (
     <View>
@@ -77,13 +97,20 @@ const TimeTable = ({route}: any) => {
       barStyle="light-content">
       <View style={styles.container}>
         <Text style={styles.header}>TimeTable</Text>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search by Subject or Day"
+          placeholderTextColor="#999"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
         {isLoading ? (
           <Text>Loading...</Text>
-        ) : groupedTimetable.length === 0 ? (
+        ) : filteredTimetable().length === 0 ? (
           <Text>No Data Available</Text>
         ) : (
           <FlatList
-            data={groupedTimetable}
+            data={filteredTimetable()}
             keyExtractor={item => item.day}
             renderItem={renderItem}
             ListHeaderComponent={() => (
@@ -140,5 +167,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     padding: 8,
     textAlign: 'center',
+  },
+  searchInput: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 16,
+    backgroundColor: '#fff',
+    color: 'black',
   },
 });
