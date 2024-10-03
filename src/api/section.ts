@@ -17,6 +17,40 @@ export const useDeleteSectionById = () => {
   });
 };
 
+export const useGetSectionById = (id: string) => {
+  return useQuery({
+    queryKey: ['allSection', id],
+    queryFn: async () => await ApiManager.get<any>(`sections/${id}`),
+  });
+};
+
+export const useUpdateSectionById = () => {
+  return useMutation({
+    mutationFn: async ({
+      name,
+      code,
+      description,
+      discipline,
+      department,
+      semester,
+      teacher,
+      capacity,
+      id,
+    }: any) => {
+      return await ApiManager.patch<any>(`sections/${id}`, {
+        name,
+        code,
+        description,
+        discipline,
+        department,
+        semester,
+        teacher,
+        capacity,
+      });
+    },
+  });
+};
+
 export const useCreateSection = () => {
   return useMutation({
     mutationFn: async ({

@@ -1,8 +1,12 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useForm} from 'react-hook-form';
 import {Image, TouchableOpacity, View} from 'react-native';
-import {useCreateSemester} from '../../../api/semester';
+import {
+  useCreateSemester,
+  useGetSemesterById,
+  useUpdateSemesterById,
+} from '../../../api/semester';
 import {AppLogo} from '../../../assets/images';
 import {Back} from '../../../assets/svg';
 import {
@@ -22,10 +26,15 @@ import styles from './style';
 export default function AddSemesterScreen({navigation, route}: any) {
   const departmentId = route.params.departmentId;
   const disciplineId = route.params.disciplineId;
+  const semesterId = route.params.semesterId;
+
+  // Fetch semester data if editing an existing semester
+  const {data} = useGetSemesterById(semesterId);
 
   const {
     control,
     handleSubmit,
+    setValue,
     formState: {errors, isValid},
   } = useForm({
     mode: 'all',
@@ -37,27 +46,58 @@ export default function AddSemesterScreen({navigation, route}: any) {
     resolver: yupResolver(semesterSchema),
   });
 
-  const {mutate, isPending} = useCreateSemester();
+  useEffect(() => {
+    if (data?.ok) {
+      // Populate form fields with existing semester data
+      const semesterData = data.response.data;
+      setValue('name', semesterData.name);
+      setValue('code', semesterData.code);
+      setValue('description', semesterData.description || '');
+    }
+  }, [data, setValue]);
 
-  const onSubmit = (data: any) => {
+  const {mutate: createSemester, isPending: isCreating} = useCreateSemester();
+  const {mutate: updateSemester, isPending: isUpdating} =
+    useUpdateSemesterById();
+
+  const onSubmit = (formData: any) => {
     const payload = {
-      name: data.name,
-      code: data.code,
-      description: data.description || undefined,
+      name: formData.name,
+      code: formData.code,
+      description: formData.description || undefined,
       department: departmentId,
       discipline: disciplineId,
     };
 
-    mutate(payload, {
-      onSuccess: response => {
-        if (response.ok) {
-          successMessage('Semester created successfully');
-          navigation.goBack();
-        } else {
-          errorMessage('Something went wrong');
-        }
-      },
-    });
+    // Check if we are editing an existing semester
+    if (semesterId) {
+      // Update existing semester
+      updateSemester(
+        {id: semesterId, payload},
+        {
+          onSuccess: response => {
+            if (response.ok) {
+              successMessage('Semester updated successfully');
+              navigation.goBack();
+            } else {
+              errorMessage('Something went wrong while updating');
+            }
+          },
+        },
+      );
+    } else {
+      // Create new semester
+      createSemester(payload, {
+        onSuccess: response => {
+          if (response.ok) {
+            successMessage('Semester created successfully');
+            navigation.goBack();
+          } else {
+            errorMessage('Something went wrong while creating');
+          }
+        },
+      });
+    }
   };
 
   return (
@@ -90,26 +130,26 @@ export default function AddSemesterScreen({navigation, route}: any) {
             color={AppColors.white}
             size={5}
             fontFam={FontFamily.appFontMedium}>
-            Add Semester
+            {semesterId ? 'Edit Semester' : 'Add Semester'}
           </H1>
 
-          {/* Discipline Name */}
+          {/* Semester Name */}
           <TextField
             title="Semester Name"
             control={control}
             name="name"
             returnKeyType="next"
-            placeholder="Enter discipline name"
+            placeholder="Enter semester name"
             containerStyle={CommonStyles.marginTop_3}
           />
 
-          {/* Discipline Code */}
+          {/* Semester Code */}
           <TextField
             title="Semester Code"
             control={control}
             name="code"
             returnKeyType="next"
-            placeholder="Enter discipline code"
+            placeholder="Enter semester code"
           />
 
           {/* Description */}
@@ -118,15 +158,15 @@ export default function AddSemesterScreen({navigation, route}: any) {
             control={control}
             name="description"
             returnKeyType="next"
-            placeholder="Enter discipline description (optional)"
+            placeholder="Enter semester description (optional)"
           />
 
           {/* Submit Button */}
           <Button
-            title="Add Semester"
+            title={semesterId ? 'Update Semester' : 'Add Semester'}
             containerStyle={CommonStyles.marginTop_2}
             onPress={handleSubmit(onSubmit)}
-            isLoading={isPending}
+            isLoading={isCreating || isUpdating}
           />
         </View>
       </ScreenWrapper>

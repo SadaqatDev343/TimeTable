@@ -1,9 +1,12 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import React, {useEffect, useState} from 'react';
-import {useForm} from 'react-hook-form';
 import {Image, TouchableOpacity, View} from 'react-native';
-import {useCreateSection} from '../../../api/section';
-import {useGetAllTeachers} from '../../../api/teacher'; // Import the teacher fetching API hook
+import {
+  useCreateSection,
+  useGetSectionById,
+  useUpdateSectionById,
+} from '../../../api/section';
+import {useGetAllTeachers} from '../../../api/teacher';
 import {AppLogo} from '../../../assets/images';
 import {Back} from '../../../assets/svg';
 import {
@@ -21,8 +24,8 @@ import {errorMessage, successMessage} from '../../../utills/method';
 import {sectionSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './style';
 import DropDownModal from '../../../components/drop-down-modal';
+import {useForm} from 'react-hook-form';
 
-// Define a type for the teacher data
 type Teacher = {
   _id: string;
   name: string;
@@ -36,24 +39,38 @@ export default function AddSectionScreen({navigation, route}: any) {
   const departmentId = route.params.departmentId;
   const disciplineId = route.params.disciplineId;
   const semesterId = route.params.semesterId;
-  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null); // State to hold selected teacher
-  const [teacherModalVisible, setTeacherModalVisible] = useState(false);
-  const [teachers, setTeachers] = useState<Teacher[]>([]); // Array of Teacher objects
+  const sectionId = route.params.sectionId;
 
-  // Fetch all teachers
-  const {data: teachersData, isLoading} = useGetAllTeachers();
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
+  const [teacherModalVisible, setTeacherModalVisible] = useState(false);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+
+  const {data: teachersData} = useGetAllTeachers();
+  const {data} = useGetSectionById(sectionId);
 
   useEffect(() => {
     if (teachersData?.ok) {
-      setTeachers(teachersData.response.data.data); // Set teachers data from API
+      setTeachers(teachersData.response.data.data);
     }
   }, [teachersData]);
+
+  useEffect(() => {
+    if (data?.ok) {
+      const section = data.response.data.data;
+      setSelectedTeacher(section.teacher);
+      setValue('name', section.name);
+      setValue('code', section.code);
+      setValue('description', section.description);
+      setValue('capacity', section.capacity.toString());
+    }
+  }, [data]);
 
   const toggleTeacherModal = () => setTeacherModalVisible(!teacherModalVisible);
 
   const {
     control,
     handleSubmit,
+    setValue,
     formState: {errors, isValid},
   } = useForm({
     mode: 'all',
@@ -61,10 +78,12 @@ export default function AddSectionScreen({navigation, route}: any) {
       name: '',
       code: '',
       description: '',
+      capacity: undefined,
     },
     resolver: yupResolver(sectionSchema),
   });
 
+  const {mutate: updateSection, isPending: isUpdating} = useUpdateSectionById();
   const {mutate, isPending} = useCreateSection();
 
   const onSubmit = (data: any) => {
@@ -72,10 +91,11 @@ export default function AddSectionScreen({navigation, route}: any) {
       errorMessage('Select teacher first');
       return;
     }
+
     const payload = {
       name: data.name,
       code: data.code,
-      teacher: selectedTeacher?._id, // Pass the selected teacher ID
+      teacher: selectedTeacher?._id,
       description: data.description || undefined,
       department: departmentId,
       discipline: disciplineId,
@@ -83,16 +103,35 @@ export default function AddSectionScreen({navigation, route}: any) {
       capacity: data.capacity,
     };
 
-    mutate(payload, {
-      onSuccess: response => {
-        if (response.ok) {
-          successMessage('Section created successfully');
-          navigation.goBack();
-        } else {
-          errorMessage('Something went wrong');
-        }
-      },
-    });
+    if (sectionId) {
+      // If sectionId exists, update the section
+      updateSection(
+        {id: sectionId, payload},
+        {
+          onSuccess: response => {
+            if (response.ok) {
+              successMessage('Section updated successfully');
+              navigation.goBack();
+            } else {
+              console.log(response.error.response?.data);
+              errorMessage('Something went wrong');
+            }
+          },
+        },
+      );
+    } else {
+      // Otherwise, create a new section
+      mutate(payload, {
+        onSuccess: response => {
+          if (response.ok) {
+            successMessage('Section created successfully');
+            navigation.goBack();
+          } else {
+            errorMessage('Something went wrong');
+          }
+        },
+      });
+    }
   };
 
   return (
@@ -104,7 +143,6 @@ export default function AddSectionScreen({navigation, route}: any) {
         transclucent
         statusBarColor={AppColors.transparent}
         barStyle="light-content">
-        {/* Back button */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
@@ -125,10 +163,10 @@ export default function AddSectionScreen({navigation, route}: any) {
             color={AppColors.white}
             size={5}
             fontFam={FontFamily.appFontMedium}>
-            Add Section
+            {sectionId ? 'Update Section' : 'Add Section'}{' '}
+            {/* Change title based on action */}
           </H1>
 
-          {/* Section Name */}
           <TextField
             title="Section Name"
             control={control}
@@ -138,7 +176,6 @@ export default function AddSectionScreen({navigation, route}: any) {
             containerStyle={CommonStyles.marginTop_3}
           />
 
-          {/* Section Code */}
           <TextField
             title="Section Code"
             control={control}
@@ -147,7 +184,6 @@ export default function AddSectionScreen({navigation, route}: any) {
             placeholder="Enter section code"
           />
 
-          {/* Teacher Dropdown */}
           <DropDownButton
             placeHolder="Select Teacher"
             Icon
@@ -158,7 +194,6 @@ export default function AddSectionScreen({navigation, route}: any) {
             value={selectedTeacher?.name || 'Select Teacher'}
           />
 
-          {/* Capacity */}
           <TextField
             title="Capacity"
             control={control}
@@ -168,7 +203,6 @@ export default function AddSectionScreen({navigation, route}: any) {
             keyboardType="numeric"
           />
 
-          {/* Description */}
           <TextField
             title="Description"
             control={control}
@@ -177,22 +211,20 @@ export default function AddSectionScreen({navigation, route}: any) {
             placeholder="Enter section description (optional)"
           />
 
-          {/* Submit Button */}
           <Button
-            title="Add Section"
+            title={sectionId ? 'Update Section' : 'Add Section'} // Change button title based on action
             containerStyle={CommonStyles.marginTop_2}
             onPress={handleSubmit(onSubmit)}
-            isLoading={isPending}
+            isLoading={isPending || isUpdating} // Loading state if either action is pending
           />
         </View>
 
-        {/* Teacher Dropdown Modal */}
         <DropDownModal
           isVisible={teacherModalVisible}
-          Data={teachers} // Pass teacher data to the dropdown modal
+          Data={teachers}
           onClose={toggleTeacherModal}
           onPress={teacher => {
-            setSelectedTeacher(teacher); // Set the selected teacher
+            setSelectedTeacher(teacher);
             toggleTeacherModal();
           }}
         />

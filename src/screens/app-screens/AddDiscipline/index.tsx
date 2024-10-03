@@ -2,8 +2,12 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Image, TouchableOpacity, View} from 'react-native';
-import {useCreateDiscipline} from '../../../api/discipline';
-import {useGetAllTeachers} from '../../../api/teacher'; // Import the teacher fetching API hook
+import {
+  useCreateDiscipline,
+  useGetDisciplineById,
+  useUpdateDisciplineById,
+} from '../../../api/discipline';
+import {useGetAllTeachers} from '../../../api/teacher';
 import {AppLogo} from '../../../assets/images';
 import {Back} from '../../../assets/svg';
 import {
@@ -34,16 +38,18 @@ type Teacher = {
 
 export default function AddDisciplineScreen({navigation, route}: any) {
   const departmentId = route.params.departmentId;
-  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null); // Updated state type
+  const disciplineId = route.params.disciplineId;
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
   const [teacherModalVisible, setTeacherModalVisible] = useState(false);
-  const [teachers, setTeachers] = useState<Teacher[]>([]); // Array of Teacher objects
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
 
   // Fetch all teachers
   const {data: teachersData} = useGetAllTeachers();
+  const {data, isLoading} = useGetDisciplineById(disciplineId);
 
   useEffect(() => {
     if (teachersData?.ok) {
-      setTeachers(teachersData.response.data.data); // Set teachers data from API
+      setTeachers(teachersData.response.data.data);
     }
   }, [teachersData]);
 
@@ -52,6 +58,7 @@ export default function AddDisciplineScreen({navigation, route}: any) {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: {errors, isValid},
   } = useForm({
     mode: 'all',
@@ -63,7 +70,19 @@ export default function AddDisciplineScreen({navigation, route}: any) {
     resolver: yupResolver(disciplineSchema),
   });
 
-  const {mutate, isPending} = useCreateDiscipline();
+  const {mutate: createDiscipline, isPending} = useCreateDiscipline();
+  const {mutate: updateDiscipline, isPending: isUpdating} =
+    useUpdateDisciplineById();
+
+  useEffect(() => {
+    if (data?.ok) {
+      const discipline = data.response.data.data;
+      setSelectedTeacher(discipline.teacher); // Assuming teacher's ID is available
+      setValue('name', discipline.name);
+      setValue('code', discipline.code);
+      setValue('description', discipline.description);
+    }
+  }, [data]);
 
   const onSubmit = (data: any) => {
     if (!selectedTeacher) {
@@ -79,16 +98,36 @@ export default function AddDisciplineScreen({navigation, route}: any) {
       department: departmentId,
     };
 
-    mutate(payload, {
-      onSuccess: response => {
-        if (response.ok) {
-          successMessage('Discipline created successfully');
-          navigation.goBack();
-        } else {
-          errorMessage('Something went wrong');
-        }
-      },
-    });
+    if (disciplineId) {
+      // If disciplineId exists, update the discipline
+      updateDiscipline(
+        {id: disciplineId, payload},
+        {
+          onSuccess: response => {
+            if (response.ok) {
+              successMessage('Discipline updated successfully');
+              navigation.goBack();
+            } else {
+              console.log(response.error.response?.data);
+
+              errorMessage('Something went wrong');
+            }
+          },
+        },
+      );
+    } else {
+      // Otherwise, create a new discipline
+      createDiscipline(payload, {
+        onSuccess: response => {
+          if (response.ok) {
+            successMessage('Discipline created successfully');
+            navigation.goBack();
+          } else {
+            errorMessage('Something went wrong');
+          }
+        },
+      });
+    }
   };
 
   return (
@@ -103,8 +142,7 @@ export default function AddDisciplineScreen({navigation, route}: any) {
         {/* Back button */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={styles.backButton} // Add your styling here
-        >
+          style={styles.backButton}>
           <Back width={24} height={24} color={AppColors.white} />
         </TouchableOpacity>
 
@@ -122,7 +160,7 @@ export default function AddDisciplineScreen({navigation, route}: any) {
             color={AppColors.white}
             size={5}
             fontFam={FontFamily.appFontMedium}>
-            Add Discipline
+            {disciplineId ? 'Edit Discipline' : 'Add Discipline'}
           </H1>
 
           {/* Discipline Name */}
@@ -167,20 +205,20 @@ export default function AddDisciplineScreen({navigation, route}: any) {
 
           {/* Submit Button */}
           <Button
-            title="Add Discipline"
+            title={disciplineId ? 'Update Discipline' : 'Add Discipline'}
             containerStyle={CommonStyles.marginTop_4}
             onPress={handleSubmit(onSubmit)}
-            isLoading={isPending}
+            isLoading={isPending || isUpdating}
           />
         </View>
 
         {/* Teacher Dropdown Modal */}
         <DropDownModal
           isVisible={teacherModalVisible}
-          Data={teachers} // Pass teacher data to the dropdown modal
+          Data={teachers}
           onClose={toggleTeacherModal}
           onPress={teacher => {
-            setSelectedTeacher(teacher); // Set the selected teacher
+            setSelectedTeacher(teacher);
             toggleTeacherModal();
           }}
         />

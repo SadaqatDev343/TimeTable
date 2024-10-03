@@ -17,6 +17,34 @@ export const useDeleteSemesterById = () => {
   });
 };
 
+export const useGetSemesterById = (id: string) => {
+  return useQuery({
+    queryKey: ['allSemester', id],
+    queryFn: async () => await ApiManager.get<any>(`semesters/${id}`),
+  });
+};
+
+export const useUpdateSemesterById = () => {
+  return useMutation({
+    mutationFn: async ({
+      name,
+      code,
+      discipline,
+      description,
+      department,
+      id,
+    }: any) => {
+      return await ApiManager.patch<any>(`semesters/${id}`, {
+        name,
+        code,
+        discipline,
+        description,
+        department,
+      });
+    },
+  });
+};
+
 export const useCreateSemester = () => {
   return useMutation({
     mutationFn: async ({

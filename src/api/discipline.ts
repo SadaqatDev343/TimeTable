@@ -17,6 +17,34 @@ export const useDeleteDisciplineById = () => {
   });
 };
 
+export const useGetDisciplineById = (id: string) => {
+  return useQuery({
+    queryKey: ['allDiscipline', id],
+    queryFn: async () => await ApiManager.get<any>(`disciplines/${id}`),
+  });
+};
+
+export const useUpdateDisciplineById = () => {
+  return useMutation({
+    mutationFn: async ({
+      id,
+      name,
+      code,
+      teacher,
+      description,
+      department,
+    }: any) => {
+      return await ApiManager.patch<any>(`disciplines/${id}`, {
+        name,
+        code,
+        teacher,
+        description,
+        department,
+      });
+    },
+  });
+};
+
 export const useCreateDiscipline = () => {
   return useMutation({
     mutationFn: async ({name, code, teacher, description, department}: any) =>

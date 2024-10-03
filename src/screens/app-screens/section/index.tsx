@@ -93,8 +93,11 @@ export default function SectionScreen({navigation, route}: any) {
   const handleEditDepartment = () => {
     setModalVisible(false);
     // Navigate to edit department screen with selected department data
-    navigation.navigate(ScreenNames.EDIT_DEPARTMENT, {
-      departmentId: selectedDepartment.id,
+    navigation.navigate(ScreenNames.ADD_SECTION, {
+      sectionId: selectedDepartment.id,
+      departmentId,
+      semesterId,
+      disciplineId,
     });
   };
 
