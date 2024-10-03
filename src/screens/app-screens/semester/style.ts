@@ -1,6 +1,7 @@
 import {Platform, StyleSheet} from 'react-native';
 import {height, width} from '../../../utills/Diamension';
 import AppColors from '../../../utills/Colors';
+import {FontFamily} from '../../../utills/FontFamily';
 
 export const styles = StyleSheet.create({
   mainViewContainer: {
@@ -35,5 +36,34 @@ export const styles = StyleSheet.create({
     borderBottomWidth: width(0.2),
     backgroundColor: 'transparent',
   },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  modalContainer: {
+    backgroundColor: AppColors.white,
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  modalButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: AppColors.black,
+    width: '90%',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  modalButtonText: {
+    color: AppColors.white,
+    fontSize: 16,
+    marginLeft: 10,
+    fontFamily: FontFamily.appFontSemiBold,
+  },
 });
-

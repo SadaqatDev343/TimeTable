@@ -4,11 +4,18 @@ import {CommonStyles} from '../../utills/CommonStyle';
 import {FontFamily} from '../../utills/FontFamily';
 import {CustomText} from '../texts';
 import styles from './style';
-const Card = ({title, onPress, Icon, containerStyle}: ICardProps) => {
+const Card = ({
+  title,
+  onPress,
+  Icon,
+  containerStyle,
+  onLongPress,
+}: ICardProps) => {
   return (
     <TouchableOpacity
       style={[containerStyle, styles.crowdBtn]}
-      onPress={onPress}>
+      onPress={onPress}
+      onLongPress={onLongPress}>
       {Icon}
       <CustomText
         size={4}

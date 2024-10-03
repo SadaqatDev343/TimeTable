@@ -3,9 +3,17 @@ import {ApiManager} from './api-manager';
 
 export const useGetAllSemesters = (id: string) => {
   return useQuery({
-    queryKey: ['allSemesters'],
+    queryKey: ['allSemesters', id],
     queryFn: async () =>
       await ApiManager.get<any>(`semesters/by-discipline/${id}`),
+  });
+};
+
+export const useDeleteSemesterById = () => {
+  return useMutation({
+    mutationFn: async (id: string) => {
+      return await ApiManager.delete<any>(`semesters/${id}`);
+    },
   });
 };
 

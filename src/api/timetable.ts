@@ -3,7 +3,7 @@ import {ApiManager} from './api-manager';
 
 export const useGetAllTimeTable = (id: string) => {
   return useQuery({
-    queryKey: ['allTimeTable'],
+    queryKey: ['allTimeTable', id],
     queryFn: async () =>
       await ApiManager.get<any>(`timetable/by-section/${id}`),
   });

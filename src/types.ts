@@ -13,6 +13,7 @@ export type IApbDropDownModal = IData | IState;
 export interface ICardProps {
   title: string;
   onPress?: () => void;
+  onLongPress?: () => void;
   Icon?: React.ReactElement;
   containerStyle?: ViewStyle | ViewStyle[];
 }

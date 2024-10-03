@@ -3,7 +3,7 @@ import {ApiManager} from './api-manager';
 
 export const useGetAllDateSheet = (id: string) => {
   return useQuery({
-    queryKey: ['allDateSheet'],
+    queryKey: ['allDateSheet', id],
     queryFn: async () =>
       await ApiManager.get<any>(`datesheet/by-section/${id}`),
   });

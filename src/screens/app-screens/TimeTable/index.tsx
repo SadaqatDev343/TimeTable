@@ -75,6 +75,13 @@ const TimeTable = ({route}: any) => {
   const renderItem = ({item}: any) => (
     <View>
       <Text style={styles.dayHeader}>{item.day}</Text>
+      {/* Render header for subjects, teachers, and rooms only once */}
+      <View style={styles.headerRow}>
+        <Text style={styles.headerCell}>Time</Text>
+        <Text style={styles.headerCell}>Subject</Text>
+        <Text style={styles.headerCell}>Teacher</Text>
+        <Text style={styles.headerCell}>Room</Text>
+      </View>
       {item.items.map((entry: any) => (
         <View key={entry._id} style={styles.row}>
           <Text style={styles.cell}>
@@ -113,14 +120,6 @@ const TimeTable = ({route}: any) => {
             data={filteredTimetable()}
             keyExtractor={item => item.day}
             renderItem={renderItem}
-            ListHeaderComponent={() => (
-              <View style={styles.headerRow}>
-                <Text style={styles.headerCell}>Time</Text>
-                <Text style={styles.headerCell}>Subject</Text>
-                <Text style={styles.headerCell}>Teacher</Text>
-                <Text style={styles.headerCell}>Room</Text>
-              </View>
-            )}
             contentContainerStyle={{flexGrow: 1}} // Ensure it takes full height for scrolling
           />
         )}
@@ -154,6 +153,7 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     paddingVertical: 8,
+    fontWeight: 'bold',
   },
   headerCell: {
     flex: 1,

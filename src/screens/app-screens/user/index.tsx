@@ -19,7 +19,7 @@ import {FontFamily} from '../../../utills/FontFamily';
 import {styles} from './style';
 
 export default function AdminHomeScreen({navigation}: any) {
-  const {data: allDepartments, isLoading} = useGetAllDepartments();
+  const {data: allDepartments, isLoading, refetch} = useGetAllDepartments();
   const [department, setDepartments] = useState<any[]>([]);
 
   useEffect(() => {
@@ -97,6 +97,8 @@ export default function AdminHomeScreen({navigation}: any) {
         ) : (
           <FlatList
             data={department}
+            refreshing={isLoading}
+            onRefresh={refetch}
             numColumns={3}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (

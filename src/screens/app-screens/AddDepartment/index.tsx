@@ -1,8 +1,12 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Image, TouchableOpacity, View} from 'react-native';
-import {useCreateDepartment} from '../../../api/department';
+import {
+  useCreateDepartment,
+  useGetDepartmentById,
+  useUpdateDepartmentById,
+} from '../../../api/department';
 import {AppLogo} from '../../../assets/images';
 import {Back} from '../../../assets/svg';
 import {
@@ -11,8 +15,8 @@ import {
   H1,
   ScreenWrapper,
   TextField,
-} from '../../../components'; // Assuming you have a DropDownButton component
-import DropDownModal from '../../../components/drop-down-modal'; // Assuming you have this modal component
+} from '../../../components';
+import DropDownModal from '../../../components/drop-down-modal';
 import AppColors from '../../../utills/Colors';
 import {CommonStyles} from '../../../utills/CommonStyle';
 import {FontFamily} from '../../../utills/FontFamily';
@@ -20,29 +24,33 @@ import {errorMessage, successMessage} from '../../../utills/method';
 import {departmentSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './style';
 
+const departments = [
+  {name: 'Computer Science', value: 'cs'},
+  {name: 'Mathematics', value: 'math'},
+  {name: 'Physics', value: 'phy'},
+  {name: 'Chemistry', value: 'chem'},
+  {name: 'Biology', value: 'bio'},
+  {name: 'Electrical Engineering', value: 'ee'},
+  {name: 'Mechanical Engineering', value: 'me'},
+  {name: 'Civil Engineering', value: 'ce'},
+  {name: 'Business Administration', value: 'ba'},
+  {name: 'Economics', value: 'eco'},
+];
+
 export default function AddDepartmentScreen({navigation, route}: any) {
-  // State for dropdown modal visibility and selected department
+  const departmentId = route?.params?.departmentId;
   const [departmentModalVisible, setDepartmentModalVisible] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
     null,
   );
 
-  const departments = [
-    {name: 'Computer Science', value: 'cs'},
-    {name: 'Mathematics', value: 'math'},
-    {name: 'Physics', value: 'phy'},
-    {name: 'Chemistry', value: 'chem'},
-    {name: 'Biology', value: 'bio'},
-    {name: 'Electrical Engineering', value: 'ee'},
-    {name: 'Mechanical Engineering', value: 'me'},
-    {name: 'Civil Engineering', value: 'ce'},
-    {name: 'Business Administration', value: 'ba'},
-    {name: 'Economics', value: 'eco'},
-  ];
+  const {data, isLoading} = useGetDepartmentById(departmentId);
 
+  // Create the form using useForm
   const {
     control,
     handleSubmit,
+    reset, // Reset the form when the data is loaded
     formState: {errors, isValid},
   } = useForm({
     mode: 'all',
@@ -55,29 +63,69 @@ export default function AddDepartmentScreen({navigation, route}: any) {
     resolver: yupResolver(departmentSchema),
   });
 
-  const {mutate, isPending} = useCreateDepartment();
+  const {mutate: updateDepartment, isPending: isUpdating} =
+    useUpdateDepartmentById();
+  const {mutate: createDepartment, isPending: isCreating} =
+    useCreateDepartment();
 
-  const onSubmit = (data: any) => {
+  useEffect(() => {
+    if (data?.ok) {
+      // Reset the form with the fetched department data
+      reset({
+        headOfDepartment: data.response.data.headOfDepartment,
+        description: data.response.data.description,
+        email: data.response.data.email,
+        phoneNumber: data.response.data.phoneNumber,
+      });
+      setSelectedDepartment(data.response.data.name); // Set selected department
+    }
+  }, [data, reset]);
+
+  const onSubmit = (formData: any) => {
     if (!selectedDepartment) {
       errorMessage('Please select a department');
       return;
     }
 
     const payload = {
-      ...data,
+      ...formData,
       name: selectedDepartment,
     };
 
-    mutate(payload, {
-      onSuccess: response => {
-        if (response.ok) {
-          successMessage('Department created successfully');
-          navigation.goBack();
-        } else {
-          errorMessage('Something went wrong');
-        }
-      },
-    });
+    if (departmentId) {
+      // Update existing department
+      updateDepartment(
+        {...payload, id: departmentId}, // Include department ID in the payload
+        {
+          onSuccess: response => {
+            if (response.ok) {
+              successMessage('Department updated successfully');
+              navigation.goBack();
+            } else {
+              errorMessage('Something went wrong');
+            }
+          },
+          onError: error => {
+            errorMessage('Update failed: ' + error.message); // Handle error
+          },
+        },
+      );
+    } else {
+      // Create a new department
+      createDepartment(payload, {
+        onSuccess: response => {
+          if (response.ok) {
+            successMessage('Department created successfully');
+            navigation.goBack();
+          } else {
+            errorMessage('Something went wrong');
+          }
+        },
+        onError: error => {
+          errorMessage('Creation failed: ' + error.message); // Handle error
+        },
+      });
+    }
   };
 
   const toggleDepartmentModal = () =>
@@ -109,10 +157,9 @@ export default function AddDepartmentScreen({navigation, route}: any) {
           color={AppColors.white}
           size={5}
           fontFam={FontFamily.appFontMedium}>
-          Add Department
+          {departmentId ? 'Update Department' : 'Add Department'}
         </H1>
 
-        {/* Department Dropdown */}
         <DropDownButton
           placeHolder="Select Department"
           Icon
@@ -123,7 +170,6 @@ export default function AddDepartmentScreen({navigation, route}: any) {
           value={selectedDepartment || 'Select Department'}
         />
 
-        {/* Head of Department */}
         <TextField
           title="Head of Department"
           control={control}
@@ -133,7 +179,6 @@ export default function AddDepartmentScreen({navigation, route}: any) {
           containerStyle={CommonStyles.marginTop_2}
         />
 
-        {/* Description */}
         <TextField
           title="Description"
           control={control}
@@ -142,7 +187,6 @@ export default function AddDepartmentScreen({navigation, route}: any) {
           placeholder="Enter department description (optional)"
         />
 
-        {/* Email */}
         <TextField
           title="Email"
           control={control}
@@ -151,7 +195,6 @@ export default function AddDepartmentScreen({navigation, route}: any) {
           placeholder="Enter email (optional)"
         />
 
-        {/* Phone Number */}
         <TextField
           title="Phone Number"
           control={control}
@@ -160,16 +203,15 @@ export default function AddDepartmentScreen({navigation, route}: any) {
           placeholder="Enter phone number (optional)"
         />
 
-        {/* Submit Button */}
         <Button
-          title={isPending ? 'Adding...' : 'Add Department'}
+          title={departmentId ? 'Update Department' : 'Add Department'}
+          isLoading={isUpdating || isCreating}
           containerStyle={CommonStyles.marginTop_2}
           onPress={handleSubmit(onSubmit)}
-          disabled={isPending}
+          disabled={isUpdating || isCreating}
         />
       </View>
 
-      {/* Dropdown Modal for Departments */}
       <DropDownModal
         isVisible={departmentModalVisible}
         Data={departments}

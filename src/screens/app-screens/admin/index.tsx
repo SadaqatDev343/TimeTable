@@ -3,16 +3,20 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Modal,
   Text,
   TouchableOpacity,
   View,
+  Animated,
 } from 'react-native';
 import {Card, CustomText, H1, ScreenWrapper} from '../../../components';
 import ScreenNames from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
-
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {useGetAllDepartments} from '../../../api/department';
+import {
+  useGetAllDepartments,
+  useDeleteDepartmentById,
+} from '../../../api/department';
 import {AppLogo} from '../../../assets/images';
 import {Add} from '../../../assets/svg';
 import {width} from '../../../utills/Diamension';
@@ -20,12 +24,31 @@ import {FontFamily} from '../../../utills/FontFamily';
 import {styles} from './style';
 
 export default function AdminHomeScreen({navigation}: any) {
-  const handleAddDepartment = () => {
-    navigation.navigate(ScreenNames.ADD_DEPARTMENT);
-  };
-
-  const {data: allDepartments, isLoading} = useGetAllDepartments();
   const [department, setDepartments] = useState<any[]>([]);
+  const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const {data: allDepartments, isLoading, refetch} = useGetAllDepartments();
+  const {mutate: deleteDepartment, isPending: isDeleting} =
+    useDeleteDepartmentById();
+
+  const slideAnim = useState(new Animated.Value(0))[0];
+
+  useEffect(() => {
+    if (modalVisible) {
+      Animated.timing(slideAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [modalVisible]);
 
   useEffect(() => {
     if (allDepartments?.ok) {
@@ -39,12 +62,45 @@ export default function AdminHomeScreen({navigation}: any) {
     }
   }, [allDepartments]);
 
+  const handleAddDepartment = () => {
+    navigation.navigate(ScreenNames.ADD_DEPARTMENT);
+  };
+
+  const handleLongPress = (item: any) => {
+    setSelectedDepartment(item);
+    setModalVisible(true);
+  };
+
+  const handleEditDepartment = () => {
+    setModalVisible(false);
+    // Navigate to edit department screen with selected department data
+    navigation.navigate(ScreenNames.ADD_DEPARTMENT, {
+      departmentId: selectedDepartment.id,
+    });
+  };
+
+  const handleDeleteDepartment = () => {
+    if (selectedDepartment) {
+      deleteDepartment(selectedDepartment.id, {
+        onSuccess: () => {
+          setModalVisible(false);
+          refetch(); // Refetch the department list after deletion
+        },
+        onError: error => {
+          console.error('Error deleting department:', error);
+          setModalVisible(false); // Close the modal if deletion fails
+        },
+      });
+    }
+  };
+
   return (
     <ScreenWrapper
       statusBarColor="#3333ff"
       backgroundColor="#3333ff"
       barStyle="light-content">
       <View style={styles.mainViewContainer}>
+        {/* Header */}
         <View
           style={{
             flexDirection: 'row',
@@ -66,7 +122,6 @@ export default function AdminHomeScreen({navigation}: any) {
               UNIVERSITY OF KOTLI AJ&K
             </H1>
           </View>
-
           <View style={styles.rightlogo}>
             <Image
               resizeMode="contain"
@@ -76,6 +131,7 @@ export default function AdminHomeScreen({navigation}: any) {
           </View>
         </View>
 
+        {/* Departments and Add Button */}
         <View
           style={{
             flexDirection: 'row',
@@ -94,6 +150,8 @@ export default function AdminHomeScreen({navigation}: any) {
             <Add width={20} height={20} color={AppColors.white} />
           </TouchableOpacity>
         </View>
+
+        {/* Content (List or Loading) */}
         {isLoading ? (
           <ActivityIndicator size="large" color={AppColors.white} />
         ) : department.length === 0 ? (
@@ -105,11 +163,14 @@ export default function AdminHomeScreen({navigation}: any) {
         ) : (
           <FlatList
             data={department}
+            refreshing={isLoading}
+            onRefresh={refetch}
             numColumns={3}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (
               <Card
                 title={item.name}
+                onLongPress={() => handleLongPress(item)}
                 onPress={() =>
                   navigation.navigate(ScreenNames.DESCIPLINESCREEN, {
                     departmentId: item.id,
@@ -119,6 +180,52 @@ export default function AdminHomeScreen({navigation}: any) {
             )}
           />
         )}
+
+        {/* Cool Sliding Modal for Edit/Delete */}
+        <Modal
+          transparent={true}
+          visible={modalVisible}
+          animationType="fade"
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={styles.modalBackground}>
+            <Animated.View
+              style={[
+                styles.modalContainer,
+                {
+                  transform: [
+                    {
+                      translateY: slideAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [300, 0],
+                      }),
+                    },
+                  ],
+                },
+              ]}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={handleEditDepartment}>
+                <FontAwesome name="edit" size={20} color={AppColors.white} />
+                <Text style={styles.modalButtonText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={handleDeleteDepartment}
+                disabled={isDeleting}>
+                <FontAwesome name="trash" size={20} color={AppColors.white} />
+                <Text style={styles.modalButtonText}>
+                  {isDeleting ? 'Deleting...' : 'Delete'}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, {backgroundColor: 'red'}]}
+                onPress={() => setModalVisible(false)}>
+                <FontAwesome name="times" size={20} color={AppColors.white} />
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </View>
+        </Modal>
       </View>
     </ScreenWrapper>
   );

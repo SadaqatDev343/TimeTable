@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Animated,
   FlatList,
   Image,
+  Modal,
   Pressable,
   Text,
   TouchableOpacity,
@@ -12,13 +14,17 @@ import {Card, CustomText, H1, ScreenWrapper} from '../../../components';
 import ScreenNames from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
 
-import {useGetAllDisciplines} from '../../../api/discipline';
+import {
+  useDeleteDisciplineById,
+  useGetAllDisciplines,
+} from '../../../api/discipline';
 import {AppLogo} from '../../../assets/images';
 import {Add, Back} from '../../../assets/svg';
 import {width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import {styles} from './style';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function DisciplineScreen({navigation, route}: any) {
   const [role, setRole] = useState<string | null>(null); // State for user role
@@ -26,8 +32,36 @@ export default function DisciplineScreen({navigation, route}: any) {
     navigation.navigate(ScreenNames.ADD_DISCIPLINE, {departmentId});
   };
   const departmentId = route.params.departmentId;
-  const {data: allDisciplines, isLoading} = useGetAllDisciplines(departmentId);
+  const {
+    data: allDisciplines,
+    isLoading,
+    refetch,
+  } = useGetAllDisciplines(departmentId);
   const [discipline, setDisciplines] = useState<any[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const slideAnim = useState(new Animated.Value(0))[0];
+
+  const {mutate: deleteDiscipline, isPending: isDeleting} =
+    useDeleteDisciplineById();
+
+  const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
+
+  useEffect(() => {
+    if (modalVisible) {
+      Animated.timing(slideAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [modalVisible]);
 
   useEffect(() => {
     const fetchRole = async () => {
@@ -53,6 +87,34 @@ export default function DisciplineScreen({navigation, route}: any) {
       setDisciplines(disciplineNames);
     }
   }, [allDisciplines]);
+
+  const handleLongPress = (item: any) => {
+    setSelectedDepartment(item);
+    setModalVisible(true);
+  };
+
+  const handleEditDepartment = () => {
+    setModalVisible(false);
+    // Navigate to edit department screen with selected department data
+    navigation.navigate(ScreenNames.EDIT_DEPARTMENT, {
+      departmentId: selectedDepartment.id,
+    });
+  };
+
+  const handleDeleteDepartment = () => {
+    if (selectedDepartment) {
+      deleteDiscipline(selectedDepartment.id, {
+        onSuccess: () => {
+          setModalVisible(false);
+          refetch(); // Refetch the department list after deletion
+        },
+        onError: error => {
+          console.error('Error deleting department:', error);
+          setModalVisible(false); // Close the modal if deletion fails
+        },
+      });
+    }
+  };
 
   return (
     <ScreenWrapper
@@ -121,10 +183,15 @@ export default function DisciplineScreen({navigation, route}: any) {
           <FlatList
             data={discipline}
             numColumns={3}
+            refreshing={isLoading}
+            onRefresh={refetch}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (
               <Card
                 title={item.name}
+                onLongPress={
+                  role === 'admin' ? () => handleLongPress(item) : undefined
+                }
                 onPress={() =>
                   navigation.navigate(ScreenNames.SEMESTERSCREEN, {
                     departmentId,
@@ -136,6 +203,50 @@ export default function DisciplineScreen({navigation, route}: any) {
           />
         )}
       </View>
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalBackground}>
+          <Animated.View
+            style={[
+              styles.modalContainer,
+              {
+                transform: [
+                  {
+                    translateY: slideAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [300, 0],
+                    }),
+                  },
+                ],
+              },
+            ]}>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleEditDepartment}>
+              <FontAwesome name="edit" size={20} color={AppColors.white} />
+              <Text style={styles.modalButtonText}>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleDeleteDepartment}
+              disabled={isDeleting}>
+              <FontAwesome name="trash" size={20} color={AppColors.white} />
+              <Text style={styles.modalButtonText}>
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalButton, {backgroundColor: 'red'}]}
+              onPress={() => setModalVisible(false)}>
+              <FontAwesome name="times" size={20} color={AppColors.white} />
+              <Text style={styles.modalButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+      </Modal>
     </ScreenWrapper>
   );
 }
