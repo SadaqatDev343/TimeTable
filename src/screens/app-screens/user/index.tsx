@@ -4,6 +4,7 @@ import {
   FlatList,
   Image,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -31,8 +32,20 @@ export default function AdminHomeScreen({navigation}: any) {
         }),
       );
       setDepartments(departmentData);
+      setFilteredDepartments(departmentData);
     }
   }, [allDepartments]);
+
+  const [filteredDepartments, setFilteredDepartments] = useState<any[]>([]); // State for filtered departments
+
+  const [searchText, setSearchText] = useState(''); // State for search text
+  const handleSearch = (text: string) => {
+    setSearchText(text);
+    const filteredData = department.filter(dept =>
+      dept.name.toLowerCase().includes(text.toLowerCase()),
+    );
+    setFilteredDepartments(filteredData);
+  };
 
   return (
     <ScreenWrapper
@@ -86,9 +99,18 @@ export default function AdminHomeScreen({navigation}: any) {
             Department
           </CustomText>
         </View>
+
+        {/* Search Input */}
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search departments..."
+          placeholderTextColor="#ccc"
+          value={searchText}
+          onChangeText={handleSearch} // Handle input changes
+        />
         {isLoading ? (
           <ActivityIndicator size="large" color={AppColors.white} />
-        ) : department.length === 0 ? (
+        ) : filteredDepartments.length === 0 ? (
           <View style={{alignItems: 'center', marginTop: 20}}>
             <Text style={{color: AppColors.white, fontSize: 16}}>
               No Data Available
@@ -96,7 +118,7 @@ export default function AdminHomeScreen({navigation}: any) {
           </View>
         ) : (
           <FlatList
-            data={department}
+            data={filteredDepartments}
             refreshing={isLoading}
             onRefresh={refetch}
             numColumns={3}

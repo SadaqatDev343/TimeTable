@@ -7,6 +7,7 @@ import {
   Modal,
   Pressable,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -46,6 +47,16 @@ export default function DisciplineScreen({navigation, route}: any) {
     useDeleteDisciplineById();
 
   const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
+  const [filteredDepartments, setFilteredDepartments] = useState<any[]>([]); // State for filtered departments
+
+  const [searchText, setSearchText] = useState(''); // State for search text
+  const handleSearch = (text: string) => {
+    setSearchText(text);
+    const filteredData = discipline.filter(dept =>
+      dept.name.toLowerCase().includes(text.toLowerCase()),
+    );
+    setFilteredDepartments(filteredData);
+  };
 
   useEffect(() => {
     if (modalVisible) {
@@ -85,6 +96,7 @@ export default function DisciplineScreen({navigation, route}: any) {
         }),
       );
       setDisciplines(disciplineNames);
+      setFilteredDepartments(disciplineNames); // Initialize filteredDepartments
     }
   }, [allDisciplines]);
 
@@ -172,9 +184,19 @@ export default function DisciplineScreen({navigation, route}: any) {
             </TouchableOpacity>
           )}
         </View>
+
+        {/* Search Input */}
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search discipline..."
+          placeholderTextColor="#ccc"
+          value={searchText}
+          onChangeText={handleSearch} // Handle input changes
+        />
+
         {isLoading ? (
           <ActivityIndicator size="large" color={AppColors.white} />
-        ) : discipline.length === 0 ? (
+        ) : filteredDepartments.length === 0 ? (
           <View style={{alignItems: 'center', marginTop: 20}}>
             <Text style={{color: AppColors.white, fontSize: 16}}>
               No Data Available
@@ -182,7 +204,7 @@ export default function DisciplineScreen({navigation, route}: any) {
           </View>
         ) : (
           <FlatList
-            data={discipline}
+            data={filteredDepartments}
             numColumns={3}
             refreshing={isLoading}
             onRefresh={refetch}

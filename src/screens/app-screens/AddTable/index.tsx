@@ -2,7 +2,11 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Image, TouchableOpacity, View} from 'react-native';
-import {useCreateTimeTable} from '../../../api/timetable'; // Import the create timetable API hook
+import {
+  useCreateTimeTable,
+  useGetTimeTableById,
+  useUpdateTimeTableById,
+} from '../../../api/timetable'; // Import the create timetable API hook
 import {useGetAllTeachers} from '../../../api/teacher'; // Import the teacher fetching API hook
 import {AppLogo} from '../../../assets/images';
 import {Back} from '../../../assets/svg';
@@ -45,6 +49,7 @@ export default function AddTableScreen({navigation, route}: any) {
   const disciplineId = route?.params?.disciplineId;
   const semesterId = route?.params?.semesterId;
   const sectionId = route?.params?.sectionId;
+  const timetableId = route?.params?.timetableId;
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
@@ -83,6 +88,7 @@ export default function AddTableScreen({navigation, route}: any) {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: {errors, isValid},
   } = useForm({
     mode: 'all',
@@ -94,7 +100,23 @@ export default function AddTableScreen({navigation, route}: any) {
     resolver: yupResolver(tableSchema), // Update to your actual Yup schema for the table
   });
 
+  const {data, isLoading} = useGetTimeTableById(timetableId);
   const {mutate, isPending} = useCreateTimeTable();
+
+  useEffect(() => {
+    if (data?.ok) {
+      const timetable = data.response.data;
+      setSelectedSubject(timetable.subject);
+      setSelectedRoom(timetable.room);
+      setSelectedTeacher(timetable.teacher);
+      setValue('startTime', timetable.startTime);
+      setValue('endTime', timetable.endTime);
+      setValue('day', timetable.day);
+    }
+  }, [data]);
+
+  const {mutate: updateTimeTable, isPending: isUpdating} =
+    useUpdateTimeTableById();
 
   const onSubmit = (data: any) => {
     if (!selectedTeacher || !selectedSubject || !selectedRoom) {
@@ -115,16 +137,33 @@ export default function AddTableScreen({navigation, route}: any) {
       endTime: data.endTime,
     };
 
-    mutate(payload, {
-      onSuccess: response => {
-        if (response.ok) {
-          successMessage('Table created successfully');
-          navigation.goBack();
-        } else {
-          errorMessage('Something went wrong');
-        }
-      },
-    });
+    if (timetableId) {
+      // If disciplineId exists, update the discipline
+      updateTimeTable(
+        {id: timetableId, payload},
+        {
+          onSuccess: response => {
+            if (response.ok) {
+              successMessage('Discipline updated successfully');
+              navigation.goBack();
+            } else {
+              errorMessage('Something went wrong');
+            }
+          },
+        },
+      );
+    } else {
+      mutate(payload, {
+        onSuccess: response => {
+          if (response.ok) {
+            successMessage('Table created successfully');
+            navigation.goBack();
+          } else {
+            errorMessage('Something went wrong');
+          }
+        },
+      });
+    }
   };
 
   return (
@@ -157,7 +196,7 @@ export default function AddTableScreen({navigation, route}: any) {
             color={AppColors.white}
             size={5}
             fontFam={FontFamily.appFontMedium}>
-            Add Table
+            {timetableId ? 'Update Table' : 'Add Table'}
           </H1>
 
           {/* Teacher Dropdown */}
@@ -224,10 +263,10 @@ export default function AddTableScreen({navigation, route}: any) {
 
           {/* Submit Button */}
           <Button
-            title="Add Table"
+            title={timetableId ? 'Update Table' : 'Add Table'}
             containerStyle={CommonStyles.marginTop_2}
             onPress={handleSubmit(onSubmit)}
-            isLoading={isPending}
+            isLoading={isPending || isUpdating}
           />
         </View>
 

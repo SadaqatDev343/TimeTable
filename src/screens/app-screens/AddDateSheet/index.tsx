@@ -268,7 +268,7 @@ export default function AddDateSheetScreen({navigation, route}: any) {
             title={datesheetId ? 'Update Date Sheet' : 'Add Date Sheet'}
             containerStyle={CommonStyles.marginVertical_2}
             onPress={handleSubmit(onSubmit)}
-            isLoading={isPending}
+            isLoading={isPending || isUpdating}
           />
         </View>
 

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
   Animated,
+  TextInput, // Import TextInput for the search
 } from 'react-native';
 import {Card, CustomText, H1, ScreenWrapper} from '../../../components';
 import ScreenNames from '../../../routes/routes';
@@ -25,8 +26,10 @@ import {styles} from './style';
 
 export default function AdminHomeScreen({navigation}: any) {
   const [department, setDepartments] = useState<any[]>([]);
+  const [filteredDepartments, setFilteredDepartments] = useState<any[]>([]); // State for filtered departments
   const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState(''); // State for search text
 
   const {data: allDepartments, isLoading, refetch} = useGetAllDepartments();
   const {mutate: deleteDepartment, isPending: isDeleting} =
@@ -59,8 +62,18 @@ export default function AdminHomeScreen({navigation}: any) {
         }),
       );
       setDepartments(departmentData);
+      setFilteredDepartments(departmentData); // Initialize filteredDepartments
     }
   }, [allDepartments]);
+
+  // Handle search input change
+  const handleSearch = (text: string) => {
+    setSearchText(text);
+    const filteredData = department.filter(dept =>
+      dept.name.toLowerCase().includes(text.toLowerCase()),
+    );
+    setFilteredDepartments(filteredData);
+  };
 
   const handleAddDepartment = () => {
     navigation.navigate(ScreenNames.ADD_DEPARTMENT);
@@ -151,10 +164,19 @@ export default function AdminHomeScreen({navigation}: any) {
           </TouchableOpacity>
         </View>
 
+        {/* Search Input */}
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search departments..."
+          placeholderTextColor="#ccc"
+          value={searchText}
+          onChangeText={handleSearch} // Handle input changes
+        />
+
         {/* Content (List or Loading) */}
         {isLoading ? (
           <ActivityIndicator size="large" color={AppColors.white} />
-        ) : department.length === 0 ? (
+        ) : filteredDepartments.length === 0 ? (
           <View style={{alignItems: 'center', marginTop: 20}}>
             <Text style={{color: AppColors.white, fontSize: 16}}>
               No Data Available
@@ -162,7 +184,7 @@ export default function AdminHomeScreen({navigation}: any) {
           </View>
         ) : (
           <FlatList
-            data={department}
+            data={filteredDepartments} // Use filtered departments
             refreshing={isLoading}
             onRefresh={refetch}
             numColumns={3}

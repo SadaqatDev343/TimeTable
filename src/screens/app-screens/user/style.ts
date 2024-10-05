@@ -35,4 +35,15 @@ export const styles = StyleSheet.create({
     borderBottomWidth: width(0.2),
     backgroundColor: 'transparent',
   },
+  searchInput: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 8,
+    backgroundColor: '#fff',
+    color: 'black',
+    width: '80%',
+  },
 });

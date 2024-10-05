@@ -7,6 +7,7 @@ import {
   Modal,
   Pressable,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -59,6 +60,7 @@ export default function SemesterScreen({navigation, route}: any) {
       }));
 
       setSemesters(semesterNames);
+      setFilteredDepartments(semesterNames);
     }
   }, [allSemesters]);
 
@@ -117,6 +119,17 @@ export default function SemesterScreen({navigation, route}: any) {
     }
   };
 
+  const [filteredDepartments, setFilteredDepartments] = useState<any[]>([]); // State for filtered departments
+
+  const [searchText, setSearchText] = useState(''); // State for search text
+  const handleSearch = (text: string) => {
+    setSearchText(text);
+    const filteredData = semester.filter(dept =>
+      dept.name.toLowerCase().includes(text.toLowerCase()),
+    );
+    setFilteredDepartments(filteredData);
+  };
+
   return (
     <ScreenWrapper
       statusBarColor="#3333ff"
@@ -172,9 +185,19 @@ export default function SemesterScreen({navigation, route}: any) {
             </TouchableOpacity>
           )}
         </View>
+
+        {/* Search Input */}
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search semesters..."
+          placeholderTextColor="#ccc"
+          value={searchText}
+          onChangeText={handleSearch} // Handle input changes
+        />
+
         {isLoading ? (
           <ActivityIndicator size="large" color={AppColors.white} />
-        ) : semester.length === 0 ? (
+        ) : filteredDepartments.length === 0 ? (
           <View style={{alignItems: 'center', marginTop: 20}}>
             <Text style={{color: AppColors.white, fontSize: 16}}>
               No Data Available
@@ -182,7 +205,7 @@ export default function SemesterScreen({navigation, route}: any) {
           </View>
         ) : (
           <FlatList
-            data={semester}
+            data={filteredDepartments}
             refreshing={isLoading}
             onRefresh={refetch}
             numColumns={3}

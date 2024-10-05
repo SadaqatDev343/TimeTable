@@ -19,6 +19,7 @@ import {height} from '../../../utills/Diamension';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {FontFamily} from '../../../utills/FontFamily';
 import ScreenNames from '../../../routes/routes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DateSheetView = ({route, navigation}: any) => {
   const sectionId = route.params.sectionId;
@@ -81,7 +82,10 @@ const DateSheetView = ({route, navigation}: any) => {
     return (
       <TouchableOpacity
         activeOpacity={0.6}
-        onLongPress={() => handleLongPress(item)}>
+        disabled={userRole === 'admin' ? false : true}
+        onLongPress={
+          userRole === 'admin' ? () => handleLongPress(item) : undefined
+        }>
         <View style={styles.dateSheetItem}>
           <Text style={styles.header}>Subject: {item.subject.name}</Text>
           <Text>Exam Date: {new Date(item.examDate).toDateString()}</Text>
@@ -101,6 +105,17 @@ const DateSheetView = ({route, navigation}: any) => {
   const renderSectionHeader = ({section}: any) => {
     return <Text style={styles.sectionHeader}>{section.title}</Text>;
   };
+
+  const [userRole, setUserRole] = useState<string | null>(null); // State for user role
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const role = await AsyncStorage.getItem('role'); // Fetch role from AsyncStorage
+      setUserRole(role);
+    };
+
+    fetchUserRole(); // Call the function to fetch user role
+  }, []);
 
   const [modalVisible, setModalVisible] = useState(false);
 

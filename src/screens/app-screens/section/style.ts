@@ -65,4 +65,15 @@ export const styles = StyleSheet.create({
     marginLeft: 10,
     fontFamily: FontFamily.appFontSemiBold,
   },
+  searchInput: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 8,
+    backgroundColor: '#fff',
+    color: 'black',
+    width: '80%',
+  },
 });

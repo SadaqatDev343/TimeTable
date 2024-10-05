@@ -1,7 +1,24 @@
-import {StyleSheet, Text, View, FlatList, TextInput} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useGetAllTimeTable} from '../../../api/timetable';
+import {
+  Animated,
+  FlatList,
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {
+  useDeleteTimeTableById,
+  useGetAllTimeTable,
+} from '../../../api/timetable';
 import {ScreenWrapper} from '../../../components';
+import ScreenNames from '../../../routes/routes';
+import AppColors from '../../../utills/Colors';
+import {FontFamily} from '../../../utills/FontFamily';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Define the correct order of weekdays
 const weekdayOrder = [
@@ -36,15 +53,11 @@ const groupByDay = (data: any) => {
   return sortedGroupedData;
 };
 
-const TimeTable = ({route}: any) => {
+const TimeTable = ({route, navigation}: any) => {
   const sectionId = route.params.sectionId;
   const {data, isLoading, refetch} = useGetAllTimeTable(sectionId);
   const [groupedTimetable, setGroupedTimetable] = useState<any>([]);
   const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    refetch();
-  }, []);
 
   useEffect(() => {
     if (data?.ok) {
@@ -83,19 +96,90 @@ const TimeTable = ({route}: any) => {
         <Text style={styles.headerCell}>Room</Text>
       </View>
       {item.items.map((entry: any) => (
-        <View key={entry._id} style={styles.row}>
-          <Text style={styles.cell}>
-            {entry.startTime} - {entry.endTime}
-          </Text>
-          <Text style={styles.cell}>{entry.subject.name}</Text>
-          <Text style={styles.cell}>{entry.teacher.name}</Text>
-          <Text style={styles.cell}>
-            {entry.room.buildingName} Room {entry.room.roomNumber}
-          </Text>
-        </View>
+        <TouchableOpacity
+          key={entry._id}
+          activeOpacity={0.6}
+          disabled={userRole === 'admin' ? false : true}
+          onLongPress={
+            userRole === 'admin' ? () => handleLongPress(entry) : undefined
+          }>
+          <View style={styles.row}>
+            <Text style={styles.cell}>
+              {entry.startTime} - {entry.endTime}
+            </Text>
+            <Text style={styles.cell}>{entry.subject.name}</Text>
+            <Text style={styles.cell}>{entry.teacher.name}</Text>
+            <Text style={styles.cell}>
+              {entry.room.buildingName} Room {entry.room.roomNumber}
+            </Text>
+          </View>
+        </TouchableOpacity>
       ))}
     </View>
   );
+  const [userRole, setUserRole] = useState<string | null>(null); // State for user role
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const role = await AsyncStorage.getItem('role'); // Fetch role from AsyncStorage
+      setUserRole(role);
+    };
+
+    fetchUserRole(); // Call the function to fetch user role
+  }, []);
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const slideAnim = useState(new Animated.Value(0))[0];
+
+  const {mutate: deleteTimeTable, isPending: isDeleting} =
+    useDeleteTimeTableById();
+
+  const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
+
+  useEffect(() => {
+    if (modalVisible) {
+      Animated.timing(slideAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [modalVisible]);
+
+  const handleLongPress = (item: any) => {
+    setSelectedDepartment(item);
+    setModalVisible(true);
+  };
+
+  const handleEditDepartment = () => {
+    setModalVisible(false);
+    // Navigate to edit department screen with selected department data
+    navigation.navigate(ScreenNames.ADD_TABLE, {
+      timetableId: selectedDepartment._id,
+    });
+  };
+
+  const handleDeleteDepartment = () => {
+    if (selectedDepartment) {
+      deleteTimeTable(selectedDepartment._id, {
+        onSuccess: () => {
+          setModalVisible(false);
+          refetch(); // Refetch the department list after deletion
+        },
+        onError: error => {
+          console.error('Error deleting department:', error);
+          setModalVisible(false); // Close the modal if deletion fails
+        },
+      });
+    }
+  };
 
   return (
     <ScreenWrapper
@@ -118,12 +202,58 @@ const TimeTable = ({route}: any) => {
         ) : (
           <FlatList
             data={filteredTimetable()}
+            refreshing={isLoading}
+            onRefresh={refetch}
             keyExtractor={item => item.day}
             renderItem={renderItem}
             contentContainerStyle={{flexGrow: 1}} // Ensure it takes full height for scrolling
           />
         )}
       </View>
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalBackground}>
+          <Animated.View
+            style={[
+              styles.modalContainer,
+              {
+                transform: [
+                  {
+                    translateY: slideAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [300, 0],
+                    }),
+                  },
+                ],
+              },
+            ]}>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleEditDepartment}>
+              <FontAwesome name="edit" size={20} color={AppColors.white} />
+              <Text style={styles.modalButtonText}>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleDeleteDepartment}
+              disabled={isDeleting}>
+              <FontAwesome name="trash" size={20} color={AppColors.white} />
+              <Text style={styles.modalButtonText}>
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalButton, {backgroundColor: 'red'}]}
+              onPress={() => setModalVisible(false)}>
+              <FontAwesome name="times" size={20} color={AppColors.white} />
+              <Text style={styles.modalButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+      </Modal>
     </ScreenWrapper>
   );
 };
@@ -143,8 +273,9 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    backgroundColor: AppColors.blue10,
+    borderRadius: 8,
+    marginVertical: 8,
   },
   cell: {
     flex: 1,
@@ -154,6 +285,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 8,
     fontWeight: 'bold',
+    backgroundColor: AppColors.blue10,
+    borderRadius: 8,
   },
   headerCell: {
     flex: 1,
@@ -167,6 +300,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     padding: 8,
     textAlign: 'center',
+    borderRadius: 8,
+    backgroundColor: AppColors.blue10,
   },
   searchInput: {
     height: 40,
@@ -177,5 +312,35 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: '#fff',
     color: 'black',
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  modalContainer: {
+    backgroundColor: AppColors.white,
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  modalButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: AppColors.black,
+    width: '90%',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  modalButtonText: {
+    color: AppColors.white,
+    fontSize: 16,
+    marginLeft: 10,
+    fontFamily: FontFamily.appFontSemiBold,
   },
 });
