@@ -23,6 +23,7 @@ import {FontFamily} from '../../../utills/FontFamily';
 import {errorMessage, successMessage} from '../../../utills/method';
 import {departmentSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './style';
+import {useQueryClient} from '@tanstack/react-query';
 
 const departments = [
   {name: 'Computer Science', value: 'cs'},
@@ -45,6 +46,7 @@ export default function AddDepartmentScreen({navigation, route}: any) {
   );
 
   const {data, isLoading} = useGetDepartmentById(departmentId);
+  const queryClient = useQueryClient(); // Initialize queryClient
 
   // Create the form using useForm
   const {
@@ -100,6 +102,7 @@ export default function AddDepartmentScreen({navigation, route}: any) {
           onSuccess: response => {
             if (response.ok) {
               successMessage('Department updated successfully');
+              queryClient.invalidateQueries({queryKey: ['allDepartments']}); // Refetch the departments list
               navigation.goBack();
             } else {
               errorMessage('Something went wrong');
@@ -116,6 +119,7 @@ export default function AddDepartmentScreen({navigation, route}: any) {
         onSuccess: response => {
           if (response.ok) {
             successMessage('Department created successfully');
+            queryClient.invalidateQueries({queryKey: ['allDepartments']}); // Refetch the departments list
             navigation.goBack();
           } else {
             errorMessage('Something went wrong');
