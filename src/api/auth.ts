@@ -1,4 +1,4 @@
-import {useMutation} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import {ApiManager} from './api-manager';
 
 export const useUserLogin = () => {
@@ -18,6 +18,27 @@ export const useAdminLogin = () => {
         email,
         password,
       }),
+  });
+};
+
+export const useGetUserByEmail = (email: string) => {
+  return useQuery({
+    queryKey: ['user', email],
+    queryFn: async () => await ApiManager.get<any>(`user/${email}`),
+  });
+};
+
+export const useUpdateUserById = () => {
+  return useMutation({
+    mutationFn: async ({id, name, password, email, contact, role}: any) => {
+      return await ApiManager.patch<any>(`user/update/${id}`, {
+        name,
+        password,
+        email,
+        contact,
+        role,
+      });
+    },
   });
 };
 

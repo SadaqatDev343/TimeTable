@@ -1,8 +1,7 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useRef, useState} from 'react';
-import {useForm} from 'react-hook-form';
-import {Image, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {ActivityIndicator, Image, TouchableOpacity, View} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {AppLogo} from '../../../assets/images';
 import {
@@ -14,36 +13,110 @@ import {
   TextField,
 } from '../../../components';
 import DropDownModal from '../../../components/drop-down-modal';
-import ScreenNames, {RootStackParamList} from '../../../routes/routes';
 import AppColors from '../../../utills/Colors';
 import {CommonStyles} from '../../../utills/CommonStyle';
 import {width} from '../../../utills/Diamension';
 import {FontFamily} from '../../../utills/FontFamily';
 import {UserType} from '../../../utills/userType';
-import {authSchema} from '../../../utills/YupSchemaEditProfile';
+import {profileSchema} from '../../../utills/YupSchemaEditProfile';
 import styles from './style';
+import {useGetUserByEmail, useUpdateUserById} from '../../../api/auth';
+import {useForm} from 'react-hook-form';
+import {errorMessage, successMessage} from '../../../utills/method';
 
-export default function Profile({navigation, route}: any) {
-  const [isDirectlyInvolve, setDirectlyInvolve] = useState(false);
+export default function Profile({navigation}: any) {
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+  const [email, setEmail] = useState('');
+  const [id, setId] = useState('');
+  const [originalData, setOriginalData] = useState({
+    name: '',
+    contact: '',
+    role: '',
+  }); // Store original data
   const toggleCategory = () => setCategoryModalVisible(!categoryModalVisible);
   const emailRef = useRef<any>(null);
-  const passwordRef = useRef<any>(null);
+
+  // Retrieve email from AsyncStorage
+  useEffect(() => {
+    const fetchEmail = async () => {
+      try {
+        const storedEmail = await AsyncStorage.getItem('email');
+        if (storedEmail) {
+          setEmail(storedEmail);
+        }
+      } catch (error) {
+        console.error('Failed to fetch email from storage:', error);
+      }
+    };
+    fetchEmail();
+  }, []);
+
+  const {data, isLoading, refetch} = useGetUserByEmail(email);
+
+  // Use useForm to manage form state
   const {
     control,
     handleSubmit,
+    setValue,
+    getValues,
     formState: {errors, isValid},
   } = useForm({
     mode: 'all',
     defaultValues: {
-      email: '',
-      password: '',
       name: '',
+      contact: '',
     },
-    resolver: yupResolver(authSchema),
+    resolver: yupResolver(profileSchema),
   });
+
+  useEffect(() => {
+    if (data?.ok) {
+      const details = data.response.data.data[0];
+      setSelectedCategory(details.role);
+      setValue('contact', details.contact);
+      setValue('name', details.name);
+      setId(details._id);
+
+      // Store original values for comparison
+      setOriginalData({
+        name: details.name,
+        contact: details.contact,
+        role: details.role,
+      });
+    }
+  }, [data]);
+
+  const {mutate, isPending} = useUpdateUserById();
+
+  // Handle form submission
+  const handleProfile = (data: any) => {
+    mutate(
+      {
+        id: id,
+        name: data.name,
+        contact: data.contact,
+        role: String(selectedCategory).toLowerCase(),
+      },
+      {
+        onSuccess: res => {
+          if (res.ok) {
+            successMessage('User updated successfully');
+            refetch();
+          } else {
+            errorMessage('Something went wrong');
+          }
+        },
+      },
+    );
+  };
+
+  // Check if the form data is the same as the original data
+  const isDataSame =
+    originalData.name === getValues('name') &&
+    originalData.contact === getValues('contact') &&
+    originalData.role === selectedCategory;
+
   return (
     <Gradient>
       <ScreenWrapper
@@ -65,7 +138,6 @@ export default function Profile({navigation, route}: any) {
             <TouchableOpacity
               onPress={() => navigation.openDrawer()}
               style={styles.leftlogo}>
-              {/* Replacing text with Drawer Icon */}
               <FontAwesome name="navicon" size={24} color="white" />
             </TouchableOpacity>
             <View style={{marginLeft: -24}}>
@@ -76,7 +148,6 @@ export default function Profile({navigation, route}: any) {
                 UNIVERSITY OF KOTLI AJ&K
               </H1>
             </View>
-
             <View style={styles.rightlogo}>
               <Image
                 resizeMode="contain"
@@ -85,65 +156,51 @@ export default function Profile({navigation, route}: any) {
               />
             </View>
           </View>
-          <TextField
-            title="Full Name"
-            control={control}
-            name="name"
-            returnKeyType="next"
-            placeholder="Enter your full name"
-            containerStyle={CommonStyles.marginTop_3}
-            onSubmitEditing={() => emailRef?.current?.focus()}
-          />
-          <TextField
-            ref={emailRef}
-            title="Email"
-            control={control}
-            name="email"
-            returnKeyType="next"
-            placeholder="Enter your email address"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            onSubmitEditing={() => passwordRef?.current?.focus()}
-          />
-          <TextField
-            title="Contact Number"
-            control={control}
-            name="Contact"
-            returnKeyType="next"
-            placeholder="Enter your Contact Number"
-            containerStyle={CommonStyles.marginTop_3}
-            onSubmitEditing={() => emailRef?.current?.focus()}
-          />
-          <View>
-            <TextField
-              ref={passwordRef}
-              title="Password"
-              control={control}
-              name="password"
-              placeholder="Enter your password"
-              secureTextEntry={!showPassword}
-              showPasswordIcon={true}
-              isPasswordVisible={showPassword}
-              onPressIcon={() => setShowPassword(!showPassword)}
+          {isLoading ? (
+            <ActivityIndicator
+              size="large"
+              color={AppColors.white}
+              style={CommonStyles.marginTop_1}
             />
-          </View>
-          <DropDownButton
-            placeHolder="Role"
-            Icon
-            title="Role"
-            placeholderColor={AppColors.grey10}
-            containerStyle={styles.dropdown}
-            onPress={toggleCategory}
-            value={selectedCategory}
-          />
-          <View style={styles.checkBoxView}>
-            <Button
-              title="Update profile"
-              containerStyle={CommonStyles.marginTop_2}
-              onPress={() => console.log('--')}
-              // onPress={handleSubmit(registerUser)}
-            />
-          </View>
+          ) : (
+            <>
+              <TextField
+                title="Full Name"
+                control={control}
+                name="name"
+                returnKeyType="next"
+                placeholder="Enter your full name"
+                containerStyle={CommonStyles.marginTop_3}
+                onSubmitEditing={() => emailRef?.current?.focus()}
+              />
+              <TextField
+                title="Contact Number"
+                control={control}
+                name="contact"
+                returnKeyType="next"
+                placeholder="Enter your Contact Number"
+                onSubmitEditing={() => emailRef?.current?.focus()}
+              />
+              <DropDownButton
+                placeHolder="Role"
+                Icon
+                title="Role"
+                placeholderColor={AppColors.grey10}
+                containerStyle={styles.dropdown}
+                onPress={toggleCategory}
+                value={selectedCategory}
+              />
+              <View style={styles.checkBoxView}>
+                <Button
+                  title="Update Profile"
+                  containerStyle={CommonStyles.marginTop_2}
+                  onPress={handleSubmit(handleProfile)}
+                  isLoading={isPending}
+                  disabled={isDataSame} // Disable the button if data is the same
+                />
+              </View>
+            </>
+          )}
         </View>
         <DropDownModal
           isVisible={categoryModalVisible}

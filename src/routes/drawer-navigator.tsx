@@ -68,6 +68,7 @@ const DrawerNavigator = ({role}: {role: 'admin' | 'notAdmin'}) => {
           <Drawer.Screen name="Add Teacher" component={AddTeachers} />
           <Drawer.Screen name="Add Room" component={AddRoom} />
           <Drawer.Screen name="Add Subject" component={AddSubject} />
+          <Drawer.Screen name="Profile" component={Profile} />
           <Drawer.Screen name="Logout" options={{drawerLabel: 'Logout'}}>
             {() => <Logout />}
           </Drawer.Screen>

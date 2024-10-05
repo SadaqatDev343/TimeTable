@@ -67,6 +67,7 @@ export default function Admin_LOGIN({
           try {
             await AsyncStorage.setItem('token', token);
             await AsyncStorage.setItem('role', role);
+            await AsyncStorage.setItem('email', data.email);
           } catch (error) {
             errorMessage('Unexpected error occurred');
           }

@@ -200,3 +200,14 @@ export const dateSheetSchema = Yup.object().shape({
       'End time must be in format HH:MM AM/PM',
     ),
 });
+
+export const profileSchema = Yup.object().shape({
+  name: Yup.string().required('Full Name is required'),
+  contact: yup
+    .string()
+    .required('Enter Contact Number')
+    .matches(
+      /^[0-9+()-\s]*$/,
+      'Contact number must be valid and can include digits, spaces, and symbols like +, -, ()',
+    ),
+});
