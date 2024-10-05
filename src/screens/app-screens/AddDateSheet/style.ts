@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   heading: {
     marginVertical: height(1),
     alignSelf: 'center',
-    width: width(50),
+    width: width(60),
     paddingLeft: width(10),
   },
   avatarContainer: {

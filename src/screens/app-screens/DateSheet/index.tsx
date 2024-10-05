@@ -1,13 +1,28 @@
-import {StyleSheet, Text, View, SectionList, TextInput} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SectionList,
+  TextInput,
+  Modal,
+  Animated,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {ScreenWrapper} from '../../../components';
-import {useGetAllDateSheet} from '../../../api/datesheet';
+import {
+  useDeleteDateSheetById,
+  useGetAllDateSheet,
+} from '../../../api/datesheet';
 import AppColors from '../../../utills/Colors';
 import {height} from '../../../utills/Diamension';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {FontFamily} from '../../../utills/FontFamily';
+import ScreenNames from '../../../routes/routes';
 
-const DateSheetView = ({route}: any) => {
+const DateSheetView = ({route, navigation}: any) => {
   const sectionId = route.params.sectionId;
-  const {data, isLoading} = useGetAllDateSheet(sectionId);
+  const {data, isLoading, refetch} = useGetAllDateSheet(sectionId);
   const [dataSheet, setDateSheet] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -64,23 +79,80 @@ const DateSheetView = ({route}: any) => {
   // Render a single date sheet item
   const renderDateSheetItem = ({item}: any) => {
     return (
-      <View style={styles.dateSheetItem}>
-        <Text style={styles.header}>Subject: {item.subject.name}</Text>
-        <Text>Exam Date: {new Date(item.examDate).toDateString()}</Text>
-        <Text>Start Time: {item.startTime}</Text>
-        <Text>End Time: {item.endTime}</Text>
-        <Text>
-          Room: {item.room.roomNumber}, Building: {item.room.buildingName}
-        </Text>
-        <Text>Department: {item.department.name}</Text>
-        <Text>Semester: {item.semester.name}</Text>
-      </View>
+      <TouchableOpacity
+        activeOpacity={0.6}
+        onLongPress={() => handleLongPress(item)}>
+        <View style={styles.dateSheetItem}>
+          <Text style={styles.header}>Subject: {item.subject.name}</Text>
+          <Text>Exam Date: {new Date(item.examDate).toDateString()}</Text>
+          <Text>Start Time: {item.startTime}</Text>
+          <Text>End Time: {item.endTime}</Text>
+          <Text>
+            Room: {item.room.roomNumber}, Building: {item.room.buildingName}
+          </Text>
+          <Text>Department: {item.department.name}</Text>
+          <Text>Semester: {item.semester.name}</Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
   // Render section header
   const renderSectionHeader = ({section}: any) => {
     return <Text style={styles.sectionHeader}>{section.title}</Text>;
+  };
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const slideAnim = useState(new Animated.Value(0))[0];
+
+  const {mutate: deleteDiscipline, isPending: isDeleting} =
+    useDeleteDateSheetById();
+
+  const [selectedDepartment, setSelectedDepartment] = useState<any>(null);
+
+  useEffect(() => {
+    if (modalVisible) {
+      Animated.timing(slideAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [modalVisible]);
+
+  const handleLongPress = (item: any) => {
+    setSelectedDepartment(item);
+    setModalVisible(true);
+  };
+
+  const handleEditDepartment = () => {
+    setModalVisible(false);
+    // Navigate to edit department screen with selected department data
+    navigation.navigate(ScreenNames.CREATE_DATESHEET, {
+      datesheetId: selectedDepartment._id,
+    });
+  };
+
+  const handleDeleteDepartment = () => {
+    if (selectedDepartment) {
+      deleteDiscipline(selectedDepartment._id, {
+        onSuccess: () => {
+          setModalVisible(false);
+          refetch(); // Refetch the department list after deletion
+        },
+        onError: error => {
+          console.error('Error deleting department:', error);
+          setModalVisible(false); // Close the modal if deletion fails
+        },
+      });
+    }
   };
 
   return (
@@ -101,6 +173,8 @@ const DateSheetView = ({route}: any) => {
           <Text>Loading...</Text>
         ) : (
           <SectionList
+            refreshing={isLoading}
+            onRefresh={refetch}
             sections={filteredData()}
             renderItem={renderDateSheetItem}
             renderSectionHeader={renderSectionHeader}
@@ -109,6 +183,50 @@ const DateSheetView = ({route}: any) => {
           />
         )}
       </View>
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalBackground}>
+          <Animated.View
+            style={[
+              styles.modalContainer,
+              {
+                transform: [
+                  {
+                    translateY: slideAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [300, 0],
+                    }),
+                  },
+                ],
+              },
+            ]}>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleEditDepartment}>
+              <FontAwesome name="edit" size={20} color={AppColors.white} />
+              <Text style={styles.modalButtonText}>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleDeleteDepartment}
+              disabled={isDeleting}>
+              <FontAwesome name="trash" size={20} color={AppColors.white} />
+              <Text style={styles.modalButtonText}>
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalButton, {backgroundColor: 'red'}]}
+              onPress={() => setModalVisible(false)}>
+              <FontAwesome name="times" size={20} color={AppColors.white} />
+              <Text style={styles.modalButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+      </Modal>
     </ScreenWrapper>
   );
 };
@@ -157,5 +275,35 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginBottom: height(1),
     borderRadius: 8,
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  modalContainer: {
+    backgroundColor: AppColors.white,
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  modalButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: AppColors.black,
+    width: '90%',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  modalButtonText: {
+    color: AppColors.white,
+    fontSize: 16,
+    marginLeft: 10,
+    fontFamily: FontFamily.appFontSemiBold,
   },
 });

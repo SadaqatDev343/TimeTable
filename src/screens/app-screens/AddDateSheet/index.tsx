@@ -21,7 +21,11 @@ import {errorMessage, successMessage} from '../../../utills/method';
 import {dateSheetSchema} from '../../../utills/YupSchemaEditProfile'; // Updated Yup schema for the date sheet
 import styles from './style';
 import DropDownModal from '../../../components/drop-down-modal';
-import {useCreateDateSheet} from '../../../api/datesheet';
+import {
+  useCreateDateSheet,
+  useGetDateSheetById,
+  useUpdateDateSheetById,
+} from '../../../api/datesheet';
 
 // Define a type for the data
 type Subject = {
@@ -34,11 +38,25 @@ type Room = {
   name: string;
 };
 
+const formattedDate = (dateString: string) => {
+  const date = new Date(dateString); // Convert to Date object
+  const year = date.getFullYear(); // Get full year
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Get month and pad it
+  const day = String(date.getDate()).padStart(2, '0'); // Get day and pad it
+  return `${year}-${month}-${day}`; // Return formatted date
+};
+
 export default function AddDateSheetScreen({navigation, route}: any) {
   const departmentId = route?.params?.departmentId;
   const disciplineId = route?.params?.disciplineId;
   const semesterId = route?.params?.semesterId;
   const sectionId = route?.params?.sectionId;
+  const datesheetId = route?.params?.datesheetId;
+
+  const {data, isLoading} = useGetDateSheetById(datesheetId);
+
+  const {mutate: useUpdateDateSheet, isPending: isUpdating} =
+    useUpdateDateSheetById();
 
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
@@ -77,6 +95,7 @@ export default function AddDateSheetScreen({navigation, route}: any) {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: {errors, isValid},
   } = useForm({
     mode: 'all',
@@ -87,6 +106,18 @@ export default function AddDateSheetScreen({navigation, route}: any) {
     },
     resolver: yupResolver(dateSheetSchema), // Updated Yup schema for date sheet
   });
+
+  useEffect(() => {
+    if (data?.ok) {
+      const datesheet = data.response.data;
+      setSelectedSubject(datesheet.subject);
+      setSelectedExamType(datesheet.examType);
+      setSelectedRoom(datesheet.room);
+      setValue('examDate', formattedDate(datesheet.examDate));
+      setValue('startTime', datesheet.startTime);
+      setValue('endTime', datesheet.endTime);
+    }
+  }, [data]);
 
   const {mutate, isPending} = useCreateDateSheet();
 
@@ -109,16 +140,33 @@ export default function AddDateSheetScreen({navigation, route}: any) {
       examType: selectedExamType,
     };
 
-    mutate(payload, {
-      onSuccess: response => {
-        if (response.ok) {
-          successMessage('Date sheet created successfully');
-          navigation.goBack();
-        } else {
-          errorMessage('Something went wrong');
-        }
-      },
-    });
+    if (datesheetId) {
+      // If disciplineId exists, update the discipline
+      useUpdateDateSheet(
+        {id: datesheetId, payload},
+        {
+          onSuccess: response => {
+            if (response.ok) {
+              successMessage('Discipline updated successfully');
+              navigation.goBack();
+            } else {
+              errorMessage('Something went wrong');
+            }
+          },
+        },
+      );
+    } else {
+      mutate(payload, {
+        onSuccess: response => {
+          if (response.ok) {
+            successMessage('Date sheet created successfully');
+            navigation.goBack();
+          } else {
+            errorMessage('Something went wrong');
+          }
+        },
+      });
+    }
   };
 
   return (
@@ -150,7 +198,7 @@ export default function AddDateSheetScreen({navigation, route}: any) {
             color={AppColors.white}
             size={5}
             fontFam={FontFamily.appFontMedium}>
-            Add Date Sheet
+            {datesheetId ? 'Update Date Sheet' : 'Add Date Sheet'}
           </H1>
 
           {/* Subject Dropdown */}
@@ -217,7 +265,7 @@ export default function AddDateSheetScreen({navigation, route}: any) {
 
           {/* Submit Button */}
           <Button
-            title="Add Date Sheet"
+            title={datesheetId ? 'Update Date Sheet' : 'Add Date Sheet'}
             containerStyle={CommonStyles.marginVertical_2}
             onPress={handleSubmit(onSubmit)}
             isLoading={isPending}
