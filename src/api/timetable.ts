@@ -26,19 +26,20 @@ export const useGetTimeTableById = (id: string) => {
 
 export const useUpdateTimeTableById = () => {
   return useMutation({
-    mutationFn: async ({
-      id,
-      department,
-      discipline,
-      semester,
-      section,
-      teacher,
-      subject,
-      room,
-      day,
-      startTime,
-      endTime,
-    }: any) => {
+    mutationFn: async ({id, payload}: any) => {
+      const {
+        department,
+        discipline,
+        semester,
+        section,
+        teacher,
+        subject,
+        room,
+        day,
+        startTime,
+        endTime,
+      } = payload;
+
       return await ApiManager.patch<any>(`timetable/${id}`, {
         department,
         discipline,

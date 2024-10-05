@@ -26,19 +26,20 @@ export const useGetDateSheetById = (id: string) => {
 
 export const useUpdateDateSheetById = () => {
   return useMutation({
-    mutationFn: async ({
-      id,
-      department,
-      discipline,
-      semester,
-      section,
-      subject,
-      room,
-      examDate,
-      startTime,
-      endTime,
-      examType,
-    }: any) => {
+    mutationFn: async ({id, payload}: any) => {
+      const {
+        department,
+        discipline,
+        semester,
+        section,
+        subject,
+        room,
+        examDate,
+        startTime,
+        endTime,
+        examType,
+      } = payload;
+
       return await ApiManager.patch<any>(`datesheet/${id}`, {
         department,
         discipline,

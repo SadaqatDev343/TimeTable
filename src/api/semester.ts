@@ -26,14 +26,8 @@ export const useGetSemesterById = (id: string) => {
 
 export const useUpdateSemesterById = () => {
   return useMutation({
-    mutationFn: async ({
-      name,
-      code,
-      discipline,
-      description,
-      department,
-      id,
-    }: any) => {
+    mutationFn: async ({id, payload}: any) => {
+      const {name, code, discipline, description, department} = payload;
       return await ApiManager.patch<any>(`semesters/${id}`, {
         name,
         code,

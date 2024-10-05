@@ -26,17 +26,18 @@ export const useGetSectionById = (id: string) => {
 
 export const useUpdateSectionById = () => {
   return useMutation({
-    mutationFn: async ({
-      name,
-      code,
-      description,
-      discipline,
-      department,
-      semester,
-      teacher,
-      capacity,
-      id,
-    }: any) => {
+    mutationFn: async ({id, payload}: any) => {
+      const {
+        name,
+        code,
+        description,
+        discipline,
+        department,
+        semester,
+        teacher,
+        capacity,
+      } = payload;
+
       return await ApiManager.patch<any>(`sections/${id}`, {
         name,
         code,
