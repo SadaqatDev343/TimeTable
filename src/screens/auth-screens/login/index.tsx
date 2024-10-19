@@ -71,8 +71,8 @@ export default function Dashboard({
   } = useForm({
     mode: 'all',
     defaultValues: {
-      email: __DEV__ ? 'itsbk1023@gmail.com' : '',
-      password: __DEV__ ? '123456' : '',
+      email: __DEV__ ? 'mdanyalchaudhary@gmail.com' : '',
+      password: __DEV__ ? '123456789' : '',
     },
     resolver: yupResolver(loginSchema),
   });

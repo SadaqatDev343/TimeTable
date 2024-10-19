@@ -51,7 +51,7 @@ export default function Admin_LOGIN({
   } = useForm({
     mode: 'all',
     defaultValues: {
-      email: __DEV__ ? 'johndoe@examplee.com' : '',
+      email: __DEV__ ? 'waqar@gmail.com' : '',
       password: __DEV__ ? 'p@ssw0rd123' : '',
     },
     resolver: yupResolver(schema),
